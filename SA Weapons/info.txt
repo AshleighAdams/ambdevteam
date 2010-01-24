@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"SA Weapons"
+	"version"			"1.0"
+	"up_date"			"Today"
+	"author_name"			".:AmB:. Nick"
+	"author_email"			"www.amb-clan.com"
+	"author_url"			""
+	"info"				"SWEP Test"
+	"override"			"0"
+}
