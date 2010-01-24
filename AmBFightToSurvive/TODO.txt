@@ -1,0 +1,37 @@
+TODO:
+
+----------
+local dmginfo = DamageInfo()
+dmginfo:SetDamage( 50 ) --50 damage
+dmginfo:SetDamageType( DMG_BULLET ) --Bullet damage
+dmginfo:SetAttacker( player.GetAll()[1] ) --First player found gets credit
+dmginfo:SetDamageForce( Vector( 0, 0, 1000 ) ) --Launch upwards
+ 
+for _, v in pairs ( ents.FindByClass( "npc_*" ) ) do --For all NPC's...
+    v:TakeDamageInfo( dmginfo ) --Take damage!
+end
+----------
+
+
+Healp menu.
+Create a teams system with team management (Similar to GG Stranded).
+Buy weapons system.
+Quota for props system (Rather than a prop count).
+	Unfrozen props cost more.
+	Bigger props cost more.
+	Parented props cost nothing.
+Slow player down when fell from height.
+Help screen.
+Bleedout when health < 10.
+	Last attacker gets the kill.
+Screen blood effects when damaged/shot.
+language.Add()'s e.g. "Slipt And Fell"
+Killable inside pod.
+
+DONE:
+
+Add classes to spawn with.
+Headshots kill instantly.
+Drop weapon when shot in hand when health < 50.
+Slow player when shot in legs.
+Health regeneration COD style.

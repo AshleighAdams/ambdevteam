@@ -1,0 +1,12 @@
+"Gamemode"
+{
+	"name"		"Fight To Survive"
+	"version"	"1"
+
+	"author_name"	"AmB"
+	"author_email"	""
+	"author_url"	"http://amb-clan.com/"
+	
+	"info"		"Purely on the tin."
+	"hide"		"0"
+}

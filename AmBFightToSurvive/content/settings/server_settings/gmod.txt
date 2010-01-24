@@ -1,0 +1,160 @@
+
+// YOU SHOULD NEVER EVER HAVE TO EDIT THIS FILE!
+// THIS FILE JUST DEFINES WHAT FIELDS SHOULD SHOW UP IN THE SERVER SETTINGS
+// IT DOESN'T ACTUALLY DEFINE ANY SERVER SETTINGS.
+
+// IF YOU WANT TO SET YOUR SERVER UP VIA TEXT FILES SEE THE CFG FOLDER
+
+"ServerSetup"
+{
+
+	"Title"		"#SandboxSettings"
+
+	"Settings"
+	{
+
+		"physgun_limited"
+		{
+			"Text"		"#Limited Physgun"
+			"Type"		"CheckBox"
+			"Default"	"0"
+		}
+
+		"sbox_noclip"
+		{
+			"Text"		"#SBoxNoclip"
+			"Type"		"CheckBox"
+			"Default"	"1"
+		}
+		
+		"sbox_godmode"
+		{
+			"Text"		"#SBoxGod"
+			"Type"		"CheckBox"
+			"Default"	"1"
+		}
+
+		"sbox_plpldamage"
+		{
+			"Text"		"#SBoxPlayerGod"
+			"Type"		"CheckBox"
+			"Default"	"1"
+		}
+
+		"sbox_maxprops"
+		{
+			"Text"		"#SBoxMaxProps"
+			"Type"		"Numeric"
+			"Default"	"100"
+		}
+		
+		"sbox_maxragdolls"
+		{
+			"Text"		"#SBoxMaxRagdolls"
+			"Type"		"Numeric"
+			"Default"	"2"
+		}
+		
+		"sbox_maxvehicles"
+		{
+			"Text"		"#SBoxMaxVehicles"
+			"Type"		"Numeric"
+			"Default"	"3"
+		}
+		
+		"sbox_maxeffects"
+		{
+			"Text"		"#SBoxMaxEffects"
+			"Type"		"Numeric"
+			"Default"	"50"
+		}
+		
+		"sbox_maxballoons"
+		{
+			"Text"		"#SBoxMaxBalloons"
+			"Type"		"Numeric"
+			"Default"	"20"
+		}
+		
+		"sbox_maxnpcs"
+		{
+			"Text"		"#SBoxMaxNPCs"
+			"Type"		"Numeric"
+			"Default"	"0"
+		}
+
+		"sbox_maxdynamite"
+		{
+			"Text"		"#SBoxMaxDynamite"
+			"Type"		"Numeric"
+			"Default"	"10"
+		}
+		
+		"sbox_maxlamps"
+		{
+			"Text"		"#SBoxMaxLamps"
+			"Type"		"Numeric"
+			"Default"	"5"
+		}
+		
+		"sbox_maxlights"
+		{
+			"Text"		"#SBoxMaxLights"
+			"Type"		"Numeric"
+			"Default"	"5"
+		}
+		
+		"sbox_maxwheels"
+		{
+			"Text"		"#SBoxMaxWheels"
+			"Type"		"Numeric"
+			"Default"	"50"
+		}
+		
+		"sbox_maxthrusters"
+		{
+			"Text"		"#SBoxMaxThrusters"
+			"Type"		"Numeric"
+			"Default"	"50"
+		}
+		
+		"sbox_maxhoverballs"
+		{
+			"Text"		"#SBoxMaxHoverBalls"
+			"Type"		"Numeric"
+			"Default"	"50"
+		}
+		"sbox_maxbuttons"
+		{
+			"Text"		"#SBoxMaxButtons"
+			"Type"		"Numeric"
+			"Default"	"50"
+		}
+		"sbox_maxemitters"
+		{
+			"Text"		"#SBoxMaxEmitters"
+			"Type"		"Numeric"
+			"Default"	"20"
+		}
+		"sbox_maxspawners"
+		{
+			"Text"		"#SBoxMaxSpawners"
+			"Type"		"Numeric"
+			"Default"	"2"
+		}
+		"sbox_maxturrets"
+		{
+			"Text"		"#SBoxMaxTurrets"
+			"Type"		"Numeric"
+			"Default"	"4"
+		}
+		
+		"sbox_weapons"
+		{
+			"Text"		"#SBoxWeapons"
+			"Type"		"CheckBox"
+			"Default"	"1"
+		}
+	}
+
+}
