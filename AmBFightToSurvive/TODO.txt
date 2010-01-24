@@ -18,7 +18,7 @@ Create a teams system with team management (Similar to GG Stranded).
 Buy weapons system.
 Quota for props system (Rather than a prop count).
 	Unfrozen props cost more.
-	Bigger props cost more.
+	Bigger props cost more. -- maybe not
 	Parented props cost nothing.
 Slow player down when fell from height.
 Help screen.
