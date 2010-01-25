@@ -6,6 +6,6 @@
 	"author_name"			".:AmB:. Nick"
 	"author_email"			"www.amb-clan.com"
 	"author_url"			""
-	"info"				"SWEP Test"
+	"info"				"SWEP Test EDITOMG"
 	"override"			"0"
 }
