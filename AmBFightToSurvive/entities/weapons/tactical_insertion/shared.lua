@@ -49,11 +49,17 @@ end
 function SWEP:PrimaryAttack()
 
 	self:TakePrimaryAmmo( 1 )
+	
+	//Anims
+	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self.Owner:SetAnimation( PLAYER_ATTACK1 )
+	timer.Create("kill",1,799,function() self:Fire("kill","1") timer.Destroy("kill") end)
 	Owner = self.Owner
 	if SERVER then Owner.SWEP = self end
 	self:EmitSound( ShootSound )
 	Owner:ConCommand("setspawnpoint")
 	self.Owner:SetAnimation( PLAYER_ATTACK1 );
+	self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
 end
 
 /*---------------------------------------------------------
@@ -77,8 +83,9 @@ if SERVER then
 		if pl.SpawnEnt != nil then
 			if pl.SpawnEnt:IsValid() then 
 				pl:SetPos(pl.SpawnEnt:GetPos() + Vector(0,0,16)) 
-				pl.SpawnEnt:Remove()
+				pl.SpawnEnt:Fire("kill", "2")
 				pl.SpawnEnt = nil
+				//pl.Flare:Fire("Die",0.1)
 			else
 				pl.SpawnEnt = nil
 			end
@@ -93,34 +100,33 @@ if SERVER then
 					return false
 				end
 			end
+						
 			// Make a prop to show the spawn
 			
 			local ent = ents.Create("prop_physics")
 				ent:SetModel("models/weapons/w_grenade.mdl")
 				ent:SetPos( pl:GetPos() )
-				//ent:SetOwner(pl)
+				ent:SetOwner(0)
 				ent:Spawn()
 				ent:Activate()
 				ent:SetCollisionGroup(COLLISION_GROUP_WORLD)
-			ParticleEffectAttach("selection_ring",PATTACH_ABSORIGIN_FOLLOW,ent,0)
-			local phys = ent:GetPhysicsObject()
-			if phys:IsValid() then phys:EnableMotion(false) end
 			
+				local phys = ent:GetPhysicsObject()
+				if phys:IsValid() then phys:EnableMotion(false) end
+			
+			Flare = ents.Create("env_flare")
+				Flare:SetPos( pl:GetPos() )
+				Flare:SetKeyValue( "scale", "3" )
+				Flare:SetKeyValue( "duration", "99999999999999" )
+				Flare:SetKeyValue( "Infinite", "1" ) --Infinite
+				Flare:EmitSound( "Weapon_Flaregun.Burn" )
+				//Flare:SetParent(ent)
+				Flare:Spawn()
+			Flare:Activate()
+			pl.Flare = Flare
+
 			pl.SpawnEnt = ent
 			ent.IsTI = true
-			
-			--particles/smokey
-			/*
-			local effectdata = EffectData()
-			effectdata:SetStart( pl:GetPos() )
-			effectdata:SetOrigin( pl:GetPos() )
-			effectdata:SetScale( 1 )
-			util.Effect( "SMOKE", effectdata )
-			*/
-			
-			--ACT_ITEM_DROP
-			--ACT_HL2MP_GESTURE_RANGE_ATTACK_GRENADE
-			
 			return true 
 		else
 				return false

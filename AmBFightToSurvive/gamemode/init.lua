@@ -2,22 +2,55 @@
 GAMEMODE = GAMEMODE or { }
 TeamPassword = TeamPassword or { }
 TeamOwner = TeamOwner or { }
+---FightToSurvive-tmp/gamemode/init.lua:6: attempt to index global 'Teams' (a nil value)
+Teams = Teams or {}
+//Teams.Name = Teams.Name or {}
+//Teams.Color = Teams.Color or {}
+//Teams.Owner = Teams.Owner or {}
 
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_gui.lua" )
-
-
 AddCSLuaFile( "cl_init.lua" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
 
+function SendTeamInfo(pl)
+	for i=1, #Teams do
+		umsg.Start("teamstats", pl)
+			umsg.Long( i )
+			umsg.String( Teams[i].Name )
+			umsg.Vector( Teams[i].Color )
+			umsg.Entity( Teams[i].Owner )
+		umsg.End()
+	end
+end
 
+function SendAllTeamInfo()
+	for i=1, #Teams do
+		local rp = RecipientFilter()
+		rp:AddAllPlayers()
+		umsg.Start("teamstats", rp)
+			umsg.Long( i )
+			umsg.String( Teams[i].Name )
+			umsg.Vector( Teams[i].Color )
+			umsg.Entity( Teams[i].Owner )
+		umsg.End()
+	end
+end
 
 function GM:Initialize()
 	GAMEMODE.NumTeams = 1
-	team.SetUp( 1, "Lone Wolves", Color(100,100,100,255) )
+	Index = GAMEMODE.NumTeams
+	Teams[Index] = {}
+	Teams[Index].Name = "Lone Wolves"
+	Teams[Index].Color = Vector(100,100,100)
+	Teams[Index].Owner = nil
+	Teams[Index].Password = ""
+	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
+	team.SetUp( Index, Teams[Index].Name, Col )
+	SendTeamInfo(pl)
 end
 
 function GM:PlayerInitialSpawn( pl )
@@ -28,7 +61,7 @@ function JoinTeam( pl, cmd, args )
 	id = tonumber( args[1] )
 	if id > GAMEMODE.NumTeams then return end
 	password = tostring( args[2] or "" )
-	teampassword = TeamPassword[ id ]
+	teampassword = Teams[id].Password
 	if password == teampassword then
 		pl:SetTeam( id )
 	end
@@ -37,12 +70,13 @@ concommand.Add( "jointeam", JoinTeam )
 
 function MakeTeam( pl, cmd, args )
 	if table.Count( args ) == 5 then
-		name = args[1]
-		pass = args[2]
-		r = args[3]
-		g = args[4]
-		b = args[5]
+		name = args[1] or "Failures"
+		pass = args[2] or ""
+		r = args[3] or 100
+		g = args[4] or 100
+		b = args[5] or 100
 		pl:SetTeam( SetUpTeam( name, pass, r,g,b, pl ) )
+		SendAllTeamInfo()
 	end
 
 end
@@ -50,17 +84,27 @@ concommand.Add( "maketeam", MakeTeam )
 
 function SetUpTeam( name, password, r,g,b, owner )
 	GAMEMODE.NumTeams = GAMEMODE.NumTeams + 1
-	TeamPassword[GAMEMODE.NumTeams] = password
+	local Index = GAMEMODE.NumTeams
+	--TeamPassword[GAMEMODE.NumTeams] = password
 	
-	team.SetUp( GAMEMODE.NumTeams, name, Color(r,g,b,255) )
-	TeamOwner[GAMEMODE.NumTeams] = owner
+	--team.SetUp( GAMEMODE.NumTeams, name, Color(r,g,b,255) )
+	
+	Teams[Index] = {}
+	Teams[Index].Name = name
+	Teams[Index].Color = Vector(r,g,b)
+	Teams[Index].Owner = owner
+	Teams[Index].Password = password
+	
+	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
+	team.SetUp( Index, Teams[Index].Name, Col )
+	
 	return GAMEMODE.NumTeams
 end
 
 function IsLeader( pl )
 	t = pl:Team()
-	if pl != nil && TeamOwner[t] != nil && pl:IsValid() && pl:IsPlayer() then
-		return TeamOwner[t] == pl
+	if pl != nil && Teams[t].Owner != nil && pl:IsValid() && pl:IsPlayer() then
+		return Teams[t].Owner == pl
 	end
 	return false
 end
@@ -73,11 +117,11 @@ function GM:PlayerSpawn( pl )
 
 
     self.BaseClass:PlayerSpawn( pl )
-    ply:SetGravity( 0.75 )  
-    ply:SetMaxHealth( 100, true )  
+    pl:SetGravity( 0.75 )  
+    pl:SetMaxHealth( 100, true )  
  
-    ply:SetWalkSpeed( 250 )  
-	ply:SetRunSpeed( 400 ) 
+    pl:SetWalkSpeed( 250 )  
+	pl:SetRunSpeed( 400 ) 
  
 
 	//self.BaseClass.PlayerSpawn( self, pl )
@@ -142,6 +186,7 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
+	pl:Give( "tactical_flaregun" )	
 
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
 
