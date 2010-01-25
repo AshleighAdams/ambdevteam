@@ -111,19 +111,14 @@ end
 
 
 function SWEP:SecondaryAttack()
-	if self.Owner:Health() >= 100 then
-		self.Owner:SetHealth(100)
+	max = self.Owner:GetMaxHealth()
+	if self.Owner:Health() >= max then
 		self.Weapon:EmitSound( FailSound, 60, 100 )
 	else
-		self.Owner:SetHealth( self.Owner:Health() + 50 )
+		self.Owner:SetHealth( math.min( max, self.Owner:Health() + 50 ) )
 		self.Weapon:EmitSound( ShootSound, 60, 100 )
 		self:Fire("kill","1")
 		self.Owner:ConCommand("lastinv")
-		if self.Owner:Health() >= 100 then
-			self.Owner:SetHealth( 100)
-			self:Fire("kill","1")
-			self.Owner:ConCommand("lastinv")
-		end
 	end
 	self.Weapon:SetNextSecondaryFire(CurTime() + 1)
 end
