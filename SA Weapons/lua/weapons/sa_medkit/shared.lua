@@ -1,22 +1,3 @@
-if (SERVER) then
-
-	AddCSLuaFile( "shared.lua" )
-	SWEP.Weight				= 5
-	SWEP.AutoSwitchTo		= false
-	SWEP.AutoSwitchFrom		= false
-
-end
-
-if ( CLIENT ) then
-
-	SWEP.DrawAmmo			= true
-	SWEP.DrawCrosshair		= true
-	SWEP.ViewModelFOV		= 55
-	SWEP.ViewModelFlip		= false
-	SWEP.CSMuzzleFlashes	= true
-
-end
-
 function SWEP:Initialize()
  
         if( SERVER ) then
@@ -45,14 +26,10 @@ if ( CLIENT ) then
 
 	SWEP.DrawAmmo			= true
 	SWEP.DrawCrosshair		= true
-	SWEP.ViewModelFOV		= 82
-	SWEP.ViewModelFlip		= true
+	SWEP.ViewModelFOV		= 55
+	SWEP.ViewModelFlip		= false
 	SWEP.CSMuzzleFlashes	= true
 	
-	// This is the font that's used to draw the death icons
-	surface.CreateFont( "csd", ScreenScale( 30 ), 500, true, true, "CSKillIcons" )
-	surface.CreateFont( "csd", ScreenScale( 60 ), 500, true, true, "CSSelectIcons" )
-
 end
 
 SWEP.Category				= "SA Sweps"
