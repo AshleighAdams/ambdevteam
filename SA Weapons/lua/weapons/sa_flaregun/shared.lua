@@ -18,6 +18,7 @@ if ( CLIENT ) then
 	SWEP.ViewModelFlip = false
 end
 
+SWEP.Category				= "SA Sweps"
 SWEP.Author = ".:AmB:. Nick"
 SWEP.Contact = "www.amb-clan.com"
 SWEP.Purpose = "Set things on fire"
