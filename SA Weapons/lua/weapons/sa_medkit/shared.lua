@@ -99,7 +99,7 @@ function SWEP:PrimaryAttack()
 			local max = ent:GetMaxHealth()
 			self.Weapon:EmitSound( ShootSound, 60, 100 )
 			if current <= (max - 50) then
-				ent:SetHealth( current + 50 )
+				timer.Create( "heal", 0.1, 50, function(pl) pl:SetHealth( pl:Health() + 1 ) end, ent )
 				self:Fire("kill","1")
 				self.Owner:ConCommand("lastinv")
 				ent:Extinguish()
@@ -119,17 +119,17 @@ end
 
 
 function SWEP:SecondaryAttack()
-	if self.Owner:Health() >= 100 then
-		self.Owner:SetHealth(100)
+	local max = self.Owner:GetMaxHealth()
+	if self.Owner:Health() >= max then
 		self.Weapon:EmitSound( FailSound, 60, 100 )
 	else
-		self.Owner:SetHealth( self.Owner:Health() + 50 )
+		timer.Create( "heal", 0.1, 50, function(pl) pl:SetHealth( pl:Health() + 1 ) end, self.Owner )
 		self.Weapon:EmitSound( ShootSound, 60, 100 )
 		self:Fire("kill","1")
 		self.Owner:Extinguish()
 		self.Owner:ConCommand("lastinv")
-		if self.Owner:Health() >= 100 then
-			self.Owner:SetHealth( 100)
+		if self.Owner:Health() >= max then
+			self.Owner:SetHealth( max)
 			self:Fire("kill","1")
 			self.Owner:ConCommand("lastinv")
 			self.Owner:Extinguish()
