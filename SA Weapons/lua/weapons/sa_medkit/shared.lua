@@ -2,8 +2,8 @@ function SWEP:Initialize()
  
         if( SERVER ) then
         
-                self:SetWeaponHoldType( "slam" );
-				
+                self:SetWeaponHoldType( "melee" );
+        
         end
 end
  
@@ -98,9 +98,15 @@ function SWEP:PrimaryAttack()
 			local current = ent:Health()
 			local max = ent:GetMaxHealth()
 			self.Weapon:EmitSound( ShootSound, 60, 100 )
-			ent:SetHealth( math.min(max, current + 50) )
-			self:Fire("kill","1")
-			self.Owner:ConCommand("lastinv")
+			if current <= (max - 50) then
+				ent:SetHealth( current + 50 )
+				self:Fire("kill","1")
+				self.Owner:ConCommand("lastinv")
+			else
+				ent:SetHealth( max )
+				self:Fire("kill","1")
+				self.Owner:ConCommand("lastinv")
+			end
 		end 
 	else
 		self.Weapon:EmitSound(FailSound, 60, 100)
@@ -111,14 +117,19 @@ end
 
 
 function SWEP:SecondaryAttack()
-	max = self.Owner:GetMaxHealth()
-	if self.Owner:Health() >= max then
+	if self.Owner:Health() >= 100 then
+		self.Owner:SetHealth(100)
 		self.Weapon:EmitSound( FailSound, 60, 100 )
 	else
-		self.Owner:SetHealth( math.min( max, self.Owner:Health() + 50 ) )
+		self.Owner:SetHealth( self.Owner:Health() + 50 )
 		self.Weapon:EmitSound( ShootSound, 60, 100 )
 		self:Fire("kill","1")
 		self.Owner:ConCommand("lastinv")
+		if self.Owner:Health() >= 100 then
+			self.Owner:SetHealth( 100)
+			self:Fire("kill","1")
+			self.Owner:ConCommand("lastinv")
+		end
 	end
 	self.Weapon:SetNextSecondaryFire(CurTime() + 1)
 end
