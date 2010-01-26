@@ -3,6 +3,11 @@ include( 'shared.lua' )
 include( 'cl_gui.lua' )
 include( 'cl_scoreboard.lua' )
 
+language.Add( "worldspawn", "Slipt And Fell" )
+language.Add( "prop_physics", "Zooming Prop" )
+language.Add( "func_door", "Door" )
+language.Add( "trigger_hurt", "Mystic Force" )
+
 function GM:CalcView(ply,pos,ang,fov)
 	local rag = ply:GetRagdollEntity()
 	if ValidEntity(rag) then

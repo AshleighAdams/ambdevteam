@@ -14,22 +14,22 @@ end
 
 
 Healp menu.
-Create a teams system with team management (Similar to GG Stranded).
+Create a teams system with team management (Similar to GG Stranded). Porgress: Team management & GUI left
 Buy weapons system.
 Quota for props system (Rather than a prop count).
 	Unfrozen props cost more.
 	Bigger props cost more. -- maybe not
 	Parented props cost nothing.
-Slow player down when fell from height.
 Help screen.
 Bleedout when health < 10.
 	Last attacker gets the kill.
 Screen blood effects when damaged/shot.
-language.Add()'s e.g. "Slipt And Fell"
 Killable inside pod.
 
 DONE:
 
+language.Add()'s e.g. "Slipt And Fell"
+Slow player down when fell from height.
 Add classes to spawn with.
 Headshots kill instantly.
 Drop weapon when shot in hand when health < 50.

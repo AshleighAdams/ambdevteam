@@ -115,7 +115,7 @@ function GM:PlayerSpawn( pl )
 
 
     self.BaseClass:PlayerSpawn( pl )
-    pl:SetGravity( 0.75 )  
+    pl:SetGravity( 1 )  
     pl:SetMaxHealth( 100, true )  
  
     pl:SetWalkSpeed( 250 )  
