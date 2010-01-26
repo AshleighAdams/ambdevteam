@@ -94,7 +94,7 @@ function SWEP:PrimaryAttack()
 
 		local ent = self.Owner:GetEyeTrace().Entity
       
-		if (ent:IsValid()) then
+		if ent:IsPlayer() || ent:IsNPC() then
 			local current = ent:Health()
 			local max = ent:GetMaxHealth()
 			self.Weapon:EmitSound( ShootSound, 60, 100 )
