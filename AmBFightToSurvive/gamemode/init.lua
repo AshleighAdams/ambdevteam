@@ -1,12 +1,7 @@
 
 GAMEMODE = GAMEMODE or { }
-TeamPassword = TeamPassword or { }
-TeamOwner = TeamOwner or { }
----FightToSurvive-tmp/gamemode/init.lua:6: attempt to index global 'Teams' (a nil value)
+
 Teams = Teams or {}
-//Teams.Name = Teams.Name or {}
-//Teams.Color = Teams.Color or {}
-//Teams.Owner = Teams.Owner or {}
 
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )

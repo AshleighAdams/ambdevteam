@@ -3,10 +3,10 @@
 	"name"		"Fight To Survive"
 	"version"	"1"
 
-	"author_name"	"AmB"
+	"author_name"	"C0BRA"
 	"author_email"	""
 	"author_url"	"http://amb-clan.com/"
 	
-	"info"		"Purely on the tin."
+	"info"		"Build base. Protect base."
 	"hide"		"0"
 }

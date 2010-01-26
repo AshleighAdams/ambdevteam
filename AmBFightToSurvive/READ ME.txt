@@ -1,0 +1,4 @@
+MOVE "materials" FOLDER TO ROOT DIR!!!!
+EG:
+	garrysmod/garrysmod/
+	
