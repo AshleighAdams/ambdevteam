@@ -9,7 +9,6 @@ AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
 resource.AddFile( "amb/scoreboard.vmt" )
-resource.AddFile( "amb/scoreboard.vtf" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
@@ -48,10 +47,10 @@ function GM:Initialize()
 	Teams[Index].Password = ""
 	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
 	team.SetUp( Index, Teams[Index].Name, Col )
-	SendTeamInfo(pl)
 end
 
-function GM:PlayerInitialSpawn( pl )
+function GM:PlayerAuthed( pl, SteamID, UniqueID )
+	SendTeamInfo(pl)
 	pl:SetTeam(1)
 end
 
@@ -113,7 +112,9 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerSpawn( pl )
 
-
+	if( pl:Team() ==1001 ) then
+		pl:SetTeam(1)
+	end
     self.BaseClass:PlayerSpawn( pl )
     pl:SetGravity( 1 )  
     pl:SetMaxHealth( 100, true )  
@@ -195,8 +196,9 @@ function GM:PlayerLoadout( pl )
 end
 
 
-function GAMEMODE:PlayerShouldTakeDamage( victim, pl )
-	if( pl:Team() == victim:Team() and GetConVarNumber( "mp_friendlyfire" ) == 0 ) then -- check the teams are equal and that friendly fire is off.
+function GM:PlayerShouldTakeDamage( victim, pl )
+	if !pl:IsValid() || pl == nil then return true end
+	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
 		return false -- do not damage the player
 	end
  

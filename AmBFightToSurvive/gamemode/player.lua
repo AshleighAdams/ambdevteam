@@ -50,6 +50,7 @@ function GM.HealthRegen()
 		local lastdmg = lastdamage[ply:SteamID()] or 0
 		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
 			if ply:Health() > 20 then
+				if pl != nil then Msg(lastdmg .. ply) end
 				local hp = ply:Health()
 				ply:SetHealth( math.Clamp( hp + 1, 0, 100 ) )
 			end
