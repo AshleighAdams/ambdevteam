@@ -207,7 +207,7 @@ function GM:PlayerShouldTakeDamage( ply, attacker )
 	if ( attacker:IsValid() && attacker:IsPlayer() ) then
 		if !server_settings.Bool( "sbox_plpldamage", false ) then
 			if ply:Team() == 1 && attacker:Team() == 1 then return true end
-			return ply:Team() != attacker:Team()
+			return !( ply:Team() == attacker:Team() )
 		end
 	end
 	
