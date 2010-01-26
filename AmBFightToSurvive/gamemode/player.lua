@@ -40,7 +40,6 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	end
 	
 	dmginfo:ScaleDamage( 1 )
-	end
 	
 end
 
