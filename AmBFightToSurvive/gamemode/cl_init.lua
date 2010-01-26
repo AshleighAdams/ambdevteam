@@ -1,6 +1,7 @@
 
 include( 'shared.lua' )
 include( 'cl_gui.lua' )
+include( 'cl_scoreboard.lua' )
 
 function GM:CalcView(ply,pos,ang,fov)
 	local rag = ply:GetRagdollEntity()

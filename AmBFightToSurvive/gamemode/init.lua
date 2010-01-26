@@ -12,6 +12,8 @@ Teams = Teams or {}
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
+AddCSLuaFile( "cl_scoreboard.lua" )
+resource.AddFile( "amb/scoreboard.vmt" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
@@ -186,7 +188,7 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
-	pl:Give( "tactical_flaregun" )	
+	pl:Give( "weapon_flaregun" )	
 
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
 
