@@ -78,7 +78,7 @@ function SWEP:PrimaryAttack()
 	if trace.HitPos:Distance(self.Owner:GetShootPos()) <= 100 then
 
 		local ent = self.Owner:GetEyeTrace().Entity
-      
+		if CLIENT then return end
 		if ent:IsPlayer() || ent:IsNPC() then
 			local current = ent:Health()
 			local max = ent:GetMaxHealth()
