@@ -195,27 +195,13 @@ function GM:PlayerLoadout( pl )
 end
 
 
-function GM:PlayerShouldTakeDamage( ply, attacker )
-
-	// The player should always take damage in single player..
-	if ( SinglePlayer() ) then return true end
-
-	// Global godmode, players can't be damaged in any way
-	if ( server_settings.Bool( "sbox_godmode", false ) ) then return false end
-
-	// No player vs player damage
-	if ( attacker:IsValid() && attacker:IsPlayer() ) then
-		if !server_settings.Bool( "sbox_plpldamage", false ) then
-			if ply:Team() == 1 && attacker:Team() == 1 then return true end
-			return !( ply:Team() == attacker:Team() )
-		end
+function GAMEMODE:PlayerShouldTakeDamage( victim, pl )
+	if( pl:Team() == victim:Team() and GetConVarNumber( "mp_friendlyfire" ) == 0 ) then -- check the teams are equal and that friendly fire is off.
+		return false -- do not damage the player
 	end
-	
-	// Default, let the player be hurt
-	return true
-
+ 
+	return true -- damage the player
 end
-
 
 /*---------------------------------------------------------
    Show the school window when F1 is pressed..
