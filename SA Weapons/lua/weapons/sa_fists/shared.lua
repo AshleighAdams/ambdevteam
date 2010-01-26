@@ -1,6 +1,8 @@
 if( SERVER ) then
 	AddCSLuaFile( "shared.lua" )
-	
+	resource.AddFile( "models/weapons/v_punch.mdl" )
+	resource.AddFile( "models/weapons/w_fists_t.mdl" )
+
 	SWEP.HoldType			= "fist"
 
 	local ActIndex = {}

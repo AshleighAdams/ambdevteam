@@ -105,7 +105,7 @@ function SWEP:PrimaryAttack()
 				ent:Extinguish()
 			else
 				ent:SetHealth( max )
-				self:Fire("kill","1")
+				self.Weapon:Fire("kill","1")
 				self.Owner:ConCommand("lastinv")
 				ent:Extinguish()
 			end

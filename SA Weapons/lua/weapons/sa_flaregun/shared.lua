@@ -73,8 +73,8 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
 	self.Weapon:SetNetworkedFloat( "LastShootTime", CurTime() )
 	self.Owner:ConCommand( "-attack" ) -- this fixes the weapons holstering bug
-	timer.Create("kill",1,599,function() self:Fire("kill","1") timer.Destroy("kill") end)
-	timer.Create("last",1,600,function() self.Owner:ConCommand("lastinv") timer.Destroy("last") end)
+	timer.Create("kill",1,599,function(ent) ent:Fire("kill","1") timer.Destroy("kill") end, self)
+	timer.Create("last",1,600,function(ent) ent:ConCommand("lastinv") timer.Destroy("last") end,self.Owner)
 end
 
 function SWEP:SecondaryAttack()
