@@ -53,7 +53,7 @@ function SWEP:PrimaryAttack()
 	//Anims
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
-	timer.Create("kill",1,799,function() self:Fire("kill","1") timer.Destroy("kill") end)
+	timer.Create("kill",800,1,function() self:Fire("kill","1") timer.Destroy("kill") end)
 	Owner = self.Owner
 	if SERVER then Owner.SWEP = self end
 	self:EmitSound( ShootSound )
