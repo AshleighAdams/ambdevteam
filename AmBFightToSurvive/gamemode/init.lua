@@ -12,7 +12,7 @@ AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
-resource.AddFile( "amb/scoreboard.vmt" )
+resource.AddFile( "materials/amb/scoreboard.vmt" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
