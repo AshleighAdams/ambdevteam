@@ -1,5 +1,4 @@
-local lastdamage = lastdamage or {}
-local healthregentime = 8  // in seconds before you regen health
+
 
 
 function GM:PlayerLoadout( ply ) --Weapon/ammo/item function
@@ -8,7 +7,7 @@ function GM:PlayerLoadout( ply ) --Weapon/ammo/item function
 end
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	if !ply:IsPlayer() || !ply:IsNPC() then return end
-	lastdamage[ply:SteamID()] = CurTime()
+	
 
 	// More damage if we're shot in the head
 	 if ( hitgroup == HITGROUP_HEAD ) then
@@ -42,22 +41,4 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	dmginfo:ScaleDamage( 1 )
 	
 end
-
-
-
-function GM.HealthRegen()
-	for _,ply in pairs( player.GetAll() ) do
-		local lastdmg = lastdamage[ply:SteamID()] or 0
-		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
-			if ply:Health() > 20 then
-				if pl != nil then Msg(lastdmg .. ply) end
-				local hp = ply:Health()
-				ply:SetHealth( math.Clamp( hp + 1, 0, 100 ) )
-			end
-		end
-	end
-end
-timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
-
-
 

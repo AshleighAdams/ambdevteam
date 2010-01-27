@@ -1,6 +1,10 @@
 
 GAMEMODE = GAMEMODE or { }
 
+
+local lastdamage = lastdamage or {}
+local healthregentime = 8  // in seconds before you regen health
+
 Teams = Teams or {}
 
 // These files get sent to the client
@@ -198,6 +202,7 @@ end
 
 function GM:PlayerShouldTakeDamage( victim, pl )
 	if !pl:IsValid() || pl == nil then return true end
+	lastdamage[pl:SteamID()] = CurTime()
 	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
 		return false -- do not damage the player
 	end
@@ -236,6 +241,23 @@ function GM:GetFallDamage( ply, vel )
 		return (vel-200) / 8
 	end
 end
+
+
+function GM.HealthRegen()
+	for _,ply in pairs( player.GetAll() ) do
+		local lastdmg = lastdamage[ply:SteamID()] or 0
+		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
+			if ply:Health() > 20 then
+				local hp = ply:Health()
+				ply:SetHealth( math.Clamp( hp + 1, 0, ply:GetMaxHealth() ) )
+			end
+		end
+	end
+end
+timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
+
+
+concommand.Add("yap", function() PrintTable() end)
 
 
 function SetWeapons( pl, cmd, args )
