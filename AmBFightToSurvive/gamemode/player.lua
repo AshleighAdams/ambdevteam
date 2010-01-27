@@ -8,7 +8,7 @@ end
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	if !ply:IsPlayer() || !ply:IsNPC() then return end
 	
-
+Msg(0)
 	// More damage if we're shot in the head
 	 if ( hitgroup == HITGROUP_HEAD ) then
 	 
@@ -26,17 +26,27 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 		dmginfo:ScaleDamage( 0.5 )
 	 
 	end
-	
-	if ( (hitgroup == HITGROUP_LEFTARM || hitgroup == HITGROUP_RIGHTARM) && ply:Health() > 35 ) then
-		if ply:GetActiveWeapon():GetClass() == "" then return end -- gmod_camera  tactical_insertion  gmod_tool  weapon_physgun
-		ply:DropWeapon( ply:GetActiveWeapon() )
-	end
-	
+	local DontDrop ={ 	
+						"gmod_camera",
+						"tactical_insertion",
+						"gmod_tool",
+						"weapon_physgun"
+					}
+	Msg(1)
 	if (hitgroup == HITGROUP_LEFTLEG || hitgroup == HITGROUP_RIGHTLEG) then
+		Msg(2)
 		if ply.SpeedMulti == nil then ply.SpeedMulti = 1 end
 		ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti() - 0.05 )
 		GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
 	end
+	Msg(3)
+	if ( (hitgroup == HITGROUP_LEFTARM || hitgroup == HITGROUP_RIGHTARM) && ply:Health() < 50 ) then
+		Msg(4)
+		if table.HasValue( DontDrop, ply:GetActiveWeapon():GetClass() ) then break end -- gmod_camera  tactical_insertion  gmod_tool  weapon_physgun
+		ply:DropWeapon( ply:GetActiveWeapon() )
+	end
+	
+
 	
 	dmginfo:ScaleDamage( 1 )
 	

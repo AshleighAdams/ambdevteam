@@ -1,14 +1,16 @@
 FS = FS or {}
 
-function FS.ShowSpawnMenu()
+function FS.ShowSpawnMenu() ---- bad name <<, the spawn class
 	local DermaFrame = vgui.Create( "DFrame" )
 	DermaFrame:SetPos( 100,100 )
 	DermaFrame:SetSize( 320, 180 )
-	DermaFrame:SetTitle( "Set You're Class" )
+	DermaFrame:SetTitle( "Set Your Class" )
 	DermaFrame:SetVisible( true )
 	DermaFrame:SetDraggable( true )
 	DermaFrame:ShowCloseButton( true )
+	DermaFrame:SetDeleteOnClose(false)
 	DermaFrame:MakePopup()
+	DermaFrame:Center()
 
 	local Weapon1 = vgui.Create( "DComboBox", DermaFrame )
 	Weapon1:SetPos( 10, 35 )
@@ -37,9 +39,9 @@ function FS.ShowSpawnMenu()
 	
 	local SetClass = vgui.Create( "DButton" )
 	SetClass:SetParent( DermaFrame )
-	SetClass:SetText( "Set You're Class" )
+	SetClass:SetText( "Set Your Class" )
 	SetClass:SetPos( 10, 145 )
-	SetClass:SetSize( 100, 30 )
+	SetClass:SetSize( 100, 20 )
 	SetClass.DoClick = function ()
 		
 		local w1,w2,w3 = ""
@@ -48,6 +50,7 @@ function FS.ShowSpawnMenu()
 		w3 = Weapon3:GetSelectedItems()[1]:GetValue()
 		local comma = ","
 		LocalPlayer():ConCommand("sv_cl_setw " .. w1 .. comma .. w2 .. comma .. w3 )
+		DermaFrame:Close()
 		print("Weapons Set")
 		--w1,w2,w3
 	
