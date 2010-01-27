@@ -49,8 +49,7 @@ function GM:HUDDrawScoreBoard()
 	surface.SetTextColor( 100, 100, 100, 255 )
 	for i,pl in pairs( player.GetAll() ) do
 		if pl:IsPlayer() then
-			Col = Teams[ pl:Team() ].Color
-			surface.SetTextColor( , Col.x, Col.y, Col.z )
+			surface.SetTextColor( team.GetColor( pl:Team() ) )
 			local y = (PlayersStartY + (i*Spacing))
 			
 			surface.SetTextPos( PlayersStartName, y ) 
