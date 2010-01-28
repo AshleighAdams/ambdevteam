@@ -42,8 +42,9 @@ Msg(0)
 	Msg(3)
 	if ( (hitgroup == HITGROUP_LEFTARM || hitgroup == HITGROUP_RIGHTARM) && ply:Health() < 50 ) then
 		Msg(4)
-		if table.HasValue( DontDrop, ply:GetActiveWeapon():GetClass() ) then break end -- gmod_camera  tactical_insertion  gmod_tool  weapon_physgun
-		ply:DropWeapon( ply:GetActiveWeapon() )
+		if !table.HasValue( DontDrop, ply:GetActiveWeapon():GetClass() ) then
+			ply:DropWeapon( ply:GetActiveWeapon() )
+		end
 	end
 	
 

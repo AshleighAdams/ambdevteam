@@ -189,7 +189,7 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
-	pl:Give( "weapon_flaregun" )	
+	pl:Give( "sa_flaregun" )	
 
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
 
@@ -202,6 +202,7 @@ end
 
 function GM:PlayerShouldTakeDamage( victim, pl )
 	if !pl:IsValid() || pl == nil then return true end
+	if !pl:IsPlayer() then return end
 	lastdamage[pl:SteamID()] = CurTime()
 	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
 		return false -- do not damage the player

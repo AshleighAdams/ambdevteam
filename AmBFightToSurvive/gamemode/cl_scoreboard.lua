@@ -1,3 +1,4 @@
+surface.CreateFont("Tahoma", 16, 1000, true, false, "bScoreboardText") -- Taken front from sassilization
 
 function GM:ScoreboardShow()
 	GAMEMODE.ShowScoreboard = true
@@ -45,7 +46,7 @@ function GM:HUDDrawScoreBoard()
 	surface.DrawText( gamename )
 	
 	
-	surface.SetFont( "ChatFont" )
+	surface.SetFont( "bScoreboardText" ) -- ChatFont   DefaultLarge
 	surface.SetTextColor( 100, 100, 100, 255 )
 	for i,pl in pairs( player.GetAll() ) do
 		if pl:IsPlayer() then
