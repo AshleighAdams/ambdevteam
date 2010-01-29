@@ -178,6 +178,7 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
+	pl:Give( "orbital_downfall" )
 	pl:Give( "sa_flaregun" )	
 
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
