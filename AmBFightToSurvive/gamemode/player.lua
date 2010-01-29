@@ -8,7 +8,15 @@ end
 hook.Add( "PlayerLoadout", "fs.Player.Loadout", fsPlayerLoadout )
 
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not being called, dont know why
+	Msg("NOW\n")
 	if !ply:IsPlayer() && !ply:IsNPC() then return end
+	lastdamage[ply:SteamID()] = CurTime() -- for health regen stuff ect...
+	local attacker = dmginfo:GetAttacker()
+	if attacker:IsNPC() || attacker:IsPlayer() then
+		ply.LastAttacker = attacker
+		ply.LastAttackerTime = CurTime()
+	end
+	
 	// More damage if we're shot in the head
 	 if ( hitgroup == HITGROUP_HEAD ) then
 	 
@@ -50,7 +58,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not b
 	dmginfo:ScaleDamage( 1 )
 	
 end
---hook.Add( "ScalePlayerDamage", "fs.Player.ScaleDamage", fsScalePlayerDamage )
+//hook.Add( "ScalePlayerDamage", "fs.Player.ScaleDamage", fsScalePlayerDamage )
 
 
 
@@ -59,12 +67,20 @@ function GM:GetFallDamage( ply, vel )
 		if math.Rand(1,20) == 1 and vel > 999 then
 			return ply:Health() - 1
 		end
-		return (vel-200) / 8
 		ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti - 0.2 )
 		GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
+		dmg = (vel-200) / 8
+		if ply.LastAttacker && (ply.LastAttacker:IsPlayer() || ply.LastAttacker:IsNPC()) then
+			Damage( ply,dmg )
+			punch = dmg / ply:GetMaxHealth() *-5
+			ply:ViewPunch( Angle(punch,0,0) )
+			return 0
+		else
+			return dmg
+		end
 	end
 end
-hook.Add( "GetFallDamage", "fs.GetFallDmg", GetFallDamage)
+//hook.Add( "GetFallDamage", "fs.GetFallDmg", GetFallDamage)
 
 function GM.HealthRegen()
 	for _,ply in pairs( player.GetAll() ) do
@@ -74,18 +90,55 @@ function GM.HealthRegen()
 				local hp = ply:Health()
 				ply:SetHealth( math.Clamp( hp + 1, 0, ply:GetMaxHealth() ) )
 			end
+			if ply:Health() >= ply:GetMaxHealth() then
+				ply.LastAttacker = nil
+			end
 		end
 	end
 end
 timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
 
 
-function PlayerShouldTakeDamage( victim, pl )
+function GM:PlayerShouldTakeDamage( victim, pl )
 	if !pl:IsValid() || pl == nil then return true end
+	if pl:IsNPC() || victim:IsNPC() then return true end
 	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
 		return false -- do not damage the player
 	end
-	lastdamage[pl:SteamID()] = CurTime()
 	return true -- damage the player
 end
-hook.Add("PlayerShouldTakeDamage","Asdasd",PlayerShouldTakeDamage)
+//hook.Add("PlayerShouldTakeDamage","Asdasd",PlayerShouldTakeDamage)
+
+timer.Create( "fs.LowHealth.ViewPunch", 5, 0, function()
+	for k,v in pairs( player.GetAll() ) do
+		if v:Health() <= 20 then
+			local P = math.Rand( -1,1 ) * ( ( 20-v:Health() ) * 5 )
+			local Y = math.Rand( -1,1 ) * ( ( 20-v:Health() ) * 5 )
+			local R = math.Rand( -1,1 ) * ( ( 20-v:Health() ) * 5 )
+			Ang = Angle( P,Y,R )
+			v:ViewPunch( Ang )
+		end
+		if( v:Health() <= 10 && v:Alive() ) then
+			Damage( v,1 )
+			if v:Health() < 1 then
+				if v:Alive() then v:Kill() end
+			end
+		end
+	end
+end)
+
+function Damage( pl, ammount )
+	if pl.LastAttacker == nil || !pl:IsPlayer() then
+		pl:SetHealth( pl:Health() - ammount )
+	else
+		local dmg = DamageInfo()
+		dmg:SetDamage( ammount ) 
+		dmg:SetDamageType( DMG_FALL )
+		dmg:SetAttacker( pl.LastAttacker )
+		dmg:SetDamageForce( Vector( 0, 0, -1 ) )
+		pl:TakeDamage( dmg )
+	end
+	if pl:Health() <= 0 then
+		pl:Kill()
+	end
+end

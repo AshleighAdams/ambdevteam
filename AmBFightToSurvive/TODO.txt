@@ -20,13 +20,13 @@ Quota for props system (Rather than a prop count).
 	Bigger props cost more. -- maybe not
 	Parented props cost nothing.
 Help screen.
-Bleedout when health < 10.
 	Last attacker gets the kill.
 Screen blood effects when damaged/shot.
 Killable inside pod.
 
 DONE:
 
+Bleedout when health < 10.
 Get ScaleDamageHook working again!
 language.Add()'s e.g. "Slipt And Fell"
 Slow player down when fell from height.
