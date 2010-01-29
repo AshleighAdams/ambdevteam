@@ -178,7 +178,6 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
-	pl:Give( "orbital_downfall" )
 	pl:Give( "sa_flaregun" )	
 
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
@@ -208,6 +207,8 @@ function GM:PlayerInitialSpawn( ply )
 	
 	PlayerDataUpdate( ply )
 	
+	SendTeamInfo( ply )
+	
 end
 
 
@@ -224,10 +225,3 @@ function SetWeapons( pl, cmd, args )
 	pl.w3 = weps[3]
 end
 concommand.Add("sv_cl_setw", SetWeapons)
-
-function GM:ShouldCollide( Ent1, Ent2 )
-	if(Ent1:IsPlayer() && Ent2:IsPlayer()) then
-		return Ent1:Team() != Ent2:Team()
-	end
-	return true
-end

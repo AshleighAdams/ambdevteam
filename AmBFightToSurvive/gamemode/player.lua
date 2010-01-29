@@ -4,17 +4,17 @@ local healthregentime = 8  // in seconds before you regen health
 function fsPlayerLoadout( ply )
 	ply.SpeedMulti = 1
 	GAMEMODE:SetPlayerSpeed( ply, 250, 400 )
+	SendTeamInfo( ply )
 end
 hook.Add( "PlayerLoadout", "fs.Player.Loadout", fsPlayerLoadout )
 
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not being called, dont know why
-	Msg("NOW\n")
 	if !ply:IsPlayer() && !ply:IsNPC() then return end
 	lastdamage[ply:SteamID()] = CurTime() -- for health regen stuff ect...
 	local attacker = dmginfo:GetAttacker()
 	if attacker:IsNPC() || attacker:IsPlayer() then
 		ply.LastAttacker = attacker
-		ply.LastAttackerTime = CurTime()
+		ply.LastAttackerWeapon = attacker:GetActiveWeapon()
 	end
 	
 	// More damage if we're shot in the head
@@ -90,7 +90,7 @@ function GM.HealthRegen()
 				local hp = ply:Health()
 				ply:SetHealth( math.Clamp( hp + 1, 0, ply:GetMaxHealth() ) )
 			end
-			if ply:Health() >= ply:GetMaxHealth() then
+			if ply:Health() == ply:GetMaxHealth() then
 				ply.LastAttacker = nil
 			end
 		end
@@ -99,15 +99,16 @@ end
 timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
 
 
-function GM:PlayerShouldTakeDamage( victim, pl )
-	if !pl:IsValid() || pl == nil then return true end
+function PlayerShouldTakeDamage( victim, pl )
+	if pl == nil || !pl:IsValid()  then return true end
 	if pl:IsNPC() || victim:IsNPC() then return true end
-	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
+	if victim:Team() == 1 then return true end
+	if( pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
 		return false -- do not damage the player
 	end
 	return true -- damage the player
 end
-//hook.Add("PlayerShouldTakeDamage","Asdasd",PlayerShouldTakeDamage)
+hook.Add("PlayerShouldTakeDamage","Asdasd",PlayerShouldTakeDamage)
 
 timer.Create( "fs.LowHealth.ViewPunch", 5, 0, function()
 	for k,v in pairs( player.GetAll() ) do
@@ -128,17 +129,18 @@ timer.Create( "fs.LowHealth.ViewPunch", 5, 0, function()
 end)
 
 function Damage( pl, ammount )
-	if pl.LastAttacker == nil || !pl:IsPlayer() then
+	if pl.LastAttacker == nil || !pl:IsPlayer() && pl:Alive() then
 		pl:SetHealth( pl:Health() - ammount )
-	else
+		if pl:Health() <= 0 then
+			pl:Kill()
+		end
+	elseif pl.LastAttacker then
 		local dmg = DamageInfo()
 		dmg:SetDamage( ammount ) 
-		dmg:SetDamageType( DMG_FALL )
+		dmg:SetDamageType( DMG_BULLET )
 		dmg:SetAttacker( pl.LastAttacker )
+		dmg:SetInflictor( pl.LastAttackerWeapon or pl.LastAttacker )
 		dmg:SetDamageForce( Vector( 0, 0, -1 ) )
-		pl:TakeDamage( dmg )
-	end
-	if pl:Health() <= 0 then
-		pl:Kill()
+		pl:TakeDamageInfo( dmg )
 	end
 end

@@ -4,11 +4,13 @@ SWEP.Contact		= ""
 SWEP.Purpose		= ""
 SWEP.Instructions	= "Pwnage on any point you choose."
 
-SWEP.Spawnable = true
+SWEP.Spawnable = false
 SWEP.AdminSpawnable = true
 
 SWEP.ViewModel = "models/weapons/v_pistol.mdl"
 SWEP.WorldModel = "models/weapons/v_pistol.mdl"
+
+SWEP.Category				= "SA Sweps"
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
