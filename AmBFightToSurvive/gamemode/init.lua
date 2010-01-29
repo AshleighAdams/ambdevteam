@@ -2,8 +2,6 @@
 GAMEMODE = GAMEMODE or { }
 
 
-local lastdamage = lastdamage or {}
-local healthregentime = 8  // in seconds before you regen health
 
 Teams = Teams or {}
 
@@ -18,25 +16,25 @@ include( 'shared.lua' )
 include( 'player.lua' )
 
 function SendTeamInfo(pl)
-	for i=1, #Teams do
+	for i,Team in pairs( Teams ) do
 		umsg.Start("teamstats", pl)
 			umsg.Long( i )
-			umsg.String( Teams[i].Name )
-			umsg.Vector( Teams[i].Color )
-			umsg.Entity( Teams[i].Owner )
+			umsg.String( Team.Name )
+			umsg.Vector( Team.Color )
+			umsg.Entity( Team.Owner )
 		umsg.End()
 	end
 end
 
 function SendAllTeamInfo()
-	for i=1, #Teams do
+	for i,Team in pairs( Teams ) do
 		local rp = RecipientFilter()
 		rp:AddAllPlayers()
 		umsg.Start("teamstats", rp)
 			umsg.Long( i )
-			umsg.String( Teams[i].Name )
-			umsg.Vector( Teams[i].Color )
-			umsg.Entity( Teams[i].Owner )
+			umsg.String( Team.Name )
+			umsg.Vector( Team.Color )
+			umsg.Entity( Team.Owner )
 		umsg.End()
 	end
 end
@@ -136,16 +134,9 @@ end
 
 
 function GM:PlayerLoadout( pl )
-
-	// Remove any old ammo
 	pl:RemoveAllAmmo()
-
 	if ( server_settings.Bool( "sbox_weapons", true ) ) then
-	
 	/*
-
-		
-		
 		pl:Give( "weapon_crowbar" )
 		pl:Give( "weapon_pistol" )
 		pl:Give( "weapon_smg1" )
@@ -160,9 +151,7 @@ function GM:PlayerLoadout( pl )
 		// I don't want to add too many weapons to the first
 		// row because that's where the gravgun is.
 		*/
-		
 
-		
 		pl:GiveAmmo( 256,	"Pistol", 		true )
 		pl:GiveAmmo( 256,	"SMG1", 		true )
 		pl:GiveAmmo( 2,		"grenade", 		true )
@@ -175,7 +164,7 @@ function GM:PlayerLoadout( pl )
 		local w1, w2, w3 = pl.w1, pl.w2, pl.w3
 		if w1 == nil || w2==nil || w3==nil then
 			pl:Give( "weapon_ar2" )
-			pl:Give( "weapon_grenade" )
+			pl:Give( "weapon_frag" )
 			pl:Give( "weapon_shotgun" )
 		else
 			pl:Give( w1 )
@@ -197,18 +186,6 @@ function GM:PlayerLoadout( pl )
 		pl:SelectWeapon( cl_defaultweapon ) 
 	end
 
-end
-
-
-function GM:PlayerShouldTakeDamage( victim, pl )
-	if !pl:IsValid() || pl == nil then return true end
-	if !pl:IsPlayer() then return end
-	lastdamage[pl:SteamID()] = CurTime()
-	if( pl:Team() != 1 && pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then
-		return false -- do not damage the player
-	end
- 
-	return true -- damage the player
 end
 
 /*---------------------------------------------------------
@@ -234,30 +211,6 @@ end
 
 
 
-function GM:GetFallDamage( ply, vel )
-	if GetConVarNumber("mp_falldamage") == 0 then
-		if math.Rand(1,20) == 1 and vel > 999 then
-			return ply:Health() - 1
-		end
-		return (vel-200) / 8
-	end
-end
-
-
-function GM.HealthRegen()
-	for _,ply in pairs( player.GetAll() ) do
-		local lastdmg = lastdamage[ply:SteamID()] or 0
-		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
-			if ply:Health() > 20 then
-				local hp = ply:Health()
-				ply:SetHealth( math.Clamp( hp + 1, 0, ply:GetMaxHealth() ) )
-			end
-		end
-	end
-end
-timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
-
-
 concommand.Add("yap", function() PrintTable() end)
 
 
@@ -270,3 +223,10 @@ function SetWeapons( pl, cmd, args )
 	pl.w3 = weps[3]
 end
 concommand.Add("sv_cl_setw", SetWeapons)
+
+function GM:ShouldCollide( Ent1, Ent2 )
+	if(Ent1:IsPlayer() && Ent2:IsPlayer()) then
+		return Ent1:Team() != Ent2:Team()
+	end
+	return true
+end

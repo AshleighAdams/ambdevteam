@@ -12,7 +12,7 @@ for _, v in pairs ( ents.FindByClass( "npc_*" ) ) do --For all NPC's...
 end
 ----------
 
-Get ScaleDamageHook working again!
+
 Create a teams system with team management (Similar to GG Stranded). Porgress: Team management & GUI left
 Buy weapons system.
 Quota for props system (Rather than a prop count).
@@ -27,6 +27,7 @@ Killable inside pod.
 
 DONE:
 
+Get ScaleDamageHook working again!
 language.Add()'s e.g. "Slipt And Fell"
 Slow player down when fell from height.
 Add classes to spawn with.
