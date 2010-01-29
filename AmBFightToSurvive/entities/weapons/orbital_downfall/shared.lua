@@ -82,7 +82,9 @@ function SWEP:StartMark(Trace)
 	if Trace.Hit and Trace.HitWorld then
 		local weap = self.Weapon
 		weap:EmitSound(StartMarkSound)
-		local marker = self:CreateMarker(Trace.HitPos + Vector(0, 0, 100))
+		if SERVER then
+			local marker = self:CreateMarker(Trace.HitPos + Vector(0, 0, 100))
+		end
 		return true
 	end
 	return false
