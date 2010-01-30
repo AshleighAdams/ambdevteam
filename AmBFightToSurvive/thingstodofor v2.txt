@@ -1,0 +1,45 @@
+Develop API for the resources
+Gain Resources
+	Point to capture
+		Resources droped - special things only and big refinery has inbuilt store
+			Take resources back to base
+				Refined
+			Crystals parachuted
+	Delay in drop so cant be used to escape fights
+	Delay in props spawning
+		Constructed with progress cam3d2d cam
+			Hold E to construct
+			Bigger prop = longer to construct
+		Deconstruct to move with physgun
+			Tools only on unconstructed props
+	10 Second delay on pasting
+Way to display resources / buy items
+	Box displaying team infomation + others
+	Remove weapons and entitys tabs
+Use Resources
+Store
+	--F4 to open
+	Sell resources for money
+	Standard pack - pistol smg crowbar
+	bigger packs
+	other teams can steal
+	jeep = 150reps fragile
+	jeep /w guns 700reps armorued slower
+Currency 
+	ResP - Resource Points
+		unrefined resources + refinery = resps
+		resps = supplies, props and shit
+		big prop = 100 resps
+		1 crystal gives
+		200 resps per min
+		Wire components - 2 Resps
+			//More ops = more resps
+		Guns 250 - 500 reps per gun
+		Orb downfall 20resps 1 seintific
+		Health pack 200 reps
+	Sientific Credit
+		10000 Resps
+Damage system
+	health determind by size and mass
+	"Metal create" has 2000-4000 hp
+	Wire & small stuff 100hp

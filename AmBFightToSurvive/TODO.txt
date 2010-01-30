@@ -9,6 +9,8 @@ Quota for props system (Rather than a prop count).
 	OR
 	Resource capture limit to decide how many props
 	Trade resources in for money
+	Resource furnace to make recorces, cache to store them.
+		Other teams can steal recources
 Help screen.
 Killable inside pod.
 
