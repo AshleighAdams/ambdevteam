@@ -147,11 +147,8 @@ function PlaceRefinery(Quality)
 	-- Create refinery on best score
 	if best.point ~= nil then
 		local point = best.point
-		local ref = ents.Create("prop_physics")
-		table.insert(Refineries, ref)
+		local ref = ents.Create("refinery")
 		ref:SetPos(point)
-		ref:SetModel("models/props_canal/bridge_pillar02.mdl")
 		ref:Spawn()
-		ref:Activate()
 	end
 end
