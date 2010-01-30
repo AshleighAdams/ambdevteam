@@ -30,6 +30,7 @@ function SWEP:Initialize()
 			self:SetWeaponHoldType("melee");
 	end
 	self.ResourcesPresent = 200
+	local trail = util.SpriteTrail(self.Weapon, 0, Color(255,0,255), false, 15, 1, 4, 1/(15+1)*0.5, "trails/plasma.vmt")
 end
 
 /*---------------------------------------------------------
@@ -70,7 +71,7 @@ function SWEP:SecondaryAttack()
 		local owner = self.Owner
 		self.Owner:DropWeapon( self.Weapon )
 		local phys = self.Weapon:GetPhysicsObject()  
-		phys:SetVelocity( owner:GetAimVector() * 500 )
+		phys:SetVelocity( owner:GetAimVector() * 2000 )
 	end
 end
 /*---------------------------------------------------------

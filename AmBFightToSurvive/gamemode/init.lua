@@ -62,7 +62,7 @@ end
 function GM:PlayerAuthed( pl, SteamID, UniqueID )
 	SendTeamInfo(pl)
 	if pl == player.GetByID(1) then -- were the first player in! spawn this shit.
-		PlaceRefineries(1)
+		//PlaceRefineries(1)
 	end
 	pl:SetTeam(1)
 end
