@@ -10,7 +10,10 @@ AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
+AddCSLuaFile( "cl_damageoverlay.lua" )
+
 resource.AddFile( "materials/amb/scoreboard.vmt" )
+resource.AddFile( "materials/amb/damageoverlay.vmt" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
@@ -108,10 +111,7 @@ function IsLeader( pl )
 	return false
 end
 
-/*---------------------------------------------------------
-   Name: gamemode:PlayerSpawn( )
-   Desc: Called when a player spawns
----------------------------------------------------------*/
+
 function GM:PlayerSpawn( pl )
 
 	if( pl:Team() ==1001 ) then
@@ -124,12 +124,6 @@ function GM:PlayerSpawn( pl )
     pl:SetWalkSpeed( 250 )  
 	pl:SetRunSpeed( 400 ) 
  
-
-	//self.BaseClass.PlayerSpawn( self, pl )
-	
-	// Set the player's speed
-	//GAMEMODE:SetPlayerSpeed( pl, 250, 400 )
-
 end
 
 
