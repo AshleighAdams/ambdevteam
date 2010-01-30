@@ -17,8 +17,6 @@ function ENT:Initialize()
 	
 	self.Team = 0
 	self.CapStatus = { } -- Teams capture status in seconds
-	
-	self.WarningSound = CreateSound(ent, "ambient/alarms/siren.wav")
 end
 
 -----------------------------------------
@@ -85,13 +83,15 @@ function ENT:Think()
 	
 	-- Sounds for capping
 	if capstatus > 0.0 then
-		if not self.WarningSound:IsPlaying() then
+		if not self.WarningSound then
+			self.WarningSound = CreateSound(ent, "ambient/alarms/siren.wav")
 			self.WarningSound:Play()
 		end
 		self.WarningSound:ChangePitch(math.Clamp((capstatus / CaptureNeed) * 255, 0, 255))
 	else
-		if self.WarningSound:IsPlaying() then
+		if self.WarningSound then
 			self.WarningSound:Stop()
+			self.WarningSound = nil
 		end
 	end
 
