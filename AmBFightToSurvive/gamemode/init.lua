@@ -53,6 +53,7 @@ function GM:Initialize()
 	Teams[Index].Password = ""
 	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
 	team.SetUp( Index, Teams[Index].Name, Col )
+	ResInit( Index )
 end
 
 function GM:PlayerAuthed( pl, SteamID, UniqueID )
@@ -80,6 +81,7 @@ function MakeTeam( pl, cmd, args )
 		b = args[5] or 100
 		pl:SetTeam( SetUpTeam( name, pass, r,g,b, pl ) )
 		SendAllTeamInfo()
+		ResInit( pl:Team() )
 	end
 
 end
@@ -100,7 +102,6 @@ function SetUpTeam( name, password, r,g,b, owner )
 	
 	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
 	team.SetUp( Index, Teams[Index].Name, Col )
-	ResInit( Index ) //hook.Call( "ResInitTeam", Index )
 	return GAMEMODE.NumTeams
 end
 
