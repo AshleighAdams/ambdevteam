@@ -109,10 +109,10 @@ function PlaceRefinery(Quality)
 		flatscore = math.Clamp(flatscore / #traceheights, 0.0, 100.0)
 		local actualpoint = Vector(point.x, point.y, averageheight)
 		
-		-- Initialize water score, which is 500 when the
+		-- Initialize water score, which is 100 when the
 		-- point is on ground or 0 when its on water
-		local waterscore = 500
-		if util.PointContents(actualpoint - Vector(0, 0, 64)) == CONTENTS_WATER then
+		local waterscore = 100
+		if util.PointContents(actualpoint + Vector(0, 0, 64)) == CONTENTS_WATER then
 			waterscore = 0
 		end
 		
@@ -137,8 +137,9 @@ function PlaceRefinery(Quality)
 		crowdscore = crowdscore / refineryradius * 100.0
 		
 		-- Total score and submit if highest and tweaks
-		crowdscore = crowdscore * 10
+		crowdscore = crowdscore * 5
 		flatscore = flatscore * 5
+		waterscore = waterscore * 10
 		
 		local score = flatscore + waterscore + edgescore + crowdscore
 		if score > best.score then
