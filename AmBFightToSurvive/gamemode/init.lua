@@ -17,6 +17,7 @@ resource.AddFile( "materials/amb/damageoverlay.vmt" )
 
 include( 'shared.lua' )
 include( 'player.lua' )
+include( 'recource_systems.lua' )
 
 function SendTeamInfo(pl)
 	for i,Team in pairs( Teams ) do
