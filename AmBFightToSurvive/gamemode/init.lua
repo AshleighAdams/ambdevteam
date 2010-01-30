@@ -57,6 +57,7 @@ function GM:Initialize()
 	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
 	team.SetUp( Index, Teams[Index].Name, Col )
 	ResInit( Index )
+	PlaceRefineries(1)
 end
 
 function GM:PlayerAuthed( pl, SteamID, UniqueID )
@@ -85,6 +86,7 @@ function MakeTeam( pl, cmd, args )
 		pl:SetTeam( SetUpTeam( name, pass, r,g,b, pl ) )
 		SendAllTeamInfo()
 		ResInit( pl:Team() )
+		PlaceRefineries(1)
 	end
 
 end
