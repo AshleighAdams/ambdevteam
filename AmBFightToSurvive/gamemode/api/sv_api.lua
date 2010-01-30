@@ -1,38 +1,46 @@
-TeamRes = TeamRes or {}
+TeamsRes = TeamsRes or {}
 
-function Init( t )
-	TeamRes[t] = {}
-	TeamRes[t].ResP = 500
-	TeamRes[t].SciPoints = 0
+function ResInit( t )
+	TeamsRes[t] = {}
+	TeamsRes[t].ResP = 500
+	TeamsRes[t].SciPoints = 0
 	UpdateTeamInfo()
-	hook.Call( "TeamSetUp", t )
 end
+//hook.Add( "ResInitTeam", "f2s.Res.InitTeam", Init )
 
 function UpdateTeamInfo( pl )
+	//TeamRes = TeamsRes[t]
 
 end
 
 function GetResP( t )
-
+	return TeamsRes[t].ResP or 0
 end
 
-function SetResP( t )
-
+function SetResP( t, ammount )
+	TeamsRes[t].ResP = ammount
 end
 
 function GiveResP( t, ammount )
-
+	SetResP( t, GetResP(t) + ammount )
 end
 
 function TakeResP( t, ammount )
-
+	SetResP( t, GetResP(t) - ammount )
 end
 
 function CreateResource( pos )
 
 end
 
-function CreateResourceDrop( pos, team )
-	hook.Call( "ResourceCaptured", team )
+function CreateResourceDrop( pos, t )
+	hook.Call( "ResourceCaptured", t )
 end
 
+function PayDay()
+	for teamid,Team in pairs( Teams ) do
+		if teamid == 1 then continue end
+		GiveResP( teamid, 200 )
+	end
+end
+timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay )
