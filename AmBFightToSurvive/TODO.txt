@@ -1,26 +1,15 @@
 TODO:
 
-----------
-local dmginfo = DamageInfo()
-dmginfo:SetDamage( 50 ) --50 damage
-dmginfo:SetDamageType( DMG_BULLET ) --Bullet damage
-dmginfo:SetAttacker( player.GetAll()[1] ) --First player found gets credit
-dmginfo:SetDamageForce( Vector( 0, 0, 1000 ) ) --Launch upwards
- 
-for _, v in pairs ( ents.FindByClass( "npc_*" ) ) do --For all NPC's...
-    v:TakeDamageInfo( dmginfo ) --Take damage!
-end
-----------
-
-
 Create a teams system with team management (Similar to GG Stranded). Porgress: Team management & GUI left
 Buy weapons system.
 Quota for props system (Rather than a prop count).
 	Unfrozen props cost more.
 	Bigger props cost more. -- maybe not
 	Parented props cost nothing.
+	OR
+	Resource capture limit to decide how many props
+	Trade resources in for money
 Help screen.
-	Last attacker gets the kill.
 Killable inside pod.
 
 DONE:
