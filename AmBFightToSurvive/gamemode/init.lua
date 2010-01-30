@@ -11,6 +11,8 @@ AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
 AddCSLuaFile( "cl_damageoverlay.lua" )
+AddCSLuaFile( "api/cl_api.lua" )
+AddCSLuaFile( "cl_recource_systems.lua" )
 
 resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )

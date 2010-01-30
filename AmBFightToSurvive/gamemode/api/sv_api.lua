@@ -3,15 +3,27 @@ TeamsRes = TeamsRes or {}
 function ResInit( t )
 	TeamsRes[t] = {}
 	TeamsRes[t].ResP = 500
-	TeamsRes[t].SciPoints = 0
-	UpdateTeamInfo()
+	TeamsRes[t].SciP = 0
+	UpdateClients()
 end
 //hook.Add( "ResInitTeam", "f2s.Res.InitTeam", Init )
 
-function UpdateTeamInfo( pl )
-	//TeamRes = TeamsRes[t]
-
+function UpdateClients( pl )
+	if pl then
+		local rp = pl
+	else
+		local rp = RecipientFilter()
+		rp:AddAllPlayers()
+	end
+	for i,TeamRes in pairs( TeamsRes ) do
+		umsg.Start( "resources_update", rp )
+			umsg.Long( i )
+			umsg.Long( TeamRes.ResP or 0 )
+			umsg.Long( TeamRes.SciP or 0 )
+		umsg.End()
+	end
 end
+timer.Create( "f2s.Res.UpdateClients", 1, 0, UpdateClients )
 
 function GetResP( t )
 	if TeamsRes[t] == nil then return 0 end

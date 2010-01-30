@@ -3,6 +3,7 @@ include( 'shared.lua' )
 include( 'cl_gui.lua' )
 include( 'cl_scoreboard.lua' )
 include( 'cl_damageoverlay.lua' )
+include( 'cl_recource_systems.lua' )
 
 language.Add( "worldspawn", "Slipt And Fell" )
 language.Add( "prop_physics", "Zooming Prop" )
