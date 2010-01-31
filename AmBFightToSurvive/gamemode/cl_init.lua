@@ -39,3 +39,18 @@ function UpdateTeamStats( um )
 	team.SetUp( Index, Name, RealCol )
 end
 usermessage.Hook("teamstats", UpdateTeamStats)
+
+function GM:GetSENTMenu()
+	local ply = LocalPlayer()
+	if !ply:IsAdmin() then return {} end
+end
+
+function GM:GetSWEPMenu()
+	local ply = LocalPlayer()
+	if !ply:IsAdmin() then return {} end
+end
+
+function GM:GetVehicles()
+	local ply = LocalPlayer()
+	if !ply:IsAdmin() then return {} end
+end

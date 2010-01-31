@@ -43,12 +43,19 @@ function TakeResP( t, ammount )
 	SetResP( t, GetResP(t) - ammount )
 end
 
-function CreateResource( pos )
-
-end
-
-function CreateResourceDrop( pos, t )
-	//hook.Call( "ResourceCaptured", t )
+function GetEntCost( ent )
+	if ent != nil then
+		sizevec = ent:OBBMaxs() - ent:OBBMins()
+		size = (sizevec.x * sizevec.x + sizevec.y * sizevec.y + sizevec.z * sizevec.z) ^ 0.5
+		phys = ent:GetPhysicsObject()
+		if phys then
+			mass = phys:GetMass()
+		else
+			mass = 20
+		end
+		cost = math.ceil( (size/10) + (mass/10) )
+		return cost
+	end
 end
 
 function PayDay()
