@@ -86,6 +86,20 @@ function SWEP:HasResources(ammount)
 	return ammount < self.ResourcesPresent
 end
 
-function SWEP:TakeResources(ammount)
-	
+-----------------------------------------
+-- Tries taking an amount of resources
+-- and returns the amount taken.
+-----------------------------------------
+function SWEP:TakeResources(Amount)
+	local resamount = self.ResourcesPresent
+	if resamount < Amount then
+		if self.RefineSound ~= nil then
+			self.RefineSound:Stop()
+		end
+		self.Weapon:Remove()
+		return resamount
+	else
+		self.ResourcesPresent = resamount - Amount
+		return Amount
+	end
 end
