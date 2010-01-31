@@ -4,7 +4,7 @@
 SWEP.Author			= "C0BRA"
 SWEP.Contact		= ""
 SWEP.Purpose		= ""
-SWEP.Instructions	= "Place a Tactical Insertion to decide you're next spawn point"
+SWEP.Instructions	= "Bring to a refinery to get this harvested and turned into ResPs"
 SWEP.DrawAmmo			= true
 
 SWEP.Spawnable			= false
@@ -25,25 +25,11 @@ SWEP.Secondary.Ammo			= "none"
 
 local ShootSound = Sound( "" )
 
-function SWEP:Initialize()
-	if( SERVER ) then
-			self:SetWeaponHoldType("melee");
-	end
-	self.ResourcesPresent = 200
-	local trail = util.SpriteTrail(self.Weapon, 0, Color(255,0,255), false, 15, 1, 4, 1/(15+1)*0.5, "trails/plasma.vmt")
-end
 
 /*---------------------------------------------------------
 	Reload does nothing
 ---------------------------------------------------------*/
 function SWEP:Reload()
-end
-
-function SWEP:Think()
-	self.Weapon:SetClip1( self.ResourcesPresent )
-	if self.ResourcesPresent < 0 then
-	self.Weapon:Fire("kill", "1")
-	end
 end
 
 
@@ -74,6 +60,7 @@ function SWEP:SecondaryAttack()
 		phys:SetVelocity( owner:GetAimVector() * 2000 )
 	end
 end
+
 /*---------------------------------------------------------
    Name: ShouldDropOnDie
    Desc: Should this weapon be dropped when its owner dies?
@@ -84,22 +71,4 @@ end
 
 function SWEP:HasResources(ammount)
 	return ammount < self.ResourcesPresent
-end
-
------------------------------------------
--- Tries taking an amount of resources
--- and returns the amount taken.
------------------------------------------
-function SWEP:TakeResources(Amount)
-	local resamount = self.ResourcesPresent
-	if resamount < Amount then
-		if self.RefineSound ~= nil then
-			self.RefineSound:Stop()
-		end
-		self.Weapon:Remove()
-		return resamount
-	else
-		self.ResourcesPresent = resamount - Amount
-		return Amount
-	end
 end

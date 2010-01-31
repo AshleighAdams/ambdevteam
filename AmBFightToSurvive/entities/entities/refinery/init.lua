@@ -33,6 +33,19 @@ function ENT:OnRemove()
 end
 
 -----------------------------------------
+-- Gets if the specified crystal can be
+-- refined from this refinery.
+-----------------------------------------
+function ENT:CanRefine(Crystal)
+	if Crystal:IsValid() then
+		if (Crystal:GetPos() - self:GetPos()):Length() < CaptureRadius then
+			return true
+		end
+	end
+	return false
+end
+
+-----------------------------------------
 ---- Think
 -----------------------------------------
 function ENT:Think()
@@ -47,10 +60,9 @@ function ENT:Think()
 	local capforce = { }
 	local near = ents.FindInSphere(ent:GetPos(), CaptureRadius)
 	for i, e in pairs(near) do
-	
 		-- Crystal nearby
 		if e:GetClass() == "resource_crystal" and self.Team > 1 then
-			if e.HarvestingRefinery == nil then
+			if e.Refinery == nil and self:CanRefine(e) then
 				e.Refinery = self
 				e:BeginRefine(self)
 				table.insert(self.Refining, e)
@@ -59,12 +71,14 @@ function ENT:Think()
 		
 		-- Players can capture
 		if e:IsPlayer() then
-			local team = e:Team()
-			if team == self.Team then
-				capblock = true
-			end
-			if team > 1 then
-				table.insert(capforce, e)
+			if self:Visible(e) and e:Alive() then
+				local team = e:Team()
+				if team == self.Team then
+					capblock = true
+				end
+				if team > 1 then
+					table.insert(capforce, e)
+				end
 			end
 		end
 	end
@@ -72,7 +86,7 @@ function ENT:Think()
 	-- Refining
 	local removeresources = { }
 	for i, r in pairs(self.Refining) do
-		if not r:IsValid() or (r:GetPos() - ent:GetPos()):Length() > CaptureRadius or self.Team <= 1 then
+		if not self:CanRefine(r) or self.Team <= 1 then
 			if r:IsValid() then
 				r:EndRefine()
 				r.Refinery = nil
@@ -89,10 +103,8 @@ function ENT:Think()
 	-- Add capture force
 	if not capblock then
 		for i, p in pairs(capforce) do
-			if self:Visible(p) and p:Alive() then
-				local team = p:Team()
-				self.CapStatus[team] = (self.CapStatus[team] or 0.0) + updatetime + CaptureDissapate
-			end
+			local team = p:Team()
+			self.CapStatus[team] = (self.CapStatus[team] or 0.0) + updatetime + CaptureDissapate
 		end
 	end
 	
