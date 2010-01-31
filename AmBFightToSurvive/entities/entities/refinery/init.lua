@@ -61,7 +61,7 @@ function ENT:Think()
 	-- Add capture force
 	if not capblock then
 		for i, p in pairs(capforce) do
-			if self:Visible( p ) then
+			if self:Visible( p ) && p:Alive() then
 				local team = p:Team()
 				self.CapStatus[team] = (self.CapStatus[team] or 0.0) + updatetime + CaptureDissapate
 			end

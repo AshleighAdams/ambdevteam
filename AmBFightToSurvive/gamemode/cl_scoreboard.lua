@@ -63,5 +63,35 @@ function GM:HUDDrawScoreBoard()
 			surface.DrawText( pl:Ping() )
 		end
 	end
+	local TeamInfoHeight = 512
+	local TeamInfoWidth = 256
+	local YSpacing = 70
+	local XStart = 10
+	local XIndent = 20
+	StartY = ScrH()/2 - TeamInfoHeight/2
+	surface.SetDrawColor( 150, 150, 150, 255 )
+	surface.DrawRect(0, StartY, TeamInfoWidth, TeamInfoHeight)
 	
+	surface.SetFont( "Trebuchet24" )
+	surface.SetTextColor( 100, 100, 100, 255 )
+	surface.SetTextPos( XStart + 10, StartY + 10 ) 
+	surface.DrawText( "Team Info" )
+	
+	surface.SetFont( "bScoreboardText" ) -- ChatFont   DefaultLarge
+	for i,Team in pairs( Teams ) do
+		if i > 1 then
+			surface.SetTextColor( Team.Color )
+			local y = (StartY + ( (i-1) * YSpacing ))
+			
+			surface.SetTextPos( XStart, y ) 
+			surface.DrawText( Team.Name )
+			
+			surface.SetTextPos( XIndent, y+(Spacing) ) 
+			owner = Team.Owner:Name() or "Failers" 
+			surface.DrawText( owner )
+			
+			surface.SetTextPos( XIndent, y+(Spacing*2) ) 
+			surface.DrawText( "ResP: " .. TeamsRes[i].ResP )
+		end
+	end
 end

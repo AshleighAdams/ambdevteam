@@ -1,4 +1,4 @@
-
+Teams = Teams or {}
 include( 'shared.lua' )
 include( 'cl_gui.lua' )
 include( 'cl_scoreboard.lua' )
@@ -32,6 +32,10 @@ function UpdateTeamStats( um )
 	local Col = um:ReadVector()
 	local Owner = um:ReadEntity() -- not needed now but maybe later versions
 	RealCol = Color(Col.x, Col.y, Col.z, 255)
+	Teams[Index] = {}
+	Teams[Index].Name = Name
+	Teams[Index].Color = RealCol
+	Teams[Index].Owner = Owner
 	team.SetUp( Index, Name, RealCol )
 end
 usermessage.Hook("teamstats", UpdateTeamStats)
