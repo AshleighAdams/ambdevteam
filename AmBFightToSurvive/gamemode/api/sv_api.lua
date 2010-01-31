@@ -75,8 +75,8 @@ end
 function PayDay()
 	for teamid,Team in pairs( Teams ) do
 		if teamid != 1 then
-			GiveResP( teamid, 200 )
+			GiveResP( teamid, 100 )
 		end
 	end
 end
-timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay )
+//timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay ) -- disabled for now

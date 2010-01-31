@@ -10,8 +10,8 @@ concommand.Add( "dev_takeresp", function(pl, cmd, args)
 	TakeResP( pl:Team(), ammount )
 end)
 
-local AllowActiveTools = { "remover","material","colour" }
-local DissallowInactiveTools = { "material","colour" }
+local UnconstructedTools = { "remover","material", }
+local ConstructedTools = { "material","colour","remover" }
 
 function Construct( pl )
 	local ent = pl:GetEyeTrace().Entity
@@ -60,10 +60,18 @@ end
 function GM:CanTool( pl, tr, toolmode )
 	if tr.HitNonWorld then
 		ent = tr.Entity
-		if ent.Constructed then -- the entity is being constructed so we only allow inactive tools
-			return !table.HasValue( DissallowInactiveTools, toolmode )
+		if ent.Constructed then -- the entity is being constructed
+			if table.HasValue( ConstructedTools, toolmode ) then
+				return true
+			else
+				return false
+			end
 		else
-			return table.HasValue( ActiveTools, toolmode )
+			if !table.HasValue( UnconstructedTools, toolmode ) then
+				return true
+			else
+				return false
+			end
 		end
 	end
 	return true
