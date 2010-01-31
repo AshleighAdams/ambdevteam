@@ -58,7 +58,7 @@ end
 -- default.
 --------------------------------------------
 function PlaceRefinery(Quality)
-	local point = FindPlace(Quality, 5, 5, 3, 1)
+	local point = FindPlace(Quality, 9, 5, 7, 1)
 	
 	-- Create refinery on best place
 	if point ~= nil then
@@ -86,7 +86,7 @@ end
 -- default.
 --------------------------------------------
 function PlaceResourceDrop(Quality)
-	local point = FindPlace(Quality, 7, 2, 4, 1)
+	local point = FindPlace(Quality, 3, 1, 2, 5)
 	
 	-- Create resource drop
 	if point ~= nil then
@@ -162,7 +162,12 @@ function FindPlace(Quality, CrowdMult, FlatMult, WaterMult, EdgeMult)
 		-- Initialize water score, which is 100 when the
 		-- point is on ground or 0 when its on water
 		local waterscore = 100
-		if util.PointContents(actualpoint + Vector(0, 0, 64)) == CONTENTS_WATER then
+		local watertrace = { }
+		watertrace.start = point
+		watertrace.endpos = actualpoint
+		watertrace.mask = -1
+		watertraceres = util.TraceLine(watertrace)
+		if watertraceres.Hit then
 			waterscore = 0
 		end
 		
