@@ -79,17 +79,22 @@ function GM:HUDDrawScoreBoard()
 	surface.DrawText( "Team Info" )
 	
 	surface.SetFont( "bScoreboardText" ) -- ChatFont   DefaultLarge
-	local NoMemberTeams = 1
+	local NoMemberTeams = 0
 	for i,Team in pairs( Teams ) do
-		if i > 1 then
+		if i > 0 then
 			surface.SetTextColor( Team.Color )
 			local y = (StartY + ( (i-NoMemberTeams) * YSpacing ))
 			if TeamHasMembers( i ) then
 				surface.SetTextPos( XStart, y ) 
 				surface.DrawText( Team.Name )
 				
+				if Team.Owner then
+					owner = Team.Owner:Name() or "World" 
+				else
+					owner = "Failers" 
+				end
+				
 				surface.SetTextPos( XIndent, y+(Spacing) ) 
-				owner = Team.Owner:Name() or "Failers" 
 				surface.DrawText( owner )
 				
 				surface.SetTextPos( XIndent, y+(Spacing*2) ) 
