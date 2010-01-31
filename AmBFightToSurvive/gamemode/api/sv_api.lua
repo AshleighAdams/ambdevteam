@@ -43,6 +43,20 @@ function TakeResP( t, ammount )
 	SetResP( t, GetResP(t) - ammount )
 end
 
+function VoidTakeResP( t, ammount )
+	if GetResP(t) < ammount then
+		oldAmmount = GetResP(t)
+		SetResP( t, math.max(0,oldAmmount - ammount) )
+		local newAmmount = GetResP(t)
+		local taken = oldAmmount - newAmmount
+		TakeResP( t, taken )
+		return taken
+	else
+		TakeResP( t, ammount )
+		return ammount
+	end
+end
+
 function GetEntCost( ent )
 	if ent != nil then
 		sizevec = ent:OBBMaxs() - ent:OBBMins()
