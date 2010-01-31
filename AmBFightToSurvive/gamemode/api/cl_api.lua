@@ -5,6 +5,13 @@ function GetResP( t )
 	return TeamsRes[t].ResP or 0
 end
 
+function TeamHasMembers( t )
+	for v,ply in pairs( player.GetAll() ) do
+		if ply:Team() == t then return true end
+	end
+	return false
+end
+
 function UpdateResources( um )
 	local Index = um:ReadLong() or 0
 	local ResP = um:ReadLong() or 0
