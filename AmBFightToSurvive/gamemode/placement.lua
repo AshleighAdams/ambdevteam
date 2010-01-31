@@ -58,6 +58,56 @@ end
 -- default.
 --------------------------------------------
 function PlaceRefinery(Quality)
+	local point = FindPlace(Quality, 5, 5, 3, 1)
+	
+	-- Create refinery on best place
+	if point ~= nil then
+		local ref = ents.Create("refinery")
+		ref:SetPos(point)
+		ref:Spawn()
+	end
+end
+
+--------------------------------------------
+-- Places an amount of resource drops along
+-- the map.
+--------------------------------------------
+function PlaceResourceDrops(Amount)
+	for i = 1, Amount do
+		PlaceResourceDrop(50)
+	end
+end
+
+--------------------------------------------
+-- Places a resource drop with the quality
+-- specified. The higher quality is, the
+-- better the placement of the resource drop
+-- is. Quality should be around 50 by
+-- default.
+--------------------------------------------
+function PlaceResourceDrop(Quality)
+	local point = FindPlace(Quality, 7, 2, 4, 1)
+	
+	-- Create resource drop
+	if point ~= nil then
+		point = Vector(point.x, point.y, MapMetrics.Height - 200)
+		local drop = ents.Create("resource_drop")
+		drop:SetPos(point)
+		drop:Spawn()
+	end
+end
+
+--------------------------------------------
+-- Finds a place on the map that by several
+-- scores. CrowdMult referes to how much the
+-- point should be kept away from refineries.
+-- Flat mult is about how flat the point 
+-- must be. WaterMult is about how much
+-- the point should be out of water and
+-- EdgeMult is about how far from the edge
+-- of the map the point should be.
+--------------------------------------------
+function FindPlace(Quality, CrowdMult, FlatMult, WaterMult, EdgeMult)
 	local qual = Quality or 50
 	
 	-- Create candidate points, which can
@@ -137,9 +187,10 @@ function PlaceRefinery(Quality)
 		crowdscore = crowdscore / refineryradius * 100.0
 		
 		-- Total score and submit if highest and tweaks
-		crowdscore = crowdscore * 5
-		flatscore = flatscore * 5
-		waterscore = waterscore * 10
+		crowdscore = crowdscore * (CrowdMult or 1)
+		flatscore = flatscore * (FlatMult or 1)
+		waterscore = waterscore * (WaterMult or 1)
+		edgescore = edgescore * (EdgeMult or 1)
 		
 		local score = flatscore + waterscore + edgescore + crowdscore
 		if score > best.score then
@@ -147,12 +198,5 @@ function PlaceRefinery(Quality)
 			best.score = score
 		end
 	end
-	
-	-- Create refinery on best score
-	if best.point ~= nil then
-		local point = best.point
-		local ref = ents.Create("refinery")
-		ref:SetPos(point)
-		ref:Spawn()
-	end
+	return best.point
 end
