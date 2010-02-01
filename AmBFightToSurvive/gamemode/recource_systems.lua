@@ -113,6 +113,15 @@ function CheckForNewProps()
 end
 timer.Create( "f2s.NewPropsCheck", 5, 0, CheckForNewProps )
 
-function GM:PlayerSpawnedVehicle( pl, veh )
+local f2s_crystallimit = CreateConVar( "f2s_crystallimit", 2, {FCVAR_ARCHIVE,FCVAR_NOTIFY} )
+function CreateCrystals()
+	crystals_wep = ents.FindByClass("resource_crystal")
+	crystals_box = ents.FindByClass("resource_drop")
+	Crystals = #crystals_wep + #crystals_box
+	PlaceResourceDrops( f2s_crystallimit:GetInt() - Crystals )
+end
+timer.Create( "f2s.Resources.CreateCrystals", 120*2, 0, CreateCrystals ) -- 4 mins
 
+function GM:PlayerSpawnedVehicle( pl, veh )
+	veh:SetPos( veh:GetPos() + Vector(0,0,2000) )
 end
