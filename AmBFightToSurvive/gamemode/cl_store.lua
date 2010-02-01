@@ -4,6 +4,8 @@ local StoreKey = KEY_F4
 
 include("shared_store.lua")
 
+local AutoItems = { }
+
 local StoreFrame = nil
 local KeyDown = false
 --------------------------------------------
@@ -23,16 +25,35 @@ function OpenStore()
 	storeframe:ShowCloseButton(false)
 	local titlesize = 24
 	
-	-- Purchase button on the left
+	-- Purchase on the left
 	local purchasebutton = vgui.Create("DButton")
 	local buttondown = 500
 	purchasebutton:SetParent(storeframe)
 	purchasebutton:SetText("Purchase")
 	purchasebutton:SetPos(StoreWidth / 3.0 * 2.0, titlesize + buttondown)
 	purchasebutton:SetSize(StoreWidth / 3.0, StoreHeight - buttondown - titlesize)
+	local checkauto = vgui.Create("DCheckBoxLabel")
+	checkauto:SetParent(storeframe)
+	checkauto:SetText("Automatically buy on spawn")
+	checkauto:SetValue(0)
+	checkauto:SetPos(StoreWidth / 3.0 * 2.0, titlesize + buttondown - 20)
+	checkauto:SetSize(StoreWidth / 3.0, 20)
 	function set_item(Item)
 		purchasebutton.DoClick = function()
 			Item:Purchase()
+		end
+		checkauto.OnChange = function() end
+		if AutoItems[Item] then
+			checkauto:SetValue(1)
+		else
+			checkauto:SetValue(0)
+		end
+		checkauto.OnChange = function()
+			if checkauto:GetChecked(true) then
+				AutoItems[Item] = true
+			else
+				AutoItems[Item] = nil
+			end
 		end
 	end
 	
@@ -101,3 +122,15 @@ local function StoreThink()
 	end
 end
 hook.Add("Think", "StoreThink", StoreThink)
+
+--------------------------------------------
+-- Autobuy stuff
+--------------------------------------------
+local function StoreAutoBuy()
+	for item, buy in pairs(AutoItems) do
+		if buy then
+			item:Purchase(true)
+		end
+	end
+end
+usermessage.Hook("store_autobuy", StoreAutoBuy)

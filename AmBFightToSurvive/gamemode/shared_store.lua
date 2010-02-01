@@ -132,19 +132,22 @@ end
 
 --------------------------------------------
 -- Buys the item with the current player.
+-- Specifiy autobuy if this was bought
+-- automatically.
 --------------------------------------------
-function MetaItem:Purchase()
+function MetaItem:Purchase(AutoBuy)
 	if CLIENT then
 		-- Send message to server
-		datastream.StreamToServer("Item_Purchase", {self[1]})
+		datastream.StreamToServer("Item_Purchase", {self[1], AutoBuy or false})
 	end
 end
 if SERVER then
 	local function ReceivePurchase(Player, Handler, ID, Encoded, Decoded)
 		local itemid = Decoded[1]
+		local autobuy = Decoded[2]
 		local item = Items[itemid]
 		if item.OnPurchase then
-			item.OnPurchase(item, Player)
+			item.OnPurchase(item, Player, autobuy)
 		end
 	end
 	datastream.Hook("Item_Purchase", ReceivePurchase)

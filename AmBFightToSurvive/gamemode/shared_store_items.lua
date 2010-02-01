@@ -7,7 +7,7 @@ local BuyRadius = 3000
 -- the action will undo the purchase.
 --------------------------------------------
 function SetItemAction(Item, Action)
-	Item.OnPurchase = function(Item, Player)
+	Item.OnPurchase = function(Item, Player, AutoBuy)
 		local team = Player:Team()
 		
 		-- Check to make sure there are no other players around.
@@ -16,7 +16,9 @@ function SetItemAction(Item, Action)
 			if e:IsPlayer() then
 				local otherteam = e:Team()
 				if otherteam > 1 and otherteam ~= team then
-					Player:ChatPrint("Enemy players too close")
+					if not AutoBuy then
+						Player:ChatPrint("Enemy players too close")
+					end
 					return
 				end
 			end
@@ -24,14 +26,18 @@ function SetItemAction(Item, Action)
 		
 		local amount = Item:GetCost()
 		if GetResP(team) < amount then
-			Player:ChatPrint("Not enough Resps")
+			if not AutoBuy then
+				Player:ChatPrint("Not enough Resps")
+			end
 		else
 			TakeResP(team, amount)
 			if Action then
 				if Action(Player) then
 					GiveResP(team, has)
 				else
-					Player:ChatPrint("Purchased: " .. Item:GetName())
+					if not AutoBuy then
+						Player:ChatPrint("Purchased: " .. Item:GetName())
+					end
 				end
 			end
 		end
