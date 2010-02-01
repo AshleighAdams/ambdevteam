@@ -25,9 +25,10 @@ function DrawBox( x, y, text, isgood )
 	draw.WordBox( 8, x, y, text,"Default", colbg, colfg )
 end
 
-function GM:HUDPaintBackground()
+function f2sHUDPaintBackground()
 	local pl = LocalPlayer()
 	local count = 0
+	local good = false
 	-- resource drops
 	for k,v in pairs( ents.FindByClass("resource_drop") ) do
 		local pos = v:GetPos():ToScreen()
@@ -46,42 +47,44 @@ function GM:HUDPaintBackground()
 		if ValidEntity(owner) && (pl:Team() == owner:Team()) then
 			for l,r in pairs( ents.FindByClass("refinery") ) do
 				if r.Team == pl:Team() then
+						good = true
 						refinery = r
 						if owner == pl then                            ---- were holding the refinery
 							if ValidEntity( refinery ) then
 								pl.HasCrystal = true
 								pos = refinery:GetPos():ToScreen()
 								Text = "Refine"
-								DrawBox( pos.x, pos.y, Text, true )
+								DrawBox( pos.x, pos.y, Text, good )
 							end
 						else
 							if ValidEntity( refinery ) then
 							pos = refinery:GetPos():ToScreen()
 							Text = "Escort To"
-							DrawBox( pos.x, pos.y, Text, true )
+							DrawBox( pos.x, pos.y, Text, good )
 						end
 						if !pl.HasCrystal then
 							pos = owner:GetPos():ToScreen()
 							Text = "Escort"
-							DrawBox( pos.x, pos.y, Text, true )
+							DrawBox( pos.x, pos.y, Text, good )
 						end
 					end
 				end
 			end
 			
 		elseif ValidEntity( owner ) then
+			good = false
 			pos = owner:GetPos():ToScreen()
 			Text = "Kill"
-			DrawBox( pos.x, pos.y, Text, false )
+			DrawBox( pos.x, pos.y, Text, good )
 		end
-		DrawBox( pos.x, pos.y, Text, false )
+		DrawBox( pos.x, pos.y, Text, good )
 		count = count + k
 	end
 	if count == 0 then
 		for k,r in pairs( ents.FindByClass("refinery") ) do
 			local pos = r:GetPos():ToScreen()
 			local Text = "Attack"
-			local good = false
+			good = false
 			if r.Team == pl:Team() then
 				pos = r:GetPos():ToScreen()
 				good = true
@@ -94,3 +97,4 @@ function GM:HUDPaintBackground()
 	--draw.WordBox( 8, ScrW() / 2, ScrH() / 2, "THIS IS A BOX!", "Default", Color(50,50,75,100), Color(255,255,255,255) )
 	
 end
+hook.Add( "HUDPaintBackground", "f2s.HUD.Paint", f2sHUDPaintBackground )
