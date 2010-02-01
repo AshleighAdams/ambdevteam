@@ -60,6 +60,7 @@ end
 function CanTool( pl, tr, toolmode )
 	if tr.HitNonWorld then
 		ent = tr.Entity
+		if string.find( ent:GetClass(), "resource" ) then return false end
 		owner = ent:GetNetworkedEntity("OwnerObj", false)
 		if ent.Constructed then -- the entity is constructed
 			if table.HasValue( ConstructedTools, toolmode ) || string.find(toolmode,"wire") then
@@ -82,7 +83,7 @@ end
 hook.Add( "CanTool", "f2s.CanTool", CanTool) -- DO NOT OVERRIDE THIS WITH GM:CanTool AS IT BREAKS PROP PROTECTIONS!
 
 function PhysgunPickup( pl, ent )
-	if ent.Constructed then
+	if ent.Constructed || string.find( ent:GetClass(), "resource" ) then
 		return false
 	else
 		//hook.Call( "PhysgunPickup", pl, ent )
