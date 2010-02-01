@@ -126,7 +126,7 @@ function CreateCrystals()
 	Crystals = #crystals_wep + #crystals_box
 	PlaceResourceDrops( f2s_crystallimit:GetInt() - Crystals )
 end
-timer.Create( "f2s.Resources.CreateCrystals", 120*2, 0, CreateCrystals ) -- 4 mins
+timer.Create( "f2s.Resources.CreateCrystals", 60*8, 0, CreateCrystals ) -- 8 mins
 
 function GM:PlayerSpawnedVehicle( pl, veh )
 	veh:SetPos( veh:GetPos() + Vector(0,0,2000) )
