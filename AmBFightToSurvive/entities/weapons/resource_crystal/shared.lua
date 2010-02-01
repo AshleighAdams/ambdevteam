@@ -4,7 +4,7 @@
 SWEP.Author			= "C0BRA"
 SWEP.Contact		= ""
 SWEP.Purpose		= ""
-SWEP.Instructions	= "Bring to a refinery to get this harvested and turned into ResPs"
+SWEP.Instructions	= "Bring to a refinery to get this refined and turned into ResPs"
 SWEP.DrawAmmo			= true
 
 SWEP.Spawnable			= false

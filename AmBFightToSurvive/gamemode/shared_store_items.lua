@@ -1,0 +1,161 @@
+local BuyRadius = 3000
+
+--------------------------------------------
+-- Sets the item given in a store purchase.
+-- Action should be a callback that gives
+-- the player the item. Returning true in
+-- the action will undo the purchase.
+--------------------------------------------
+function SetItemAction(Item, Action)
+	Item.OnPurchase = function(Item, Player)
+		local team = Player:Team()
+		
+		-- Check to make sure there are no other players around.
+		local near = ents.FindInSphere(Player:GetPos(), BuyRadius)
+		for i, e in pairs(near) do
+			if e:IsPlayer() then
+				local otherteam = e:Team()
+				if otherteam > 1 and otherteam ~= team then
+					Player:ChatPrint("Enemy players too close")
+					return
+				end
+			end
+		end
+		
+		local amount = Item:GetCost()
+		if GetResP(team) < amount then
+			Player:ChatPrint("Not enough Resps")
+		else
+			TakeResP(team, amount)
+			if Action then
+				if Action(Player) then
+					GiveResP(team, has)
+				else
+					Player:ChatPrint("Purchased: " .. Item:GetName())
+				end
+			end
+		end
+	end
+end
+
+--------------------------------------------
+-- Helper function to add an item.
+--------------------------------------------
+local OldAddItem = AddItem
+local function AddItem(Name, Cost, Categories, Action)
+	local item = OldAddItem(Name, Cost)
+	for k, v in pairs(Categories) do
+		AddItemToCategory(item, v)
+	end
+	SetItemAction(item, Action)
+end
+
+-- Categories
+Categories = { }
+local C = Categories
+C.WarStuffs = AddCategory("War Stuffs")
+C.Weapons = AddCategory("Weapons", C.WarStuffs)
+C.Ammo = AddCategory("Ammunition", C.WarStuffs)
+C.Supplies = AddCategory("Supplies", C.WarStuffs)
+C.Useless = AddCategory("Useless")
+C.Masochism = AddCategory("Masochism", C.Useless)
+
+-- Weapons
+AddItem("Submachine Gun", 100, {C.Weapons}, function(Player)
+		Player:Give("weapon_smg1")
+	end)
+AddItem("Crossbow", 250, {C.Weapons}, function(Player)
+		Player:Give("weapon_crossbow")
+	end)
+AddItem("Shotgun", 50, {C.Weapons}, function(Player)
+		Player:Give("weapon_shotgun")
+	end)
+AddItem("RPG Launcher", 500, {C.Weapons}, function(Player)
+		Player:Give("weapon_rpg")
+	end)
+AddItem("Pistol", 30, {C.Weapons}, function(Player)
+		Player:Give("weapon_pistol")
+	end)
+AddItem("Crowbar", 25, {C.Weapons}, function(Player)
+		Player:Give("weapon_crowbar")
+	end)
+AddItem("Frag Gernades", 75, {C.Weapons}, function(Player)
+		Player:GiveAmmo(5, "grenade")
+		Player:Give("weapon_frag")
+	end)
+AddItem("357 Magnum", 150, {C.Weapons}, function(Player)
+		Player:Give("weapon_357")
+	end)
+AddItem("Pulse Rifle", 400, {C.Weapons}, function(Player)
+		Player:Give("weapon_ar2")
+	end)
+AddItem("Stun Stick", 80, {C.Weapons}, function(Player)
+		Player:Give("weapon_stunstick")
+	end)
+
+-- Ammo
+AddItem("Submachine Gun Ammo 256 Pack", 40, {C.Ammo}, function(Player)
+		Player:GiveAmmo(256, "SMG1")
+	end)
+AddItem("Pistol Ammo 256 Pack", 30, {C.Ammo}, function(Player)
+		Player:GiveAmmo(256, "Pistol")
+	end)
+AddItem("Crossbow Bolts 32 Pack", 40, {C.Ammo}, function(Player)
+		Player:GiveAmmo(32, "XBowBolt")
+	end)
+AddItem("RPG Rounds 5 Pack", 150, {C.Ammo}, function(Player)
+		Player:GiveAmmo(5, "RPG_Round")
+	end)
+AddItem("Shotgun Ammo 64 Pack", 40, {C.Ammo}, function(Player)
+		Player:GiveAmmo(64, "Buckshot")
+	end)
+AddItem("357 Magnum Bullets 32 Pack", 60, {C.Ammo}, function(Player)
+		Player:GiveAmmo(32, "357")
+	end)
+AddItem("Pulse Rifle Energy Sphere 6 Pack", 30, {C.Ammo}, function(Player)
+		Player:GiveAmmo(6, "AR2AltFire")
+	end)
+AddItem("Pulse Rifle Bullets 100 Pack", 90, {C.Ammo}, function(Player)
+		Player:GiveAmmo(100, "AR2")
+	end)
+	
+-- Supplies
+AddItem("Full Health Kit", 100, {C.Supplies}, function(Player)
+		Player:SetHealth(Player:GetMaxHealth())
+	end)
+AddItem("Max Health +25", 100, {C.Supplies}, function(Player)
+		Player:SetMaxHealth(Player:GetMaxHealth() + 25)
+	end)
+AddItem("Full Armor", 200, {C.Supplies}, function(Player)
+		Player:SetArmor(100)
+	end)
+AddItem("Mega Legs (Running)", 200, {C.Supplies}, function(Player)
+		Player:SetRunSpeed(1000)
+		Player:SprintEnable()
+	end)
+AddItem("Mega Legs (Jumping)", 200, {C.Supplies}, function(Player)
+		Player:SetJumpPower(500)
+	end)
+AddItem("Grav Buster", 400, {C.Supplies}, function(Player)
+		Player:SetGravity(0.5)
+	end)
+	
+-- Useless
+AddItem("100 ResPs", 200, {C.Useless}, function(Player)
+		GiveResP(Player:Team(), 100)
+	end)
+AddItem("UBER FUCKIN LEGS", 600, {C.Useless}, function(Player)
+		Player:SetJumpPower(4000)
+		Player:SetGravity(3)
+	end)
+AddItem("Shout out", 1000, {C.Useless}, function(Player)
+		for i, p in pairs(player.GetAll()) do
+			p:PrintMessage(HUD_PRINTCENTER, "Hay guys, " .. Player:Nick() .. " is DA BOMB")
+		end
+	end)
+AddItem("Kill Yourself", 500, {C.Masochism}, function(Player)
+		Player:Kill()
+	end)
+AddItem("Kick Yourself", 1000, {C.Masochism}, function(Player)
+		Player:Kick("Asked for it.")
+	end)

@@ -1,10 +1,11 @@
-local StoreWidth = 600
-local StoreHeight = 400
+local StoreWidth = 800
+local StoreHeight = 600
 local StoreKey = KEY_F4
 
 include("shared_store.lua")
 
 local StoreFrame = nil
+local KeyDown = false
 --------------------------------------------
 -- Opens the store, making it available for
 -- the player.
@@ -24,7 +25,7 @@ function OpenStore()
 	
 	-- Purchase button on the left
 	local purchasebutton = vgui.Create("DButton")
-	local buttondown = 300
+	local buttondown = 500
 	purchasebutton:SetParent(storeframe)
 	purchasebutton:SetText("Purchase")
 	purchasebutton:SetPos(StoreWidth / 3.0 * 2.0, titlesize + buttondown)
@@ -81,15 +82,22 @@ end
 -- Think hook for the store.
 --------------------------------------------
 local function StoreThink()
-	if StoreFrame then
-		if not input.IsKeyDown(StoreKey) then
-			StoreFrame:Remove()
-			StoreFrame = nil
+	if input.IsKeyDown(StoreKey) then
+		if not KeyDown then
+			if StoreFrame then
+				if StoreFrame:IsVisible() then
+					StoreFrame:SetVisible(false)
+				else
+					StoreFrame:SetVisible(true)
+					StoreFrame:MakePopup()
+				end
+			else
+				OpenStore()
+			end
+			KeyDown = true
 		end
 	else
-		if input.IsKeyDown(StoreKey) then
-			OpenStore()
-		end
+		KeyDown = false
 	end
 end
 hook.Add("Think", "StoreThink", StoreThink)

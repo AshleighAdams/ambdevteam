@@ -210,28 +210,3 @@ end
 function AddItemToCategory(Item, Category)
 	table.insert(Category[5], Item)
 end
-
--- Test
-local testpurchase = function(Item, Player)
-	for i, v in pairs(player.GetAll()) do
-		v:ChatPrint(Player:Nick() .. " Has just bought " .. Item:GetName())
-	end
-end
-
-local weapons = AddCategory("Weapons")
-local supplies = AddCategory("Supplies")
-local items = AddCategory("Items")
-local health = AddCategory("Health", items)
-local hp1 = AddItem("Health Pack 1", 25)
-AddItemToCategory(hp1, health)
-hp1.OnPurchase = testpurchase
-local crate = AddItem("Useless crate", 4)
-AddItemToCategory(crate, supplies)
-crate.OnPurchase = testpurchase
-local weapon = AddItem("Railgun", 250)
-AddItemToCategory(weapon, weapons)
-weapon.OnPurchase = testpurchase
-local ammo = AddItem("Railgun ammo", 100)
-AddItemToCategory(ammo, items)
-AddItemToCategory(ammo, supplies)
-ammo.OnPurchase = testpurchase

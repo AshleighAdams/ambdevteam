@@ -8,6 +8,7 @@ Teams = Teams or {}
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "shared_store.lua" )
+AddCSLuaFile( "shared_store_items.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
@@ -20,10 +21,11 @@ resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )
 
 include( 'shared.lua' )
+include( 'store.lua' )
+include( 'shared_store_items.lua' )
 include( 'player.lua' )
 include( 'recource_systems.lua' )
 include( 'placement.lua' )
-include( 'store.lua' )
 
 function SendTeamInfo(pl)
 	for i,Team in pairs( Teams ) do
@@ -174,6 +176,7 @@ function GM:PlayerSpawn( pl )
 	pl.ExpectingSpawnCommand = true
 	umsg.Start( "show_spawn_menu", pl )
 	umsg.End()
+	pl:SetJumpPower( 200 )
  
 end
 
