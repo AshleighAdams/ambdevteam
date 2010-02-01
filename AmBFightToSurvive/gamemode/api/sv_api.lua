@@ -67,7 +67,7 @@ function GetEntCost( ent )
 		else
 			mass = 20
 		end
-		cost = math.ceil( (size/10) + (mass/10) )
+		cost = math.ceil( (size/20) + (mass/20) )
 		return cost
 	end
 end

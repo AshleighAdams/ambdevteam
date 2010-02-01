@@ -123,18 +123,57 @@ function IsLeader( pl )
 	return false
 end
 
+concommand.Add("selected_spawn_point", function(pl,cmd,args)
+	Selection = args[1]
+	if pl.ExpectingSpawnCommand then
+		pl.ExpectingSpawnCommand = false
+		if Selection == "def" then
+			return true
+		elseif Selection == "ti" then
+			if pl.SpawnEnt != nil then
+				if pl.SpawnEnt:IsValid() then 
+					pl:SetPos(pl.SpawnEnt:GetPos() + Vector(0,0,16)) 
+					pl.SpawnEnt:Fire("kill", "2")
+					pl.SpawnEnt = nil
+					//pl.Flare:Fire("Die",0.1)
+				else
+					pl.SpawnEnt = nil
+				end
+			end
+			return true
+		else
+			local dontspawn_enemydist = 1000
+			ref = ents.FindByClass("refinery")[tonumber(Selection)]
+			if ValidEntity( ref ) && ref.Team == pl:Team() then
+				for i,ply in pairs( ents.FindInSphere( ref:GetPos(), dontspawn_enemydist ) ) do
+					if ply:IsPlayer() then
+						if ply:Team() != ref.Team then return false end
+					end
+				end
+				pl:SetPos( ref:GetPos() + Vector(0,0,16) )
+			end
+		end
+	end
+end)
 
 function GM:PlayerSpawn( pl )
 
 	if( pl:Team() ==1001 ) then
 		pl:SetTeam(1)
 	end
+	
+	t = pl:Team()
+	
     self.BaseClass:PlayerSpawn( pl )
     pl:SetGravity( 1 )  
     pl:SetMaxHealth( 100, true )  
  
-    pl:SetWalkSpeed( 250 )  
-	pl:SetRunSpeed( 400 ) 
+    pl:SetWalkSpeed( 250 ) 
+	pl:SetRunSpeed( 400 )
+	
+	pl.ExpectingSpawnCommand = true
+	umsg.Start( "show_spawn_menu", pl )
+	umsg.End()
  
 end
 

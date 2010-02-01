@@ -79,8 +79,8 @@ function SWEP:ShouldDropOnDie()
 end
 
 if SERVER then
-	function PlayerSpawn( pl )
-		if pl.SpawnEnt != nil then
+	function taPlayerSpawn( pl )
+		/*if pl.SpawnEnt != nil then
 			if pl.SpawnEnt:IsValid() then 
 				pl:SetPos(pl.SpawnEnt:GetPos() + Vector(0,0,16)) 
 				pl.SpawnEnt:Fire("kill", "2")
@@ -89,9 +89,9 @@ if SERVER then
 			else
 				pl.SpawnEnt = nil
 			end
-		end
+		end*/
 	end
-	hook.Add("PlayerSpawn", "psti", PlayerSpawn)
+	--hook.Add("PlayerSpawn", "psti", PlayerSpawn)
 
 	function SetSpawnpoint(pl, command, args)
 		if pl:IsOnGround() then
@@ -106,20 +106,18 @@ if SERVER then
 			local ent = ents.Create("prop_physics")
 				ent:SetModel("models/weapons/w_grenade.mdl")
 				ent:SetPos( pl:GetPos() )
-				ent:SetOwner(0)
 				ent:Spawn()
 				ent:Activate()
 				ent:SetCollisionGroup(COLLISION_GROUP_WORLD)
-			
+				ent.Constructed = true
 				local phys = ent:GetPhysicsObject()
-				if phys:IsValid() then phys:EnableMotion(false) end
+				if phys:IsValid() then phys:EnableMotion(false) end // phys:Remove() end
 			
 			Flare = ents.Create("env_flare")
 				Flare:SetPos( pl:GetPos() )
-				Flare:SetKeyValue( "scale", "3" )
+				Flare:SetKeyValue( "scale", "1" )
 				Flare:SetKeyValue( "duration", "99999999999999" )
 				Flare:SetKeyValue( "Infinite", "1" ) --Infinite
-				Flare:EmitSound( "Weapon_Flaregun.Burn" )
 				//Flare:SetParent(ent)
 				Flare:Spawn()
 			Flare:Activate()
