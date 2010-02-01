@@ -7,12 +7,14 @@ Teams = Teams or {}
 
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )
+AddCSLuaFile( "shared_store.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
 AddCSLuaFile( "cl_damageoverlay.lua" )
 AddCSLuaFile( "api/cl_api.lua" )
 AddCSLuaFile( "cl_recource_systems.lua" )
+AddCSLuaFile( "cl_store.lua" )
 
 resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )
@@ -21,6 +23,7 @@ include( 'shared.lua' )
 include( 'player.lua' )
 include( 'recource_systems.lua' )
 include( 'placement.lua' )
+include( 'store.lua' )
 
 function SendTeamInfo(pl)
 	for i,Team in pairs( Teams ) do
