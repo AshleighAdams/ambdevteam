@@ -184,7 +184,7 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
 	pl:Give( "sa_flaregun" )	
-	pl:Give( "resource_crystal" )
+	pl:Give( "f2s_constructer" )
 	
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
 
