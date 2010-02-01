@@ -10,7 +10,7 @@ concommand.Add( "dev_takeresp", function(pl, cmd, args)
 	TakeResP( pl:Team(), ammount )
 end)
 
-local UnconstructedTools = { "remover","material", }
+local UnconstructedTools = { "colour","material", }
 local ConstructedTools = { "material","colour","remover" }
 
 function Construct( pl )
@@ -47,8 +47,8 @@ function Deconstruct( pl )
 			GiveResP( ent.Team, 0.75 )
 			if ent.ResNeeded >= ent.Cost then
 				timer.Destroy( tmrname )
-				ent:Remove()
-				ent:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+				//ent:Remove()
+				ent:SetCollisionGroup( COLLISION_GROUP_WORLD )
 				SetResP( ent.Team, math.floor( GetResP(ent.Team) ) )
 			end
 		else
@@ -60,21 +60,22 @@ end
 function GM:CanTool( pl, tr, toolmode )
 	if tr.HitNonWorld then
 		ent = tr.Entity
-		if ent.Constructed then -- the entity is being constructed
-			if table.HasValue( ConstructedTools, toolmode ) then
-				return true
+		owner = ent:GetNetworkedEntity("OwnerObj", false)
+		if ent.Constructed then -- the entity is constructed
+			if table.HasValue( ConstructedTools, toolmode ) || string.find(toolmode,"wire") then
+				return owner == pl
 			else
 				return false
 			end
-		else
+		elseif ent.Team then
 			if !table.HasValue( UnconstructedTools, toolmode ) then
-				return true
+				return owner == pl
 			else
 				return false
 			end
 		end
 	end
-	return true
+	return owner == pl
 end
 
 function GM:PhysgunPickup( pl, ent )
@@ -85,16 +86,32 @@ function GM:PhysgunPickup( pl, ent )
 	end
 end
 
-
-function GM:PlayerSpawnedProp( pl, mdl, ent )
+function SetUpEnt( t,ent )
 	if !ent then return end
 	ent:SetCollisionGroup( COLLISION_GROUP_WORLD )--COLLISION_GROUP_DEBRIS_TRIGGER)
 	ent:SetMaterial( "models/wireframe" )
 	ent.ResNeeded = GetEntCost( ent )
 	ent.Constructed = false
-	ent.Team = pl:Team()
+	ent.Team = t
 	ent.Cost = ent.ResNeeded
 end
+
+function GM:PlayerSpawnedProp( pl, mdl, ent )
+	SetUpEnt( pl:Team(), ent )
+end
+
+function CheckForNewProps()
+	for k,ent in pairs( ents.FindByClass( "prop_physics" ) ) do
+		if ent.Team == nil then
+			owner = ent:GetNetworkedEntity("OwnerObj", false)
+			if IsValid(owner) && owner:IsPlayer() then
+				t = owner:Team() or -1
+				SetUpEnt( t,ent )
+			end
+		end
+	end
+end
+timer.Create( "f2s.NewPropsCheck", 5, 0, CheckForNewProps )
 
 function GM:PlayerSpawnedVehicle( pl, veh )
 
