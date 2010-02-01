@@ -13,7 +13,7 @@ SWEP.AutoSwitchFrom		= false
 -----------------------------------------
 function SWEP:Initialize()
 	self:SetWeaponHoldType("melee");
-	self.ResourcesPresent = 200
+	self.ResourcesPresent = 400
 	local trail = util.SpriteTrail(self.Weapon, 0, Color(255,0,255), false, 15, 1, 4, 1/(15+1)*0.5, "trails/plasma.vmt")
 end
 

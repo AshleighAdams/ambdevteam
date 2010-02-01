@@ -13,8 +13,8 @@ SWEP.AdminSpawnable		= true
 SWEP.ViewModel			= "models/weapons/v_grenade.mdl"
 SWEP.WorldModel			= "models/weapons/w_grenade.mdl"
 
-SWEP.Primary.ClipSize		= 200
-SWEP.Primary.DefaultClip	= 200
+SWEP.Primary.ClipSize		= 400
+SWEP.Primary.DefaultClip	= 400
 SWEP.Primary.Automatic		= false
 SWEP.Primary.Ammo			= "none"
 
@@ -42,6 +42,8 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	if SERVER then
 		self.Owner:DropWeapon( self.Weapon )
+		local phys = self.Weapon:GetPhysicsObject() 
+		phys:SetVelocity( owner:GetVelocity() )
 		self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
 	end
 end
@@ -57,7 +59,7 @@ function SWEP:SecondaryAttack()
 		local owner = self.Owner
 		self.Owner:DropWeapon( self.Weapon )
 		local phys = self.Weapon:GetPhysicsObject()  
-		phys:SetVelocity( owner:GetAimVector() * 2000 )
+		phys:SetVelocity( owner:GetVelocity() + owner:GetAimVector() * 2000 )
 	end
 end
 
@@ -72,3 +74,11 @@ end
 function SWEP:HasResources(ammount)
 	return ammount < self.ResourcesPresent
 end
+
+function rcDoPlayerDeath( ply, attacker, dmginfo )
+	if CLIENT then return end
+	if ply:HasWeapon("resource_crystal") then
+		ply:DropWeapon( ply:GetWeapon( "resource_crystal" ) )
+	end
+end
+hook.Add( "DoPlayerDeath","f2s.Res.Cry.DoPlayerDeath", rcDoPlayerDeath )

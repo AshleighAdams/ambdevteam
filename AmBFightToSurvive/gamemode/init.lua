@@ -169,15 +169,14 @@ function GM:PlayerLoadout( pl )
 		
 		local w1, w2, w3 = pl.w1, pl.w2, pl.w3
 		if w1 == nil || w2==nil || w3==nil then
-			pl:Give( "weapon_ar2" )
-			pl:Give( "weapon_frag" )
+			pl:Give( "weapon_pistol" )
 			pl:Give( "weapon_shotgun" )
 		else
 			pl:Give( w1 )
 			pl:Give( w2 )
 			pl:Give( w3 )
 		end
-		pl:Give( "weapon_stunstick" )
+		pl:Give( "weapon_crowbar" )
 	end
 	
 	pl:Give( "gmod_tool" )
@@ -185,7 +184,8 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "tactical_insertion" )	
 	pl:Give( "sa_flaregun" )	
-
+	pl:Give( "resource_crystal" )
+	
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
 
 	if ( pl:HasWeapon( cl_defaultweapon )  ) then

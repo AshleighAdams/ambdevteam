@@ -57,34 +57,39 @@ function Deconstruct( pl )
 	end,ent,tmrname )
 end
 
-function GM:CanTool( pl, tr, toolmode )
+function CanTool( pl, tr, toolmode )
 	if tr.HitNonWorld then
 		ent = tr.Entity
 		owner = ent:GetNetworkedEntity("OwnerObj", false)
 		if ent.Constructed then -- the entity is constructed
 			if table.HasValue( ConstructedTools, toolmode ) || string.find(toolmode,"wire") then
-				return owner == pl
+				//return hook.Call( "CanTool", pl, tr, toolmode )
+				return true
 			else
 				return false
 			end
 		elseif ent.Team then
 			if !table.HasValue( UnconstructedTools, toolmode ) then
-				return owner == pl
+				//return hook.Call( "CanTool", pl, tr, toolmode )
+				return true
 			else
 				return false
 			end
 		end
 	end
-	return owner == pl
+	return true //hook.Call( "CanTool", pl, tr, toolmode )
 end
+hook.Add( "CanTool", "f2s.CanTool", CanTool) -- DO NOT OVERRIDE THIS WITH GM:CanTool AS IT BREAKS PROP PROTECTIONS!
 
-function GM:PhysgunPickup( pl, ent )
+function PhysgunPickup( pl, ent )
 	if ent.Constructed then
 		return false
 	else
+		//hook.Call( "PhysgunPickup", pl, ent )
 		return true
 	end
 end
+hook.Add( "PhysgunPickup", "f2s.PhysPickup", PhysgunPickup ) -- DO NOT OVERRIDE THIS WITH GM:CanTool AS IT BREAKS PROP PROTECTIONS!
 
 function SetUpEnt( t,ent )
 	if !ent then return end
