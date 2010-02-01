@@ -43,9 +43,11 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not b
 					}
 	
 	if (hitgroup == HITGROUP_LEFTLEG || hitgroup == HITGROUP_RIGHTLEG) then
-		if ply.SpeedMulti == nil then ply.SpeedMulti = 1 end
-		ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti - 0.1 )
-		GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
+		if not ply.MegaLegs then
+			if ply.SpeedMulti == nil then ply.SpeedMulti = 1 end
+			ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti - 0.1 )
+			GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
+		end
 	end
 	
 	if ( (hitgroup == HITGROUP_LEFTARM || hitgroup == HITGROUP_RIGHTARM) && ply:Health() < 50 ) then
@@ -67,8 +69,10 @@ function GM:GetFallDamage( ply, vel )
 		if math.Rand(1,20) == 1 and vel > 999 then
 			return ply:Health() - 1
 		end
-		ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti - 0.2 )
-		GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
+		if not ply.MegaLegs then
+			ply.SpeedMulti = math.max( 0.3, ply.SpeedMulti - 0.2 )
+			GAMEMODE:SetPlayerSpeed( ply, 250*ply.SpeedMulti, 400*ply.SpeedMulti )
+		end
 		dmg = (vel-200) / 8
 		if ply.LastAttacker && (ply.LastAttacker:IsPlayer() || ply.LastAttacker:IsNPC()) then
 			Damage( ply,dmg )

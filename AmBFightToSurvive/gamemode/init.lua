@@ -177,7 +177,7 @@ function GM:PlayerSpawn( pl )
 	umsg.Start( "show_spawn_menu", pl )
 	umsg.End()
 	pl:SetJumpPower( 200 )
- 
+	pl.MegaLegs = false
 end
 
 
@@ -224,7 +224,6 @@ function GM:PlayerLoadout( pl )
 	pl:Give( "gmod_tool" )
 	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
-	pl:Give( "tactical_insertion" )	
 	pl:Give( "sa_flaregun" )	
 	pl:Give( "f2s_constructer" )
 	
