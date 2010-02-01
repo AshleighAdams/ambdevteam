@@ -19,6 +19,7 @@ AddCSLuaFile( "cl_store.lua" )
 
 resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )
+resource.AddFile( "materials/amb/mapamb.vmt" )
 
 include( 'shared.lua' )
 include( 'store.lua' )
