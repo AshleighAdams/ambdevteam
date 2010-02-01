@@ -1,4 +1,31 @@
 include( 'api/sv_api.lua' )
+STATE_CONSTRUCTED,STATE_UNCONSTRUCTED,STATE_CONSTRUCTING,STATE_UNCONSTRUCTING = 1,2,3,4
+metafuncs = 
+{ 
+	SetState = function(self, state)
+		if state == STATE_UNCONSTRUCTED then
+			self:SetCollisionGroup( COLLISION_GROUP_WORLD )
+			self:SetMaterial( "models/wireframe" )
+			self.Constructed = false
+			return
+		end
+		if state == STATE_CONSTRUCTED then
+			self:SetCollisionGroup( COLLISION_GROUP_NONE )
+			self:SetMaterial( "" )
+			self.Constructed = true
+			return
+		end
+		if state == STATE_UNCONSTRUCTING then
+			self:SetCollisionGroup( COLLISION_GROUP_NONE )
+			self:SetMaterial( "models/wireframe" )
+			self.Constructed = false
+			return
+		end
+		if state == STATE_CONSTRUCTING then
+			return
+		end
+	end
+} 
 
 concommand.Add( "dev_giveresp", function(pl, cmd, args) 
 	ammount = args[1] or 0
@@ -13,6 +40,8 @@ end)
 local UnconstructedTools = { "colour","material", }
 local ConstructedTools = { "material","colour","remover" }
 
+
+
 function Construct( pl )
 	local ent = pl:GetEyeTrace().Entity
 	if !ent || ent.Team != pl:Team() then return end
@@ -23,9 +52,7 @@ function Construct( pl )
 			ent.ResNeeded = ent.ResNeeded - ( VoidTakeResP( ent.Team, 1 ) )
 			if ent.ResNeeded <= 0 then
 				timer.Destroy( tmrname )
-				ent:SetCollisionGroup( COLLISION_GROUP_NONE )
-				ent:SetMaterial( "" )
-				ent.Constructed = true
+				ent:SetState( STATE_CONSTRUCTED )
 			end
 		else
 			timer.Destroy( tmrname )
@@ -37,8 +64,7 @@ function Deconstruct( pl )
 	local ent = pl:GetEyeTrace().Entity
 	if !ent || ent.Team != pl:Team() then return end
 	
-	ent:SetMaterial( "models/wireframe" )
-	ent.Constructed = false
+	ent:SetState( STATE_UNCONSTRUCTING )
 	
 	local tmrname = "construct" .. tostring( math.Rand(1,1000) )
 	timer.Create( tmrname, 0.01, ent.Cost, function( ent,tmrname )
@@ -48,7 +74,7 @@ function Deconstruct( pl )
 			if ent.ResNeeded >= ent.Cost then
 				timer.Destroy( tmrname )
 				//ent:Remove()
-				ent:SetCollisionGroup( COLLISION_GROUP_WORLD )
+				ent:SetState( STATE_UNCONSTRUCTED )
 				SetResP( ent.Team, math.floor( GetResP(ent.Team) ) )
 			end
 		else
@@ -94,17 +120,17 @@ hook.Add( "PhysgunPickup", "f2s.PhysPickup", PhysgunPickup ) -- DO NOT OVERRIDE 
 
 function SetUpEnt( t,ent )
 	if !ent then return end
-	ent:SetCollisionGroup( COLLISION_GROUP_WORLD )--COLLISION_GROUP_DEBRIS_TRIGGER)
-	ent:SetMaterial( "models/wireframe" )
+	setmetatable(ent:GetTable(), {__index = metafuncs}) 
 	ent.ResNeeded = GetEntCost( ent )
-	ent.Constructed = false
 	ent.Team = t
 	ent.Cost = ent.ResNeeded
+	ent:SetState( STATE_UNCONSTRUCTED )
 end
 
-function GM:PlayerSpawnedProp( pl, mdl, ent )
+function f2sPlayerSpawnedProp( pl, mdl, ent )
 	SetUpEnt( pl:Team(), ent )
 end
+hook.Add( "PlayerSpawnedProp","f2s.Res.PlySpawnedProp", f2sPlayerSpawnedProp )
 
 function CheckForNewProps()
 	for k,ent in pairs( ents.FindByClass( "prop_physics" ) ) do
