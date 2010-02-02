@@ -14,9 +14,6 @@ local RefineRate = 10.0
 function ENT:Initialize()
 	local ent = self.Entity
 	ent:SetModel("models/props_c17/FurnitureBoiler001a.mdl")
-	self:PhysicsInit(SOLID_VPHYSICS)
-	self:SetMoveType(MOVETYPE_NONE)
-	self:SetSolid(SOLID_VPHYSICS)
 	table.insert(Refineries, ent)
 	
 	self.Team = 0
