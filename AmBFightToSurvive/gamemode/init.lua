@@ -69,13 +69,14 @@ function GM:Initialize()
 	ResInit( Index )
 end
 
-function GM:PlayerAuthed( pl, SteamID, UniqueID )
+function f2sPlayerAuthed( pl, SteamID, UniqueID )
 	SendTeamInfo(pl)
 	if pl == player.GetByID(1) then -- were the first player in! spawn this shit.
 		//PlaceRefineries(1)
 	end
 	pl:SetTeam(1)
 end
+hook.Add("PlayerAuthed", "f2s.auth", f2sPlayerAuthed)
 
 function JoinTeam( pl, cmd, args )
 	id = tonumber( args[1] )
