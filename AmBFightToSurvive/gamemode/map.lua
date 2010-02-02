@@ -42,7 +42,7 @@ end
 -- PlayerInitalSpawn hook to send map
 -- metrics to the client.
 --------------------------------------------
-local function PlacementInitialSpawn(Player)
+local function SendMapMetrics(Player, Handler, ID, Encoded, Decoded)
 	local mm = GetMapMetrics()
 	umsg.Start("map_metrics", Player)
 	umsg.Float(mm.Height)
@@ -52,7 +52,7 @@ local function PlacementInitialSpawn(Player)
 	umsg.Float(mm.MaxY)
 	umsg.End()
 end
-hook.Add("PlayerInitialSpawn", "PlacementInitialSpawn", PlacementInitialSpawn)
+datastream.Hook("MapMetrics_Pls", SendMapMetrics)
 
 --------------------------------------------
 -- This curious concommand will take many

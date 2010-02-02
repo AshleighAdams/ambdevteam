@@ -1,3 +1,5 @@
+require("datastream")
+
 local MapKey = KEY_F3
 local MapMaterials = { }
 MapMaterials["freespace06_v2-1"] = "amb/freespace06"
@@ -9,22 +11,28 @@ MapPanel = nil
 -- the player.
 --------------------------------------------
 function OpenMap(Popup)
-	-- If the map is not yet created, create it.
-	if not MapPanel then
-		MapPanel = vgui.Create("MapPanel")
-	end
-	
-	-- Check status
-	if not MapPanel.Valid then
-		MapPanel:Remove()
-		MapPanel = nil
+	if MapMetrics then
+		-- If the map is not yet created, create it.
+		if not MapPanel then
+			MapPanel = vgui.Create("MapPanel")
+		end
+		
+		-- Check status
+		if not MapPanel.Valid then
+			MapPanel:Remove()
+			MapPanel = nil
+			return false
+		end
+		
+		-- Open
+		MapPanel:SetVisible(true)
+		if Popup then
+			MapPanel:MakePopup()
+		end
+	else
+		-- Ask server for map metrics
+		datastream.StreamToServer("MapMetrics_Pls", { })
 		return false
-	end
-	
-	-- Open
-	MapPanel:SetVisible(true)
-	if Popup then
-		MapPanel:MakePopup()
 	end
 end
 
