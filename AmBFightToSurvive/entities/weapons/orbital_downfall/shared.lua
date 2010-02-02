@@ -53,8 +53,11 @@ end
 -- Primary attack
 ----------------------------------------
 function SWEP:PrimaryAttack()
-	if not self:HasMark() then
-		self:StartMark(self.Owner:GetEyeTrace())
+	if CLIENT then return end
+	if TakeSciP( self.Owner:Team(), 1 ) then
+		if not self:HasMark() then
+			self:StartMark(self.Owner:GetEyeTrace())
+		end
 	end
 end
 

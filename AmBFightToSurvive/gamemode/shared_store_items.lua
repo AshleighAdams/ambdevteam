@@ -64,6 +64,7 @@ C.Weapons = AddCategory("Weapons", C.WarStuffs)
 C.Ammo = AddCategory("Ammunition", C.WarStuffs)
 C.Supplies = AddCategory("Supplies and Improvements", C.WarStuffs)
 C.Misc = AddCategory("Misc", C.WarStuffs)
+C.Special = AddCategory("Special", C.WarStuffs)
 C.Useless = AddCategory("Useless")
 C.Masochism = AddCategory("Masochism", C.Useless)
 
@@ -158,6 +159,14 @@ AddItem("Mega Legs (Jumping)", 200, {C.Supplies}, function(Player)
 	end)
 AddItem("Grav Buster", 300, {C.Supplies}, function(Player)
 		Player:SetGravity(0.5)
+	end)
+
+-- Special
+AddItem("SciP (Sientific Credit)", 10000, {C.Special}, function(Player)
+		GiveSciP( Player:Team(), 1 )
+	end)
+AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
+		Player:Give("orbital_downfall")
 	end)
 	
 -- Useless

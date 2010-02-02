@@ -30,17 +30,45 @@ function GetResP( t )
 	return TeamsRes[t].ResP or 0
 end
 
+function GetSciP( t )
+	if TeamsRes[t] == nil then return 0 end
+	return TeamsRes[t].SciP or 0
+end
+
 function SetResP( t, ammount )
 	if TeamsRes[t] == nil then return 0 end
 	TeamsRes[t].ResP = ammount
+end
+
+function SetSciP( t, ammount )
+	if TeamsRes[t] == nil then return 0 end
+	TeamsRes[t].SciP = ammount
 end
 
 function GiveResP( t, ammount )
 	SetResP( t, GetResP(t) + ammount )
 end
 
+function GiveSciP( t, ammount )
+	SetSciP( t, GetSciP(t) + ammount )
+end
+
 function TakeResP( t, ammount )
-	SetResP( t, GetResP(t) - ammount )
+	if GetResP(t) >= ammount then
+		SetResP( t, GetResP(t) - ammount )
+		return true
+	else
+		return false
+	end
+end
+
+function TakeSciP( t, ammount )
+	if GetSciP(t) >= ammount then
+		SetSciP( t, GetSciP(t) - ammount )
+		return true
+	else
+		return false
+	end
 end
 
 function VoidTakeResP( t, ammount )
