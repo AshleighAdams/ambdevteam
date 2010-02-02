@@ -136,7 +136,7 @@ function ENT:Think()
 			self:ChangeOwner(t)
 			break
 		else
-			self.CapStatus[t] = s - CaptureDissapate * updatetime
+			self.CapStatus[t] = math.max(s - CaptureDissapate * updatetime, 0)
 		end
 	end
 	
