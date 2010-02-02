@@ -225,41 +225,43 @@ local function MapThink()
 	-- Add players to map
 	if MapPanel then
 		for _, p in pairs(player.GetAll()) do
-			local tb = p:GetTable()
-			if not tb then
-				tb = { }
-				p:SetTable(tb)
-			end
-			
-			if not tb.MapPoint then
-				local point = AddMapPoint()
-				local pointsize = 4
-				if p == LocalPlayer() then
-					pointsize = 6
+			if p:Team() == LocalPlayer():Team() then
+				local tb = p:GetTable()
+				if not tb then
+					tb = { }
+					p:SetTable(tb)
 				end
-				point:SetDisplaySize(pointsize, pointsize)
-				point:SetVisible(true)
-				point.Player = p
-				point.OnThink = function(point)
-					if point.Player:IsValid() then
-						point:SetPos(point.Player:GetPos())
+				
+				if not tb.MapPoint then
+					local point = AddMapPoint()
+					local pointsize = 4
+					if p == LocalPlayer() then
+						pointsize = 6
 					end
-				end
-				point.OnDraw = function(point, x, y)
-					if point.Player:IsValid() then
-						local t = point.Player:Team()
-						local col = Color(255, 255, 255, 255)
-						if t > 1 then
-							col = team.GetColor(t)
+					point:SetDisplaySize(pointsize, pointsize)
+					point:SetVisible(true)
+					point.Player = p
+					point.OnThink = function(point)
+						if point.Player:IsValid() then
+							point:SetPos(point.Player:GetPos())
 						end
-						surface.SetDrawColor(col)
-						surface.DrawRect(x, y, pointsize, pointsize)
 					end
+					point.OnDraw = function(point, x, y)
+						if point.Player:IsValid() then
+							local t = point.Player:Team()
+							local col = Color(255, 255, 255, 255)
+							if t > 1 then
+								col = team.GetColor(t)
+							end
+							surface.SetDrawColor(col)
+							surface.DrawRect(x, y, pointsize, pointsize)
+						end
+					end
+					point.ShouldRemove = function(point)
+						return not point.Player:IsValid()
+					end
+					tb.MapPoint = point
 				end
-				point.ShouldRemove = function(point)
-					return not point.Player:IsValid()
-				end
-				tb.MapPoint = point
 			end
 		end
 	end
