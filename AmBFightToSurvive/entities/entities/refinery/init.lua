@@ -40,7 +40,7 @@ function ENT:CanRefine(Crystal)
 	if Crystal:IsValid() then
 		if (Crystal:GetPos() - self:GetPos()):Length() < CaptureRadius then
 			local owner = Crystal.Owner
-			if ValidEntity(owner) && owner:IsPlayer() then
+			if ValidEntity(owner) and owner:IsPlayer() then
 				return owner:Visible( self )
 			else
 				return Crystal:Visible( self )

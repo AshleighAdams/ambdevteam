@@ -51,9 +51,6 @@ function ENT:Draw()
 	local pos = ent:GetPos()
 	ent:DrawModel()
 	
-	-- Teams
-	self.Team = self:GetNWInt("Owner", 0)
-	
 	-- Draw beam to identify refinery and owner.
 	local alpha = 1.0
 	if LocalPlayer() then
@@ -81,4 +78,7 @@ end
 -----------------------------------------
 function ENT:Think()
 	local ent = self.Entity
+	
+	-- Teams
+	self.Team = self:GetNWInt("Owner", 0)
 end
