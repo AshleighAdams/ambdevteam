@@ -24,15 +24,21 @@ function ENT:Initialize()
 		self.MapPoint:SetDisplaySize(pointsize, pointsize)
 		self.MapPoint:SetVisible(true)
 		self.MapPoint:SetPos(pos)
+		self.MapPoint.Refinery = self
 		self.MapPoint.OnDraw = function(point, x, y)
-			local color = Color(255, 255, 255, 255)
-			if self.Team ~= 0 then
-				color = team.GetColor(self.Team)
+			if point.Refinery:IsValid() then
+				local color = Color(255, 255, 255, 255)
+				if point.Refinery.Team ~= 0 then
+					color = team.GetColor(point.Refinery.Team)
+				end
+				surface.SetDrawColor(color)
+				for i = 0, pointthick - 1 do
+					surface.DrawOutlinedRect(x + i, y + i, pointsize - 2 * i, pointsize - 2 * i)
+				end
 			end
-			surface.SetDrawColor(color)
-			for i = 0, pointthick - 1 do
-				surface.DrawOutlinedRect(x + i, y + i, pointsize - 2 * i, pointsize - 2 * i)
-			end
+		end
+		self.MapPoint.ShouldRemove = function(point)
+			return not point.Refinery:IsValid()
 		end
 	end
 end

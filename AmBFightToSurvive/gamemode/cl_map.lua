@@ -37,6 +37,7 @@ end
 ---- SetVisible(Visible)
 ---- OnDraw(Point, X, Y) - Callback
 ---- OnThink(Point) - Callback
+---- ShouldRemove(Point) - Callback
 --------------------------------------------
 local MetaPoint = { }
 
@@ -81,7 +82,7 @@ function AddMapPoint()
 		point.Height = 0
 		point.Visible = false
 		setmetatable(point, {__index = MetaPoint})
-		table.insert(MapPanel.Points, point)
+		MapPanel.Points[point] = true
 		return point
 	else
 		return nil
@@ -126,9 +127,17 @@ vgui.Register("MapPanel", {
 	end,
 	
 	Think = function(self)
-		for _, p in pairs(self.Points) do
-			if p.OnThink then
-				p.OnThink(p)
+		local toremove = { }
+		for p, a in pairs(self.Points) do
+			if a then
+				if p.OnThink then
+					p.OnThink(p)
+				end
+				if p.ShouldRemove then
+					if p.ShouldRemove(p) then
+						self.Points[p] = nil
+					end
+				end
 			end
 		end
 	end,
@@ -142,13 +151,15 @@ vgui.Register("MapPanel", {
 		surface.DrawTexturedRect(mx, my, mw, mh)
 		
 		-- Draw points
-		for _, p in pairs(self.Points) do
-			local pos = p:GetPos()
-			if pos and p.Visible then
-				x, y = self:PixelPointPos(pos)
-				w, h = p.Width, p.Height
-				if p.OnDraw then
-					p.OnDraw(p, x + mx - (w / 2.0), y + my - (h / 2.0))
+		for p, a in pairs(self.Points) do
+			if a then
+				local pos = p:GetPos()
+				if pos and p.Visible then
+					x, y = self:PixelPointPos(pos)
+					w, h = p.Width, p.Height
+					if p.OnDraw then
+						p.OnDraw(p, x + mx - (w / 2.0), y + my - (h / 2.0))
+					end
 				end
 			end
 		end
@@ -199,6 +210,48 @@ local function MapThink()
 		if MapPanel then
 			if MapPanel:IsVisible() and MapPanel.ClickCallbacks == nil then
 				CloseMap()
+			end
+		end
+	end
+	
+	-- Add players to map
+	if MapPanel then
+		for _, p in pairs(player.GetAll()) do
+			local tb = p:GetTable()
+			if not tb then
+				tb = { }
+				p:SetTable(tb)
+			end
+			
+			if not tb.MapPoint then
+				local point = AddMapPoint()
+				local pointsize = 4
+				if p == LocalPlayer() then
+					pointsize = 6
+				end
+				point:SetDisplaySize(pointsize, pointsize)
+				point:SetVisible(true)
+				point.Player = p
+				point.OnThink = function(point)
+					if point.Player:IsValid() then
+						point:SetPos(point.Player:GetPos())
+					end
+				end
+				point.OnDraw = function(point, x, y)
+					if point.Player:IsValid() then
+						local t = point.Player:Team()
+						local col = Color(255, 255, 255, 255)
+						if t > 1 then
+							col = team.GetColor(t)
+						end
+						surface.SetDrawColor(col)
+						surface.DrawRect(x, y, pointsize, pointsize)
+					end
+				end
+				point.ShouldRemove = function(point)
+					return not point.Player:IsValid()
+				end
+				tb.MapPoint = point
 			end
 		end
 	end
