@@ -23,7 +23,7 @@ function PlaceRefinery(Quality)
 	-- Create refinery on best place
 	if point ~= nil then
 		local ref = ents.Create("refinery")
-		ref:SetPos(point)
+		ref:SetPos(point + Vector(0, 0, 20))
 		ref:Spawn()
 	end
 end

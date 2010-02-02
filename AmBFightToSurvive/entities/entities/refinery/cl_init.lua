@@ -15,6 +15,26 @@ function ENT:Initialize()
 	ent:SetRenderBoundsWS(Vector(-Bounds, -Bounds, -Bounds) + pos, Vector(Bounds, Bounds, BeamHeight) + pos)
 	self.Team = 0
 	
+	-- Add map point for the refinery
+	self.MapPoint = AddMapPoint()
+	if self.MapPoint then
+		local pointsize = 8
+		local pointthick = 2
+	
+		self.MapPoint:SetDisplaySize(pointsize, pointsize)
+		self.MapPoint:SetVisible(true)
+		self.MapPoint:SetPos(pos)
+		self.MapPoint.OnDraw = function(point, x, y)
+			local color = Color(255, 255, 255, 255)
+			if self.Team ~= 0 then
+				color = team.GetColor(self.Team)
+			end
+			surface.SetDrawColor(color)
+			for i = 0, pointthick - 1 do
+				surface.DrawOutlinedRect(x + i, y + i, pointsize - 2 * i, pointsize - 2 * i)
+			end
+		end
+	end
 end
 
 -----------------------------------------

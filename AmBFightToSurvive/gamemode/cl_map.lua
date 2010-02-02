@@ -6,12 +6,9 @@ MapMetrics = nil
 MapPanel = nil
 --------------------------------------------
 -- Opens the map, making it available for
--- the player. Additionally, a table with
--- points paired with functions that will
--- act as on click callbacks can be added.
--- Returns false if the map can't be opened.
+-- the player.
 --------------------------------------------
-function OpenMap(ClickCallbacks)
+function OpenMap(Popup)
 	-- If the map is not yet created, create it.
 	if not MapPanel then
 		MapPanel = vgui.Create("MapPanel")
@@ -26,8 +23,7 @@ function OpenMap(ClickCallbacks)
 	
 	-- Open
 	MapPanel:SetVisible(true)
-	if ClickCallbacks then
-		MapPanel.ClickCallbacks = ClickCallbacks
+	if Popup then
 		MapPanel:MakePopup()
 	end
 end
@@ -39,7 +35,7 @@ end
 ---- GetPos()
 ---- SetDisplaySize(Width, Height)
 ---- SetVisible(Visible)
----- OnDraw(Point) - Callback
+---- OnDraw(Point, X, Y) - Callback
 ---- OnThink(Point) - Callback
 --------------------------------------------
 local MetaPoint = { }
@@ -81,6 +77,9 @@ end
 function AddMapPoint()
 	if MapPanel then
 		local point = { }
+		point.Width = 0
+		point.Height = 0
+		point.Visible = false
 		setmetatable(point, {__index = MetaPoint})
 		table.insert(MapPanel.Points, point)
 		return point
@@ -127,12 +126,11 @@ vgui.Register("MapPanel", {
 	end,
 	
 	Think = function(self)
-		local lpp = self.LocalPlayerPoint
-		if lpp == nil then
-			lpp = AddMapPoint()
-			self.LocalPlayerPoint = lpp
+		for _, p in pairs(self.Points) do
+			if p.OnThink then
+				p.OnThink(p)
+			end
 		end
-		lpp:SetPos(LocalPlayer():GetPos())
 	end,
 	
 	PaintOver = function(self)
@@ -146,10 +144,12 @@ vgui.Register("MapPanel", {
 		-- Draw points
 		for _, p in pairs(self.Points) do
 			local pos = p:GetPos()
-			if pos then
+			if pos and p.Visible then
 				x, y = self:PixelPointPos(pos)
-				surface.SetDrawColor(255, 0, 0, 255)
-				surface.DrawRect(x + mx - 1, y + my - 1, 3, 3)
+				w, h = p.Width, p.Height
+				if p.OnDraw then
+					p.OnDraw(p, x + mx - (w / 2.0), y + my - (h / 2.0))
+				end
 			end
 		end
 	end,
