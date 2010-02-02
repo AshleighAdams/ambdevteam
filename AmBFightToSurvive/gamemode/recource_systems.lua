@@ -120,7 +120,7 @@ end
 hook.Add( "CanTool", "f2s.CanTool", CanTool) -- DO NOT OVERRIDE THIS WITH GM:CanTool AS IT BREAKS PROP PROTECTIONS!
 
 function PhysgunPickup( pl, ent )
-	if ent.Constructed || string.find( ent:GetClass(), "resource" ) then
+	if ent.Constructed || string.find( ent:GetClass(), "resource" ) || string.find( ent:GetClass(), "refine" ) then
 		return false
 	else
 		//hook.Call( "PhysgunPickup", pl, ent )
