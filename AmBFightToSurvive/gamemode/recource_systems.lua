@@ -6,24 +6,35 @@ metafuncs =
 		if state == STATE_UNCONSTRUCTED then
 			self:SetCollisionGroup( COLLISION_GROUP_WORLD )
 			self:SetMaterial( "models/wireframe" )
+			self.State = state
 			self.Constructed = false
 			return
 		end
 		if state == STATE_CONSTRUCTED then
 			self:SetCollisionGroup( COLLISION_GROUP_NONE )
 			self:SetMaterial( "" )
+			self.State = state
 			self.Constructed = true
 			return
 		end
 		if state == STATE_UNCONSTRUCTING then
 			self:SetCollisionGroup( COLLISION_GROUP_NONE )
 			self:SetMaterial( "models/wireframe" )
+			self.State = state
 			self.Constructed = false
 			return
 		end
 		if state == STATE_CONSTRUCTING then
+			self.State = state
 			return
 		end
+	end,
+	GetState = function(self)
+		if !self && !ValidEntity( self ) then return 0 end
+		if self.State then
+			return self.State
+		end
+		return 0
 	end
 } 
 
@@ -150,10 +161,14 @@ function CreateCrystals()
 	crystals_wep = ents.FindByClass("resource_crystal")
 	crystals_box = ents.FindByClass("resource_drop")
 	Crystals = #crystals_wep + #crystals_box
-	PlaceResourceDrops( f2s_crystallimit:GetInt() - Crystals )
+	PlaceResourceDrops( math.max(0,f2s_crystallimit:GetInt() - Crystals) )
 end
 timer.Create( "f2s.Resources.CreateCrystals", 60*8, 0, CreateCrystals ) -- 8 mins
 
 function GM:PlayerSpawnedVehicle( pl, veh )
-	veh:SetPos( veh:GetPos() + Vector(0,0,2000) )
+	veh.ResNeeded = GetEntCost( ent )
+	veh.Team = pl:Team()
+	veh.Cost = ent.ResNeeded
 end
+
+include( 'prop_damage.lua' )
