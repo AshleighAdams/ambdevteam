@@ -16,16 +16,20 @@ AddCSLuaFile( "cl_damageoverlay.lua" )
 AddCSLuaFile( "api/cl_api.lua" )
 AddCSLuaFile( "cl_recource_systems.lua" )
 AddCSLuaFile( "cl_store.lua" )
+AddCSLuaFile( "cl_map.lua" )
 
 resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )
 resource.AddFile( "materials/amb/mapamb.vmt" )
+resource.AddFile( "materials/amb/freespace06.vmt" )
+
 
 include( 'shared.lua' )
 include( 'store.lua' )
 include( 'shared_store_items.lua' )
 include( 'player.lua' )
 include( 'recource_systems.lua' )
+include( 'map.lua' )
 include( 'placement.lua' )
 
 function SendTeamInfo(pl)
