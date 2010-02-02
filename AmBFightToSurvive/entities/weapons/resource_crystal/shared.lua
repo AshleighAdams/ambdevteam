@@ -41,7 +41,8 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
 	self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	if SERVER then
-		self.Owner:DropWeapon( self.Weapon )
+		local owner = self.Owner
+		owner:DropWeapon( self.Weapon )
 		local phys = self.Weapon:GetPhysicsObject() 
 		phys:SetVelocity( owner:GetVelocity() )
 		self.Weapon:SetNextPrimaryFire( CurTime() + 2 )

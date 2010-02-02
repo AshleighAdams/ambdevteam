@@ -14,33 +14,6 @@ function ENT:Initialize()
 	ent:SetModel("models/props_c17/FurnitureBoiler001a.mdl")
 	ent:SetRenderBoundsWS(Vector(-Bounds, -Bounds, -Bounds) + pos, Vector(Bounds, Bounds, BeamHeight) + pos)
 	self.Team = 0
-	
-	-- Add map point for the refinery
-	self.MapPoint = AddMapPoint()
-	if self.MapPoint then
-		local pointsize = 8
-		local pointthick = 2
-	
-		self.MapPoint:SetDisplaySize(pointsize, pointsize)
-		self.MapPoint:SetVisible(true)
-		self.MapPoint:SetPos(pos)
-		self.MapPoint.Refinery = self
-		self.MapPoint.OnDraw = function(point, x, y)
-			if point.Refinery:IsValid() then
-				local color = Color(255, 255, 255, 255)
-				if point.Refinery.Team ~= 0 then
-					color = team.GetColor(point.Refinery.Team)
-				end
-				surface.SetDrawColor(color)
-				for i = 0, pointthick - 1 do
-					surface.DrawOutlinedRect(x + i, y + i, pointsize - 2 * i, pointsize - 2 * i)
-				end
-			end
-		end
-		self.MapPoint.ShouldRemove = function(point)
-			return not point.Refinery:IsValid()
-		end
-	end
 end
 
 -----------------------------------------
@@ -71,6 +44,35 @@ function ENT:Draw()
 	render.AddBeam(ent:GetPos(), BeamSize, 0, color)
 	render.AddBeam(ent:GetPos() + Vector(0, 0, BeamHeight), BeamSize, 1, Color(color.r, color.g, color.b, 0))
 	render.EndBeam()
+	
+	-- Add map point for the refinery
+	if not self.MapPoint then
+		self.MapPoint = AddMapPoint()
+		if self.MapPoint then
+			local pointsize = 8
+			local pointthick = 2
+		
+			self.MapPoint:SetDisplaySize(pointsize, pointsize)
+			self.MapPoint:SetVisible(true)
+			self.MapPoint:SetPos(pos)
+			self.MapPoint.Refinery = self
+			self.MapPoint.OnDraw = function(point, x, y)
+				if point.Refinery:IsValid() then
+					local color = Color(255, 255, 255, 255)
+					if point.Refinery.Team ~= 0 then
+						color = team.GetColor(point.Refinery.Team)
+					end
+					surface.SetDrawColor(color)
+					for i = 0, pointthick - 1 do
+						surface.DrawOutlinedRect(x + i, y + i, pointsize - 2 * i, pointsize - 2 * i)
+					end
+				end
+			end
+			self.MapPoint.ShouldRemove = function(point)
+				return not point.Refinery:IsValid()
+			end
+		end
+	end
 end
 
 -----------------------------------------

@@ -14,6 +14,9 @@ local RefineRate = 10.0
 function ENT:Initialize()
 	local ent = self.Entity
 	ent:SetModel("models/props_c17/FurnitureBoiler001a.mdl")
+	self:PhysicsInit(SOLID_VPHYSICS)
+	self:SetMoveType(MOVETYPE_NONE)
+	self:SetSolid(SOLID_VPHYSICS)
 	table.insert(Refineries, ent)
 	
 	self.Team = 0
@@ -99,6 +102,18 @@ function ENT:Think()
 			table.insert(removeresources, i)
 		else
 			GiveResP(self.Team, r:TakeResources(updatetime * RefineRate))
+			
+			-- Spinning crystals
+			local owner = r.Owner
+			if not (owner and ValidEntity(owner) and owner:IsPlayer()) then
+				local phys = r:GetPhysicsObject()
+				if phys then
+					local mass = phys:GetMass()
+					local diff = self:GetPos() - phys:GetPos()
+					diff:Rotate(Angle(0, 10, 0))
+					phys:ApplyForceCenter((Vector(0, 0, 500) + diff) * updatetime * mass)
+				end
+			end
 		end
 	end
 	for i, k in pairs(removeresources) do
