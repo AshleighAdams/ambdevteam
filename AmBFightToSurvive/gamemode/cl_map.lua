@@ -43,6 +43,7 @@ end
 ---- GetPos()
 ---- SetDisplaySize(Width, Height)
 ---- SetVisible(Visible)
+---- AttachClickHook(Callback)
 ---- OnDraw(Point, X, Y) - Callback
 ---- OnThink(Point) - Callback
 ---- ShouldRemove(Point) - Callback
@@ -77,6 +78,19 @@ end
 --------------------------------------------
 function MetaPoint:SetVisible(Visible)
 	self.Visible = Visible
+end
+
+--------------------------------------------
+-- Attaches a hook to this point that will
+-- be called when it's clicked. If the hook
+-- returns true, it will be removed and no
+-- longer called.
+--------------------------------------------
+function MetaPoint:AttachClickHook(Callback)
+	if not self.ClickHooks then
+		self.ClickHooks = { }
+	end
+	self.ClickHooks[Callback] = true
 end
 
 --------------------------------------------
@@ -163,8 +177,8 @@ vgui.Register("MapPanel", {
 			if a then
 				local pos = p:GetPos()
 				if pos and p.Visible then
-					x, y = self:PixelPointPos(pos)
-					w, h = p.Width, p.Height
+					local x, y = self:PixelPointPos(pos)
+					local w, h = p.Width, p.Height
 					if p.OnDraw then
 						p.OnDraw(p, x + mx - (w / 2.0), y + my - (h / 2.0))
 					end
@@ -184,6 +198,49 @@ vgui.Register("MapPanel", {
 		xv = xv * self.MapWidth
 		yv = yv * self.MapHeight
 		return xv, yv
+	end,
+	
+	UpdateCursor = function(self, X, Y)
+		local mx, my = self.Padding, self.Padding + self.TitleSize
+		X = X - mx
+		Y = Y - my
+		for p, a in pairs(self.Points) do
+			if a then
+				local pos = p:GetPos()
+				if pos and p.Visible then
+					local x, y = self:PixelPointPos(pos)
+					local w, h = p.Width, p.Height
+					if X >= x - (w / 2.0) and Y >= y - (h / 2.0) and X <= x + (w / 2.0) and Y <= y + (w / 2.0) then
+						self.CursorPoint = p
+						return
+					end
+				end
+			end
+		end
+		self.CursorPoint = nil
+	end,
+	
+	OnCursorMoved = function(self, X, Y)
+		self:UpdateCursor(X, Y)
+	end,
+	
+	OnMousePressed = function(self, MC)
+		if MC == MOUSE_LEFT then
+			local point = self.CursorPoint
+			if point then
+				local hooks = point.ClickHooks
+				if hooks then
+					for h, a in pairs(hooks) do
+						if a then
+							local res = h(point)
+							if res then
+								hooks[h] = nil
+							end
+						end
+					end
+				end
+			end
+		end
 	end
 }, "DFrame")
 
