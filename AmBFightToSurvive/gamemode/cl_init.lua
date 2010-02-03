@@ -13,6 +13,8 @@ language.Add( "prop_physics", "Zooming Prop" )
 language.Add( "func_door", "Door" )
 language.Add( "trigger_hurt", "Mystic Force" )
 
+r = 0
+
 function GM:CalcView(ply,pos,ang,fov)
 	local rag = ply:GetRagdollEntity()
 	if ValidEntity(rag) then
@@ -59,44 +61,61 @@ function GM:GetVehicles()
 end
 
 function ShowSpawnMenu()
-	local frame = vgui.Create("DFrame")
-	frame:SetSize(200, 200)
-	frame:Center()
-	frame:SetTitle("Pick your spawn point")
-	frame:SetDraggable(false)
-	frame:ShowCloseButton(true)
-	frame:MakePopup()
-	
-	local spawns = vgui.Create("DListView")
-	spawns:SetParent(frame)
-	spawns:SetPos(10, 24)
-	spawns:SetSize( 200-10-10, 200-10-24 )
-	spawns:SetMultiSelect(false)
-	spawns:AddColumn("Spawn Name")
-	
-	spawns:AddLine("Defualt").OnSelect = function()
-		RunConsoleCommand("selected_spawn_point", "def")
-		frame:Close()
-	end
-	
-	spawns:AddLine("Tatical Insertion").OnSelect = function()
-		RunConsoleCommand("selected_spawn_point", "ti")
-		frame:Close()
-	end
-	
-	local dontspawn_enemydist = 1000
-	for k,ref in pairs( ents.FindByClass("refinery") ) do
-		local spawnok = true
-		for i,ply in pairs( ents.FindInSphere( ref:GetPos(), dontspawn_enemydist ) ) do
-			if ply:IsPlayer() then
-				if ply:Team() != ref.Team then spawnok = false end
+	local dontspawn_enemydist = 3000
+	if OpenMap(true) then
+		for k,ref in pairs( ents.FindByClass("refinery") ) do
+			if ref.Team == LocalPlayer():Team() then
+				r = k
+				ref.MapPoint:AttachClickHook( function(point)
+					RunConsoleCommand("selected_spawn_point", r)
+					CloseMap()
+					return true
+				end)
+				
+				
+				
 			end
 		end
+	else
+		local frame = vgui.Create("DFrame")
+		frame:SetSize(200, 200)
+		frame:Center()
+		frame:SetTitle("Pick your spawn point")
+		frame:SetDraggable(false)
+		frame:ShowCloseButton(true)
+		frame:MakePopup()
 		
-		if ref.Team == LocalPlayer():Team() && spawnok then
-			spawns:AddLine("Refinery: " .. k).OnSelect = function()
-				frame:Close()
-				RunConsoleCommand("selected_spawn_point", k)
+		local spawns = vgui.Create("DListView")
+		spawns:SetParent(frame)
+		spawns:SetPos(10, 24)
+		spawns:SetSize( 200-10-10, 200-10-24 )
+		spawns:SetMultiSelect(false)
+		spawns:AddColumn("Spawn Name")
+		
+		spawns:AddLine("Defualt").OnSelect = function()
+			RunConsoleCommand("selected_spawn_point", "def")
+			frame:Close()
+		end
+		
+		spawns:AddLine("Tatical Insertion").OnSelect = function()
+			RunConsoleCommand("selected_spawn_point", "ti")
+			frame:Close()
+		end
+		
+		local dontspawn_enemydist = 3000
+		for k,ref in pairs( ents.FindByClass("refinery") ) do
+			local spawnok = true
+			for i,ply in pairs( ents.FindInSphere( ref:GetPos(), dontspawn_enemydist ) ) do
+				if ply:IsPlayer() then
+					if ply:Team() != ref.Team && ply:Team()>1 then spawnok = false end
+				end
+			end
+			
+			if ref.Team == LocalPlayer():Team() && spawnok then
+				spawns:AddLine("Refinery: " .. k).OnSelect = function()
+					frame:Close()
+					RunConsoleCommand("selected_spawn_point", k)
+				end
 			end
 		end
 	end

@@ -150,7 +150,7 @@ concommand.Add("selected_spawn_point", function(pl,cmd,args)
 			end
 			return true
 		else
-			local dontspawn_enemydist = 1000
+			local dontspawn_enemydist = 3000
 			ref = ents.FindByClass("refinery")[tonumber(Selection)]
 			if ValidEntity( ref ) && ref.Team == pl:Team() then
 				for i,ply in pairs( ents.FindInSphere( ref:GetPos(), dontspawn_enemydist ) ) do
