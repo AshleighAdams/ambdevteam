@@ -26,39 +26,20 @@ end
 
  
 function UpdateTeamStats( um )
-    /*
-		umsg.Long( i )
-		umsg.String( Teams[i].Name )
-		umsg.Vector( Teams[i].Color )
-		umsg.Entity( Teams[i].Owner )
-	*/
 	local Index = um:ReadLong()
 	local Name = um:ReadString()
 	local Col = um:ReadVector()
-	local Owner = um:ReadEntity() -- not needed now but maybe later versions
+	local Owner = um:ReadEntity()
+	local Open = um:ReadLong()
 	RealCol = Color(Col.x, Col.y, Col.z, 255)
 	Teams[Index] = {}
 	Teams[Index].Name = Name
 	Teams[Index].Color = RealCol
 	Teams[Index].Owner = Owner
+	Teams[Index].Open = Open
 	team.SetUp( Index, Name, RealCol )
 end
 usermessage.Hook("teamstats", UpdateTeamStats)
-
-function GM:GetSENTMenu()
-	local ply = LocalPlayer()
-	if !ply:IsAdmin() then return {} end
-end
-
-function GM:GetSWEPMenu()
-	local ply = LocalPlayer()
-	if !ply:IsAdmin() then return {} end
-end
-
-function GM:GetVehicles()
-	local ply = LocalPlayer()
-	if !ply:IsAdmin() then return {} end
-end
 
 function ShowSpawnMenu()
 	local dontspawn_enemydist = 3000

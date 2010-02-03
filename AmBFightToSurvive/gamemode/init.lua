@@ -40,6 +40,7 @@ function SendTeamInfo(pl)
 			umsg.String( Team.Name )
 			umsg.Vector( Team.Color )
 			umsg.Entity( Team.Owner )
+			umsg.Long( Team.Open )
 		umsg.End()
 	end
 end
@@ -53,6 +54,7 @@ function SendAllTeamInfo()
 			umsg.String( Team.Name )
 			umsg.Vector( Team.Color )
 			umsg.Entity( Team.Owner )
+			umsg.Long( Team.Open )
 		umsg.End()
 	end
 end
@@ -71,11 +73,8 @@ function GM:Initialize()
 end
 
 function f2sPlayerAuthed( pl, SteamID, UniqueID )
-	SendTeamInfo(pl)
-	if pl == player.GetByID(1) then -- were the first player in! spawn this shit.
-		//PlaceRefineries(1)
-	end
 	pl:SetTeam(1)
+	SendTeamInfo(pl)
 end
 hook.Add("PlayerAuthed", "f2s.auth", f2sPlayerAuthed)
 
@@ -84,29 +83,39 @@ function JoinTeam( pl, cmd, args )
 	if id > GAMEMODE.NumTeams then return end
 	password = tostring( args[2] or "" )
 	teampassword = Teams[id].Password
-	if password == teampassword then
+	if password == teampassword || Teams[id].Open then
 		pl:SetTeam( id )
 	end
 end
 concommand.Add( "jointeam", JoinTeam )
 
 function MakeTeam( pl, cmd, args )
-	if table.Count( args ) == 5 then
-		name = args[1] or "Failures"
-		pass = args[2] or ""
-		r = args[3] or 100
-		g = args[4] or 100
-		b = args[5] or 100
-		pl:SetTeam( SetUpTeam( name, pass, r,g,b, pl ) )
+	if #args >= 6 then
+		teamid = tonumber( args[1] )
+		name = args[2] or "Failures"
+		pass = args[3] or ""
+		r = args[4] or 100
+		g = args[5] or 100
+		b = args[6] or 100
+		open = args[7]
+		if teamid < 2 then
+			for k,Team in pairs( Teams ) do
+				if IsLeader( pl,k ) then return 1 end
+			end
+			pl:SetTeam( SetUpTeam( name, pass, r,g,b, open, pl ) )
+			ResInit( pl:Team() )
+			PlaceRefineries(1)
+		else
+			pl:SetTeam( UpdateTeam( teamid, name, pass, r,g,b, open, pl ) )
+		end
 		SendAllTeamInfo()
-		ResInit( pl:Team() )
-		PlaceRefineries(1)
+		
 	end
 
 end
-concommand.Add( "maketeam", MakeTeam )
+concommand.Add( "makeeditteam", MakeTeam )
 
-function SetUpTeam( name, password, r,g,b, owner )
+function SetUpTeam( name, password, r,g,b, open, owner )
 	GAMEMODE.NumTeams = GAMEMODE.NumTeams + 1
 	local Index = GAMEMODE.NumTeams
 	--TeamPassword[GAMEMODE.NumTeams] = password
@@ -117,6 +126,7 @@ function SetUpTeam( name, password, r,g,b, owner )
 	Teams[Index].Name = name
 	Teams[Index].Color = Vector(r,g,b)
 	Teams[Index].Owner = owner
+	Teams[Index].Open = open
 	Teams[Index].Password = password
 	
 	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
@@ -124,8 +134,24 @@ function SetUpTeam( name, password, r,g,b, owner )
 	return GAMEMODE.NumTeams
 end
 
-function IsLeader( pl )
-	t = pl:Team()
+function UpdateTeam( id,name, password, r,g,b, open, owner )
+	local Index = id
+	
+	if !IsLeader(pl,id) then return end
+	
+	Teams[Index] = {}
+	Teams[Index].Name = name
+	Teams[Index].Color = Vector(r,g,b)
+	Teams[Index].Owner = owner
+	Teams[Index].Open = open
+	Teams[Index].Password = password
+	
+	Col = Color(Teams[Index].Color.x,Teams[Index].Color.y,Teams[Index].Color.z,255)
+	team.SetUp( Index, Teams[Index].Name, Col )
+	return id
+end
+
+function IsLeader( pl,t )
 	if pl != nil && Teams[t].Owner != nil && pl:IsValid() && pl:IsPlayer() then
 		return Teams[t].Owner == pl
 	end
@@ -169,6 +195,7 @@ function GM:PlayerSpawn( pl )
 
 	if( pl:Team() ==1001 ) then
 		pl:SetTeam(1)
+		SendTeamInfo(pl)
 	end
 	
 	t = pl:Team()
