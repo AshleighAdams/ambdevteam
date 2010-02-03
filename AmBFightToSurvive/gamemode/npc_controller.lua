@@ -38,9 +38,7 @@ end
 -- the player and the players team.
 --------------------------------------------
 function SpawnNPC(Class, Player)
-	local npc = ents.Create(Class)
-	npc:SetPos(Player:GetPos() + Player:GetAimVector() * 100.0 + Vector(0, 0, 50))
-	npc:Spawn()
+	local npc = Spawn(Player, Class)
 	npc.Team = Player:Team()
 	NPCs[npc] = true
 	if not TimerCreated then

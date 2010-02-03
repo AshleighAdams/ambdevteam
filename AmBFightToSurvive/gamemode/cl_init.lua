@@ -2,6 +2,7 @@ Teams = Teams or {}
 include( 'shared.lua' )
 include( 'cl_store.lua' )
 include( 'shared_store_items.lua' )
+include( 'shared_disable.lua' )
 include( 'cl_gui.lua' )
 include( 'cl_scoreboard.lua' )
 include( 'cl_damageoverlay.lua' )

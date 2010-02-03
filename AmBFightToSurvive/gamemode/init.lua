@@ -9,6 +9,7 @@ Teams = Teams or {}
 AddCSLuaFile( "shared.lua" )
 AddCSLuaFile( "shared_store.lua" )
 AddCSLuaFile( "shared_store_items.lua" )
+AddCSLuaFile( "shared_disable.lua" )
 AddCSLuaFile( "cl_gui.lua" )
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "cl_scoreboard.lua" )
@@ -28,10 +29,12 @@ include( 'shared.lua' )
 include( 'npc_controller.lua' )
 include( 'store.lua' )
 include( 'shared_store_items.lua' )
+include( 'shared_disable.lua' )
 include( 'player.lua' )
 include( 'recource_systems.lua' )
 include( 'map.lua' )
 include( 'placement.lua' )
+
 
 function SendTeamInfo(pl)
 	for i,Team in pairs( Teams ) do

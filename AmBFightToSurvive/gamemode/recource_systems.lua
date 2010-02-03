@@ -165,10 +165,4 @@ function CreateCrystals()
 end
 timer.Create( "f2s.Resources.CreateCrystals", 60*8, 0, CreateCrystals ) -- 8 mins
 
-function GM:PlayerSpawnedVehicle( pl, veh )
-	veh.ResNeeded = GetEntCost( ent )
-	veh.Team = pl:Team()
-	veh.Cost = ent.ResNeeded
-end
-
 include( 'prop_damage.lua' )

@@ -191,29 +191,29 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 -- Transport
 -- Land 
 AddItem("Jeep", 300, {C.Land}, function(Player)
-		Player:ConCommand("gm_spawnvehicle jeep")
+		SpawnVehicle(Player, "jeep")
 	end)
 	
 AddItem("Air Boat", 300, {C.Land}, function(Player)
-		Player:ConCommand("gm_spawnvehicle airboat")
+		SpawnVehicle(Player, "airboat")
 	end)
 --Air
 	
 --Seats
 AddItem("Airboat Seat", 100, {C.Seat}, function(Player)
-		Player:ConCommand("gm_spawnvehicle seat_airboat")
+		SpawnVehicle(Player, "seat_airboat")
 	end)
 	
 AddItem("Jeep Seat", 100, {C.Seat}, function(Player)
-		Player:ConCommand("gm_spawnvehicle seat_jeep")
+		SpawnVehicle(Player, "seat_jeep")
 	end)
 	
 AddItem("Wooden Chair", 100, {C.Seat}, function(Player)
-		Player:ConCommand("gm_spawnvehicle chair")
+		SpawnVehicle(Player, "chair")
 	end)
 	
 AddItem("HL2 Pod", 100, {C.Seat}, function(Player)
-		Player:ConCommand("gm_spawnvehicle pod")
+		SpawnVehicle(Player, "prisoner_pod")
 	end)
 
 -- Useless
