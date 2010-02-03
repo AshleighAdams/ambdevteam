@@ -27,6 +27,7 @@ function OpenMap(Popup)
 		-- Open
 		MapPanel:SetVisible(true)
 		if Popup then
+			MapPanel.Popup = true
 			MapPanel:MakePopup()
 		end
 	else
@@ -116,6 +117,7 @@ end
 --------------------------------------------
 function CloseMap()
 	if MapPanel then
+		MapPanel.Popup = false
 		MapPanel:SetVisible(false)
 	end
 end
@@ -273,7 +275,7 @@ local function MapThink()
 		end
 	else
 		if MapPanel then
-			if MapPanel:IsVisible() and MapPanel.ClickCallbacks == nil then
+			if MapPanel:IsVisible() and not MapPanel.Popup then
 				CloseMap()
 			end
 		end
