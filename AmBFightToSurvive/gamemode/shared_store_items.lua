@@ -65,6 +65,10 @@ C.Ammo = AddCategory("Ammunition", C.WarStuffs)
 C.Supplies = AddCategory("Supplies and Improvements", C.WarStuffs)
 C.Misc = AddCategory("Misc", C.WarStuffs)
 C.Special = AddCategory("Special", C.WarStuffs)
+C.Transport = AddCategory("Transport")
+C.Land = AddCategory("Land", C.Transport)
+C.Air = AddCategory("Air", C.Transport)
+C.Seat = AddCategory("Seats", C.Transport)
 C.Useless = AddCategory("Useless")
 C.Masochism = AddCategory("Masochism", C.Useless)
 
@@ -169,6 +173,34 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 		Player:Give("orbital_downfall")
 	end)
 	
+-- Transport
+-- Land 
+AddItem("Jeep", 300, {C.Land}, function(Player)
+		Player:ConCommand("gm_spawnvehicle jeep")
+	end)
+	
+AddItem("Air Boat", 300, {C.Land}, function(Player)
+		Player:ConCommand("gm_spawnvehicle airboat")
+	end)
+--Air
+	
+--Seats
+AddItem("Airboat Seat", 100, {C.Seat}, function(Player)
+		Player:ConCommand("gm_spawnvehicle seat_airboat")
+	end)
+	
+AddItem("Jeep Seat", 100, {C.Seat}, function(Player)
+		Player:ConCommand("gm_spawnvehicle seat_jeep")
+	end)
+	
+AddItem("Wooden Chair", 100, {C.Seat}, function(Player)
+		Player:ConCommand("gm_spawnvehicle chair")
+	end)
+	
+AddItem("HL2 Pod", 100, {C.Seat}, function(Player)
+		Player:ConCommand("gm_spawnvehicle pod")
+	end)
+
 -- Useless
 AddItem("100 ResPs", 200, {C.Useless}, function(Player)
 		GiveResP(Player:Team(), 100)
