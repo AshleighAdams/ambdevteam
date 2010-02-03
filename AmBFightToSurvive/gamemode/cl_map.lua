@@ -10,7 +10,7 @@ MapPanel = nil
 -- Opens the map, making it available for
 -- the player.
 --------------------------------------------
-function OpenMap(Popup)
+function OpenMap(Popup, Title)
 	if MapMetrics then
 		-- If the map is not yet created, create it.
 		if not MapPanel then
@@ -26,16 +26,42 @@ function OpenMap(Popup)
 		
 		-- Open
 		MapPanel:SetVisible(true)
+		MapPanel:SetTitle(Title or "The Map")
 		if Popup then
 			MapPanel.Popup = true
+			MapPanel:ShowCloseButton(true)
+			MapPanel:SetDeleteOnClose(false)
 			MapPanel:MakePopup()
+			MapPanel:SetKeyBoardInputEnabled()
+		else
+			MapPanel:SetKeyBoardInputEnabled()
+			MapPanel:SetMouseInputEnabled()
 		end
+		return true
 	else
 		-- Ask server for map metrics
 		datastream.StreamToServer("MapMetrics_Pls", { })
 		return false
 	end
 end
+
+--------------------------------------------
+-- Closes the map without destroying it.
+-- Causes all hooks to be reset.
+--------------------------------------------
+function CloseMap()
+	if MapPanel then
+		MapPanel.Popup = false
+		MapPanel:SetVisible(false)
+		MapPanel:ShowCloseButton(false)
+		for p, a in pairs(MapPanel.Points) do
+			if a then
+				p.ClickHooks = nil
+			end
+		end
+	end
+end
+
 
 --------------------------------------------
 -- The following methods can be applied to
@@ -109,16 +135,6 @@ function AddMapPoint()
 		return point
 	else
 		return nil
-	end
-end
-
---------------------------------------------
--- Closes the map without destroying it.
---------------------------------------------
-function CloseMap()
-	if MapPanel then
-		MapPanel.Popup = false
-		MapPanel:SetVisible(false)
 	end
 end
 
@@ -276,6 +292,9 @@ local function MapThink()
 	else
 		if MapPanel then
 			if MapPanel:IsVisible() and not MapPanel.Popup then
+				CloseMap()
+			end
+			if not MapPanel:IsVisible() and MapPanel.Popup then
 				CloseMap()
 			end
 		end
