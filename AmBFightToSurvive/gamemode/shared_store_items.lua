@@ -63,6 +63,7 @@ C.WarStuffs = AddCategory("War Stuffs")
 C.Weapons = AddCategory("Weapons", C.WarStuffs)
 C.Ammo = AddCategory("Ammunition", C.WarStuffs)
 C.Supplies = AddCategory("Supplies and Improvements", C.WarStuffs)
+C.Auto = AddCategory("Auto", C.WarStuffs)
 C.Misc = AddCategory("Misc", C.WarStuffs)
 C.Special = AddCategory("Special", C.WarStuffs)
 C.Transport = AddCategory("Transport")
@@ -130,10 +131,24 @@ AddItem("Pulse Rifle Energy Sphere 6 Pack", 30, {C.Ammo}, function(Player)
 AddItem("Pulse Rifle Bullets 100 Pack", 90, {C.Ammo}, function(Player)
 		Player:GiveAmmo(100, "AR2")
 	end)
+
+-- Auto
+AddItem("Autoturret", 500, {C.Auto}, function(Player)
+		SpawnNPC("npc_turret_floor", Player)
+	end)
+AddItem("Manhack", 100, {C.Auto}, function(Player)
+		SpawnNPC("npc_manhack", Player)
+	end)
+AddItem("Scanner", 50, {C.Auto}, function(Player)
+		SpawnNPC("npc_cscanner", Player)
+	end)
 	
 -- Misc
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)
 		Player:Give("tactical_insertion")
+	end)
+AddItem("Gravity Gun", 50, {C.Misc, C.Weapons}, function(Player)
+		Player:Give("weapon_physcannon")
 	end)
 	
 -- Supplies

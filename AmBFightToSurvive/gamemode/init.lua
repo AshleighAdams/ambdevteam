@@ -25,6 +25,7 @@ resource.AddFile( "materials/amb/freespace06.vmt" )
 
 
 include( 'shared.lua' )
+include( 'npc_controller.lua' )
 include( 'store.lua' )
 include( 'shared_store_items.lua' )
 include( 'player.lua' )
