@@ -131,10 +131,12 @@ function ShowTeamOptions()
         TeamButton:SetText( CreateEdit .. " Team" )
         TeamButton.DoClick = function() 
 			Col = TeamColor:GetColor()
+			local open = 0
+			if TeamPassword:GetValue(true) then open = 1 end
 			//print( "makeeditteam " .. tostring(TeamOwner) .. " " .. TeamName:GetValue() .. " " .. TeamPassword:GetValue() .. " " .. Col.r .. " " .. Col.g .. " " .. Col.b .. " " .. TeamOpen:GetChecked(true) )
 			Teams[TeamOwner] = Teams[TeamOwner] or {}
-			Teams[TeamOwner].Password = TeamPassword:GetValue() 
-			RunConsoleCommand("makeeditteam", TeamOwner, TeamName:GetValue(), TeamPassword:GetValue(), Col.r, Col.g, Col.b, TeamOpen:GetChecked(true))
+			Teams[TeamOwner].Password = TeamPassword:GetValue()
+			RunConsoleCommand("makeeditteam", TeamOwner, TeamName:GetValue(), TeamPassword:GetValue(), Col.r, Col.g, Col.b, open)
 			DermaFrame:Close()
         end
     Y = Y + YSpacing+10

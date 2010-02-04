@@ -86,7 +86,7 @@ function JoinTeam( pl, cmd, args )
 	if id > GAMEMODE.NumTeams then return end
 	password = tostring( args[2] or "" )
 	teampassword = Teams[id].Password
-	if password == teampassword || Teams[id].Open == 1 then
+	if password == teampassword || Teams[id].Open then
 		pl:SetTeam( id )
 	end
 end
@@ -95,12 +95,15 @@ concommand.Add( "jointeam", JoinTeam )
 function MakeTeam( pl, cmd, args )
 	if #args >= 6 then
 		teamid = tonumber( args[1] )
-		name = args[2] or "Failures"
+		name = args[2] or "NAMEERROR"
+		name = string.Left(name,18)
 		pass = args[3] or ""
 		r = args[4] or 100
 		g = args[5] or 100
 		b = args[6] or 100
 		open = args[7] or 0
+		print(open)
+		PrintTable(args)
 		if teamid < 2 then
 			for k,Team in pairs( Teams ) do
 				if IsLeader( pl,k ) then return 1 end
