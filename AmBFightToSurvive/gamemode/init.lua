@@ -311,3 +311,5 @@ function SetWeapons( pl, cmd, args )
 	pl.w3 = weps[3]
 end
 concommand.Add("sv_cl_setw", SetWeapons)
+
+concommand.Add("f2s_reqteaminfo",function(pl) SendTeamInfo(pl) end)

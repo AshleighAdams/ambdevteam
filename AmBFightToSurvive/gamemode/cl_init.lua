@@ -103,3 +103,11 @@ function ShowSpawnMenu()
 	end
 end
 usermessage.Hook( "show_spawn_menu", ShowSpawnMenu )
+
+function ReqTeamInfo( ply )
+ 
+	ply:ConCommand("f2s_reqteaminfo")
+ 
+end
+ 
+hook.Add( "PlayerInitialSpawn", "f2s.ReqTeamInfo", ReqTeamInfo )
