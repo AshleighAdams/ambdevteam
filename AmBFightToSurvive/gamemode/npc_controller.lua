@@ -37,13 +37,18 @@ end
 -- Spawns an npc of the specified class to
 -- the player and the players team.
 --------------------------------------------
-function SpawnNPC(Class, Player)
-	local npc = Spawn(Player, Class)
-	npc.Team = Player:Team()
-	NPCs[npc] = true
-	if not TimerCreated then
-		timer.Create(TimerName, TimerDelay, 0, UpdateNPCs)
+function SpawnNPC(Player, Class)
+	local data = list.Get("NPC")[Class]
+	if data then
+		local npc = Spawn(Player, data.Class, data.Model, data.KeyValues, Vector(0, 0, data.Offset or 0))
+		npc.Team = Player:Team()
+		NPCs[npc] = true
+		if not TimerCreated then
+			timer.Create(TimerName, TimerDelay, 0, UpdateNPCs)
+		end
+		UpdateNPCs()
+		return npc
+	else
+		return nil
 	end
-	UpdateNPCs()
-	return npc
 end

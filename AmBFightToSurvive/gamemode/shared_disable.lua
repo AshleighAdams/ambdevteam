@@ -5,23 +5,16 @@ end
 
 -- Disable sents from the spawn menu
 if SERVER then
-	local OutstandingSpawns = { }
 	local function NonPropSpawn(Player)
 		if Admin(Player) then
 			return true
 		else
-			if OutstandingSpawns[Player] > 0 then
-				OutstandingSpawns[Player] = OutstandingSpawns[Player] - 1
-				return true
-			else
-				Player:ChatPrint("Spawn disallowed, only props may be spawned from the spawn menu" ..
-					". You may use the store(F4) to purchase this instead.")
-				return false
-			end
+			Player:ChatPrint("Spawn disallowed, only props may be spawned from the spawn menu" ..
+				". You may use the store(F4) to purchase this instead.")
+			return false
 		end
 	end
 	hook.Add("PlayerSpawnSENT", "NonPropSpawn", NonPropSpawn)
-	hook.Add("PlayerSpawnNPC", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnSWEP", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnVehicle", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnEffect", "NonPropSpawn", NonPropSpawn)
@@ -30,20 +23,36 @@ if SERVER then
 	-- Safely spawns an entity of the specified class 
 	-- in front of the player. returns the spawned
 	-- entity.
-	function Spawn(Player, Class)
+	function Spawn(Player, Class, Model, Keys, Offset)
 		local eye = Player:GetEyeTrace()
 		local dif = eye.HitPos - Player:GetPos()
 		local ent = ents.Create(Class)
 		local height = ent:OBBMins().z
-		ent:SetPos(eye.HitPos + Vector(0, 0, height))
+		if Model then
+			ent:SetModel(Model)
+		end
+		if ent:IsNPC() then
+			ent:SetKeyValue("spawnflags", SF_NPC_FADE_CORPSE | SF_NPC_ALWAYSTHINK)
+		end
+		if Keys then
+			for k, v in pairs(Keys) do
+				ent:SetKeyValue(k, v)
+			end
+		end
+		ent:SetPos(eye.HitPos - Vector(0, 0, height) + (Offset or Vector(0.0, 0.0, 0.0)))
 		ent:Spawn()
+		ent:Activate()
 		return ent
 	end
 	
 	-- Vehicles spawn differently
-	function SpawnVehicle(Player, Class)
-		OutstandingSpawns[Player] = (OutstandingSpawns[Player] or 0) + 1
-		Player:ConCommand("gm_spawnvehicle " .. Class)
+	function SpawnVehicle(Player, Name)
+		local vehicle = list.Get("Vehicles")[Name]
+		if vehicle then
+			return Spawn(Player, vehicle.Class, vehicle.Model, vehicle.KeyValues)
+		else
+			return nil
+		end
 	end
 end
 

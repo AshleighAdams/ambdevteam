@@ -63,7 +63,7 @@ C.WarStuffs = AddCategory("War Stuffs")
 C.Weapons = AddCategory("Weapons", C.WarStuffs)
 C.Ammo = AddCategory("Ammunition", C.WarStuffs)
 C.Supplies = AddCategory("Supplies and Improvements", C.WarStuffs)
-C.Auto = AddCategory("Auto", C.WarStuffs)
+C.AreaDefense = AddCategory("Area Defense", C.WarStuffs)
 C.Misc = AddCategory("Misc", C.WarStuffs)
 C.Special = AddCategory("Special", C.WarStuffs)
 C.Transport = AddCategory("Transport")
@@ -132,15 +132,10 @@ AddItem("Pulse Rifle Bullets 100 Pack", 90, {C.Ammo}, function(Player)
 		Player:GiveAmmo(100, "AR2")
 	end)
 
--- Auto
-AddItem("Autoturret", 500, {C.Auto}, function(Player)
-		SpawnNPC("npc_turret_floor", Player)
-	end)
-AddItem("Manhack", 100, {C.Auto}, function(Player)
-		SpawnNPC("npc_manhack", Player)
-	end)
-AddItem("Scanner", 50, {C.Auto}, function(Player)
-		SpawnNPC("npc_cscanner", Player)
+-- Area Defense
+AddItem("Autoturret", 500, {C.AreaDefense}, function(Player)
+		local npc = SpawnNPC(Player, "npc_turret_floor")
+		npc:SetHealth(100)
 	end)
 	
 -- Misc
@@ -191,29 +186,29 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 -- Transport
 -- Land 
 AddItem("Jeep", 300, {C.Land}, function(Player)
-		SpawnVehicle(Player, "jeep")
+		SpawnVehicle(Player, "Jeep")
 	end)
 	
 AddItem("Air Boat", 300, {C.Land}, function(Player)
-		SpawnVehicle(Player, "airboat")
+		SpawnVehicle(Player, "Airboat")
 	end)
 --Air
 	
 --Seats
-AddItem("Airboat Seat", 100, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "seat_airboat")
+AddItem("Airboat Seat", 50, {C.Seat}, function(Player)
+		SpawnVehicle(Player, "Seat_Airboat")
 	end)
 	
-AddItem("Jeep Seat", 100, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "seat_jeep")
+AddItem("Jeep Seat", 50, {C.Seat}, function(Player)
+		SpawnVehicle(Player, "Seat_Jeep")
 	end)
 	
-AddItem("Wooden Chair", 100, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "chair")
+AddItem("Wooden Chair", 50, {C.Seat}, function(Player)
+		SpawnVehicle(Player, "Chair_Wood")
 	end)
 	
-AddItem("HL2 Pod", 100, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "prisoner_pod")
+AddItem("HL2 Pod", 50, {C.Seat}, function(Player)
+		SpawnVehicle(Player, "Pod")
 	end)
 
 -- Useless
