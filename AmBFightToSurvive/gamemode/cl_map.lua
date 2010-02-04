@@ -278,6 +278,35 @@ end
 usermessage.Hook("map_metrics", ReceiveMapMetrics)
 
 --------------------------------------------
+-- Gets if player a can see player b on the
+-- map.
+--------------------------------------------
+local function CanSeePlayerOnMap(A, B)
+	if A == B then
+		return true
+	end
+	if A:GetNWBool("HasRadar", false) then
+		return true
+	end
+	
+	local ateam = A:Team()
+	local bteam = B:Team()
+	if ateam > 1 then
+		if bteam > 1 then
+			if ateam == bteam then
+				return true
+			else
+				return A:Visible(B)
+			end
+		else
+			return true
+		end
+	else
+		return false
+	end
+end
+
+--------------------------------------------
 -- Think hook for the map.
 --------------------------------------------
 local function MapThink()
@@ -303,7 +332,7 @@ local function MapThink()
 	-- Add players to map
 	if MapPanel then
 		for _, p in pairs(player.GetAll()) do
-			if p:Team() == LocalPlayer():Team() then
+			if CanSeePlayerOnMap(LocalPlayer(), p) then
 				local tb = p:GetTable()
 				if not tb then
 					tb = { }
@@ -336,7 +365,15 @@ local function MapThink()
 						end
 					end
 					point.ShouldRemove = function(point)
-						return not point.Player:IsValid()
+						if point.Player:IsValid() then
+							if CanSeePlayerOnMap(LocalPlayer(), point.Player) then
+								return false
+							else
+								return true
+							end
+						else
+							return true
+						end
 					end
 					tb.MapPoint = point
 				end

@@ -217,6 +217,7 @@ function GM:PlayerSpawn( pl )
 	umsg.End()
 	pl:SetJumpPower( 200 )
 	pl.MegaLegs = false
+	pl:SetNWBool("HasRadar", false)
 end
 
 
