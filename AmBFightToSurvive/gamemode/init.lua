@@ -86,7 +86,7 @@ function JoinTeam( pl, cmd, args )
 	if id > GAMEMODE.NumTeams then return end
 	password = tostring( args[2] or "" )
 	teampassword = Teams[id].Password
-	if password == teampassword || Teams[id].Open then
+	if password == teampassword || Teams[id].Open == 1 then
 		pl:SetTeam( id )
 	end
 end
@@ -100,7 +100,7 @@ function MakeTeam( pl, cmd, args )
 		r = args[4] or 100
 		g = args[5] or 100
 		b = args[6] or 100
-		open = args[7]
+		open = args[7] or 0
 		if teamid < 2 then
 			for k,Team in pairs( Teams ) do
 				if IsLeader( pl,k ) then return 1 end
@@ -140,12 +140,11 @@ end
 function UpdateTeam( id,name, password, r,g,b, open, owner )
 	local Index = id
 	
-	if !IsLeader(pl,id) then return end
-	
-	Teams[Index] = {}
+	if !IsLeader(owner,id) then return 1 end
+	//Teams[Index] = {}
 	Teams[Index].Name = name
 	Teams[Index].Color = Vector(r,g,b)
-	Teams[Index].Owner = owner
+	//Teams[Index].Owner = owner
 	Teams[Index].Open = open
 	Teams[Index].Password = password
 	
@@ -155,7 +154,7 @@ function UpdateTeam( id,name, password, r,g,b, open, owner )
 end
 
 function IsLeader( pl,t )
-	if pl != nil && Teams[t].Owner != nil && pl:IsValid() && pl:IsPlayer() then
+	if ( pl && ValidEntity(pl) ) && ( Teams[t].Owner && ValidEntity(Teams[t].Owner) ) then
 		return Teams[t].Owner == pl
 	end
 	return false

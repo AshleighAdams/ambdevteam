@@ -131,8 +131,10 @@ function ShowTeamOptions()
         TeamButton:SetText( CreateEdit .. " Team" )
         TeamButton.DoClick = function() 
 			Col = TeamColor:GetColor()
-			print( "makeeditteam " .. tostring(TeamOwner) .. " " .. TeamName:GetValue() .. " " .. TeamPassword:GetValue() .. " " .. Col.r .. " " .. Col.g .. " " .. Col.b .. " " .. TeamOpen:GetValue() )
-			RunConsoleCommand("makeeditteam", TeamOwner, TeamName:GetValue(), TeamPassword:GetValue(), Col.r, Col.g, Col.b, TeamOpen:GetValue())
+			//print( "makeeditteam " .. tostring(TeamOwner) .. " " .. TeamName:GetValue() .. " " .. TeamPassword:GetValue() .. " " .. Col.r .. " " .. Col.g .. " " .. Col.b .. " " .. TeamOpen:GetChecked(true) )
+			Teams[TeamOwner] = Teams[TeamOwner] or {}
+			Teams[TeamOwner].Password = TeamPassword:GetValue() 
+			RunConsoleCommand("makeeditteam", TeamOwner, TeamName:GetValue(), TeamPassword:GetValue(), Col.r, Col.g, Col.b, TeamOpen:GetChecked(true))
 			DermaFrame:Close()
         end
     Y = Y + YSpacing+10
@@ -170,7 +172,7 @@ function ShowTeamOptions()
         ID = list.TeamID or 1
         DermaFrame:Close()
         
-        if Teams[ID].Open then RunConsoleCommand("jointeam",ID) return end
+        if Teams[ID].Open == 1 then RunConsoleCommand("jointeam",ID) return end
                 
         PasswordBox = vgui.Create( "DFrame" )
             PasswordBox:SetSize( 200,70 )
@@ -192,7 +194,13 @@ function ShowTeamOptions()
     end
 
 end
-concommand.Add("gm_showteam", ShowTeamOptions)
+
+function f2sPlayerBindPress(pl,bind,p)
+	if bind == "gm_showteam" then ShowTeamOptions() end
+end
+hook.Add("PlayerBindPress", "f2s.bind",f2sPlayerBindPress)
+
+//concommand.Add("gm_showteam", ShowTeamOptions)
 //ShowTeamOptions()
 //hook.Add( "ShowTeamOptions", "f2s.ShowTeamOptions", ShowTeamOptions )
 
