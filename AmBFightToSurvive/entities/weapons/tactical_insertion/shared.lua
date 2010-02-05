@@ -22,11 +22,11 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 
-local ShootSound = Sound( "" )
+local ShootSound = Sound( "weapons/357/357_reload1.wav" )
 
 function SWEP:Initialize()
 	if( SERVER ) then
-			self:SetWeaponHoldType("melee");
+			self:SetWeaponHoldType("grenade");
 	end
 end
 
@@ -49,17 +49,18 @@ end
 function SWEP:PrimaryAttack()
 
 	self:TakePrimaryAmmo( 1 )
-	
-	//Anims
-	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-	self.Owner:SetAnimation( PLAYER_ATTACK1 )
-	timer.Create("kill",800,1,function() self:Fire("kill","1") timer.Destroy("kill") end)
+	local timername = "kill" .. tostring( CurTime() )
+	timer.Create(timername,800,0,function(wep) wep:Fire("kill","1") end, self.Weapon)
 	Owner = self.Owner
 	if SERVER then Owner.SWEP = self end
 	self:EmitSound( ShootSound )
 	Owner:ConCommand("setspawnpoint")
-	self.Owner:SetAnimation( PLAYER_ATTACK1 );
 	self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
+	
+	self.Weapon:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
+ 	self.Owner:MuzzleFlash()
+ 	self.Owner:SetAnimation( PLAYER_ATTACK1 )
+	
 end
 
 /*---------------------------------------------------------
