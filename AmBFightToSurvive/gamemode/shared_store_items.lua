@@ -215,6 +215,9 @@ AddItem("HL2 Pod", 50, {C.Seat}, function(Player)
 	end)
 
 -- Useless
+AddItem("Radio", 150, {C.Useless}, function(Player)
+		Spawn(Player, "radio")
+	end)
 AddItem("100 ResPs", 200, {C.Useless}, function(Player)
 		GiveResP(Player:Team(), 100)
 	end)

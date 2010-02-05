@@ -22,5 +22,10 @@ function f2sEntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
 			end
 		end
 	end
+	
+	-- Sneak in a hook to allow normal entites to now when they are damaged
+	if ent.OnTakeNormalDamage then
+		ent:OnTakeNormalDamage(dmginfo)
+	end
 end
 hook.Add( "EntityTakeDamage", "f2s.enttakedmg", f2sEntityTakeDamage )
