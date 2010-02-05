@@ -26,7 +26,7 @@ local ShootSound = Sound( "weapons/357/357_reload1.wav" )
 
 function SWEP:Initialize()
 	if( SERVER ) then
-			self:SetWeaponHoldType("grenade");
+			self:SetWeaponHoldType("grenade")
 	end
 end
 
