@@ -54,10 +54,8 @@ end
 ----------------------------------------
 function SWEP:PrimaryAttack()
 	if CLIENT then return end
-	if TakeSciP( self.Owner:Team(), 1 ) then
-		if not self:HasMark() then
-			self:StartMark(self.Owner:GetEyeTrace())
-		end
+	if not self:HasMark() then
+		self:StartMark(self.Owner:GetEyeTrace())
 	end
 end
 
@@ -84,9 +82,16 @@ end
 function SWEP:StartMark(Trace)
 	if Trace.Hit and Trace.HitWorld then
 		local weap = self.Weapon
-		weap:EmitSound(StartMarkSound)
 		if SERVER then
-			local marker = self:CreateMarker(Trace.HitPos + Vector(0, 0, 100))
+			if TakeSciP(self.Owner:Team(), 1) then
+				local marker = self:CreateMarker(Trace.HitPos + Vector(0, 0, 100))
+				weap:EmitSound(StartMarkSound)
+				if not marker.Valid then
+					GiveSciP(self.Owner:Team(), 1)
+				end
+			else
+				weap:EmitSound(EndMarkSound)
+			end
 		end
 		return true
 	end
