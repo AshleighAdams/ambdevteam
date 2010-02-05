@@ -26,7 +26,7 @@ local ShootSound = Sound( "weapons/357/357_reload1.wav" )
 
 function SWEP:Initialize()
 	if( SERVER ) then
-			self:SetWeaponHoldType("grenade")
+			self:SetWeaponHoldType("slam")
 	end
 end
 
@@ -131,11 +131,10 @@ if SERVER then
 				return false
 		end
 	end 
-	concommand.Add("setspawnpoint", SetSpawnpoint)
 	
 	function DamageDetector( ent, inflictor, attacker, amount, dmginfo )
 		if ent.IsTI == !nil then
-			if dmginfo:GetDamageType() == "DMG_BULLET" || dmginfo:GetDamageType() == "DMG_BLAST" || dmginfo:GetDamageType() == "DMG_SLASH" then
+			if dmginfo:GetDamageType() == DMG_BULLET || dmginfo:GetDamageType() == DMG_BLAST || dmginfo:GetDamageType() == DMG_SLASH then
 				ent:Remove()
 			end
 		end
