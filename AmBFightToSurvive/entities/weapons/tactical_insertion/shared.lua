@@ -117,12 +117,11 @@ if SERVER then
 			Flare = ents.Create("env_flare")
 				Flare:SetPos( pl:GetPos() )
 				Flare:SetKeyValue( "scale", "1" )
-				Flare:SetKeyValue( "duration", "99999999999999" )
-				Flare:SetKeyValue( "Infinite", "1" ) --Infinite
+				Flare:SetKeyValue( "spawnflags", "4" ) --Infinite
 				//Flare:SetParent(ent)
 				Flare:Spawn()
 			Flare:Activate()
-			pl.Flare = Flare
+			ent.Flare = Flare
 
 			pl.SpawnEnt = ent
 			ent.IsTI = true
@@ -136,6 +135,8 @@ if SERVER then
 		if ent.IsTI == !nil then
 			if dmginfo:GetDamageType() == DMG_BULLET || dmginfo:GetDamageType() == DMG_BLAST || dmginfo:GetDamageType() == DMG_SLASH then
 				ent:Remove()
+				ent:Fire( "Die","0.1" )
+				ent.Flare:Fire("kill","5")
 			end
 		end
 	end
