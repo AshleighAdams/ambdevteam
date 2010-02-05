@@ -26,7 +26,7 @@ local ShootSound = Sound( "" )
 
 function SWEP:Initialize()
 	if( SERVER ) then
-			self:SetWeaponHoldType("none");
+			self:SetWeaponHoldType("normal");
 	end
 end
 
