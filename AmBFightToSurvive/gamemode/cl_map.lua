@@ -296,7 +296,7 @@ local function CanSeePlayerOnMap(A, B)
 			if ateam == bteam then
 				return true
 			else
-				return A:Visible(B)
+				return Visible(A, B)
 			end
 		else
 			return true

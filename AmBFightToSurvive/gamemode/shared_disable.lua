@@ -1,6 +1,11 @@
 -- Gets if the specified player is an admin
 local function Admin(Player)
-	return Player:IsAdmin()
+	if Player:IsAdmin() then
+		Player:ChatPrint("Performed Admin Action")
+		return true
+	else
+		return false
+	end
 end
 
 -- Disable sents from the spawn menu
@@ -58,10 +63,8 @@ end
 
 -- Only props may be picked up with the physgun
 local function PhysgunPickup(Player, Entity)
-	if not Admin(Player) then
-		if Entity:GetClass() ~= "prop_physics" then
-			return false
-		end
+	if Entity:GetClass() ~= "prop_physics" then
+		return Admin(Player)
 	end
 end
 hook.Add("PhysgunPickup", "DisablePhysgunPickup", PhysgunPickup)

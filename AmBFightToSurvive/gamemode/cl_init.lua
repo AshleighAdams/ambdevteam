@@ -1,5 +1,6 @@
 Teams = Teams or {}
 include( 'shared.lua' )
+include( 'shared_trace.lua' )
 include( 'cl_store.lua' )
 include( 'shared_store_items.lua' )
 include( 'shared_disable.lua' )

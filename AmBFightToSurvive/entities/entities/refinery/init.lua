@@ -41,9 +41,9 @@ function ENT:CanRefine(Crystal)
 		if (Crystal:GetPos() - self:GetPos()):Length() < CaptureRadius then
 			local owner = Crystal.Owner
 			if ValidEntity(owner) and owner:IsPlayer() then
-				return owner:Visible( self )
+				return Visible(self, owner)
 			else
-				return Crystal:Visible( self )
+				return Visible(self, Crystal)
 			end
 		end
 	end
@@ -76,7 +76,7 @@ function ENT:Think()
 		
 		-- Players can capture
 		if e:IsPlayer() then
-			if e:Visible(self) and e:Alive() then
+			if e:Alive() and Visible(self, e) then
 				local team = e:Team()
 				if team == self.Team then
 					capblock = true

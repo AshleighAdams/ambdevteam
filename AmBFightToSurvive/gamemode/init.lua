@@ -7,6 +7,7 @@ Teams = Teams or {}
 
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )
+AddCSLuaFile( "shared_trace.lua" )
 AddCSLuaFile( "shared_store.lua" )
 AddCSLuaFile( "shared_store_items.lua" )
 AddCSLuaFile( "shared_disable.lua" )
@@ -28,6 +29,7 @@ resource.AddFile( "materials/amb/freespace06.vmt" )
 include( 'shared.lua' )
 include( 'npc_controller.lua' )
 include( 'store.lua' )
+include( 'shared_trace.lua' )
 include( 'shared_store_items.lua' )
 include( 'shared_disable.lua' )
 include( 'player.lua' )
