@@ -172,6 +172,14 @@ function ENT:NowPeakFire()
 	self.Drone:FadeOut(15)
 	self.Explosion = CreateSound(self.Entity, "ambient/explosions/citadel_end_explosion2.wav")
 	self.Explosion:Play()
+
+	-- Sphagetti
+	local near = ents.FindInSphere(self.Target, self.LaserSize)
+	for _, e in pairs(near)	do
+		if e.Registered then
+			e:BreakConstraints()
+		end
+	end
 	
 	-- Scorches
 	for i = 1, 50 do

@@ -142,6 +142,70 @@ function MetaProp:Destroy()
 end
 
 --------------------------------------------
+-- Unfreezes the prop and removes all its
+-- constraints, detaching it from wherever
+-- it was used. This only works for
+-- constructed props.
+--------------------------------------------
+function MetaProp:BreakConstraints()
+	if self.Constructed then
+		local phys = self:GetPhysicsObject()
+		if phys and phys:IsValid() then
+			phys:EnableMotion(true)
+		end
+		constraint.RemoveAll(self)
+	end
+end
+
+--------------------------------------------
+-- Gets the props that make up the building
+-- or structure this prop is a part of.
+-- For example, if this is called on a door
+-- of a house, a list containing all the 
+-- props in the house, including the door,
+-- would be returned.
+--------------------------------------------
+function MetaProp:GetStructureProps()
+	local open = { } -- unprocessed props
+	local nopen = { } -- to add to open
+	local closed = { } -- processed result props
+	
+	-- Process
+	nopen = { self.Entity }
+	while #nopen > 0 do
+		-- open = open + nopen
+		for _, e in pairs(nopen) do
+			if open[e] ~= false then
+				open[e] = true
+			end
+		end
+		nopen = { } -- Clear nopen
+	
+		-- Add more to nopen
+		for e, a in pairs(open) do
+			if e and a and e:IsValid() then
+			
+				-- Is prop?
+				if e.Registered then
+					-- Add to closed set (processed)
+					table.insert(closed, e)
+					
+					-- Add constrained to open set
+					local cons = constraint.GetAllConstrainedEntities(e)
+					for _, r in pairs(cons) do
+						table.insert(nopen, r)
+					end
+				end
+				
+				open[e] = false
+			end
+		end
+	end
+	
+	return closed
+end
+
+--------------------------------------------
 -- Small visual effect that causes the
 -- wireframe texture and normal texture to
 -- flicker on the prop.
@@ -164,15 +228,25 @@ function MetaProp:Flicker()
 end
 
 --------------------------------------------
+-- Gets if the prop can be registered.
+--------------------------------------------
+function CanRegisterProp(ent)
+	return true
+end
+
+
+--------------------------------------------
 -- Registers a prop into the construction
 -- system.
 --------------------------------------------
 function RegisterProp(ent)
-	setmetatable(ent:GetTable(), {__index = MetaProp}) 
-	ent.ResNeeded = GetEntCost(ent)
-	ent.Cost = ent.ResNeeded
-	ent.Registered = true
-	ent:SetState(STATE_UNCONSTRUCTED)
+	if CanRegisterProp(ent) then
+		setmetatable(ent:GetTable(), {__index = MetaProp}) 
+		ent.ResNeeded = GetEntCost(ent)
+		ent.Cost = ent.ResNeeded
+		ent.Registered = true
+		ent:SetState(STATE_UNCONSTRUCTED)
+	end
 end
 
 local UnconstructedTools = { "colour", "material", } -- Blacklist
@@ -240,12 +314,7 @@ hook.Add("EntityTakeDamage", "f2s.enttakedmg", EntityTakeDamage)
 function CheckForNewProps()
 	for k,ent in pairs(ents.FindByClass("prop_physics")) do
 		if not ent.Registered then
-				--- We need to make sure that they are not world props and are owned by a player.
-				--- TODO, make a function to be supported with many prop protections.  This reqires SPP is installed.
-			owner = ent:GetNetworkedEntity("OwnerObj", false) 
-			if IsValid(owner) && owner:IsPlayer() then
-				RegisterProp(ent)
-			end
+			RegisterProp(ent)
 		end
 	end
 end

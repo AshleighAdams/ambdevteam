@@ -42,6 +42,14 @@ end
 function SWEP:Think()	
 end
 
+/*---------------------------------------------------------
+	Gets the entity that is being aimed at.
+---------------------------------------------------------*/
+function SWEP:TraceEntity()
+	local owner = self.Owner
+	local trace = owner:GetEyeTrace()
+	return trace.Entity
+end
 
 /*---------------------------------------------------------
 	PrimaryAttack
@@ -49,14 +57,25 @@ end
 function SWEP:PrimaryAttack()
 	self.Weapon:SetNextPrimaryFire(CurTime() + 2)
 	if SERVER then
-		local owner = self.Owner
-		local trace = owner:GetEyeTrace()
-		local ent = trace.Entity
-		if ent and ent:IsValid() and ent:GetClass() == "prop_physics" then
-			if not ent.Registered then
-				RegisterProp(ent)
+		local ent = self:TraceEntity()
+		if ent and ent.Registered then
+			ent:Construct(self.Owner:Team())
+		end
+	end
+end
+
+/*---------------------------------------------------------
+	Reload
+---------------------------------------------------------*/
+function SWEP:Reload()
+	-- Build Structure
+	if SERVER then
+		local ent = self:TraceEntity()
+		if ent and ent.Registered then
+			local struct = ent:GetStructureProps()
+			for _, e in pairs(struct) do
+				e:Construct(self.Owner:Team())
 			end
-			ent:Construct(owner:Team())
 		end
 	end
 end
@@ -67,16 +86,9 @@ end
 function SWEP:SecondaryAttack()
 	self.Weapon:SetNextSecondaryFire( CurTime() + 2 )
 	if SERVER then
-		local owner = self.Owner
-		local trace = owner:GetEyeTrace()
-		local ent = trace.Entity
-		if ent and ent:IsValid() and ent:GetClass() == "prop_physics" then
-			if not ent.Registered then
-				RegisterProp(ent)
-			end
-			if ent.Team and ent.Team == owner:Team() then
-				ent:Deconstruct()
-			end
+		local ent = self:TraceEntity()
+		if ent and ent.Registered and ent.Team and ent.Team == self.Owner:Team() then
+			ent:Deconstruct()
 		end
 	end
 end
