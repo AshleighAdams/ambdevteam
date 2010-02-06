@@ -117,6 +117,8 @@ function MetaProp:Damage(DamageInfo)
 	local damage = DamageInfo:GetDamage() / 20.0
 	if DamageInfo:IsExplosionDamage() then
 		damage = damage * 2.0
+	else
+		damage = damage / 10
 	end
 	self.ResNeeded = self.ResNeeded + damage
 	if self.Constructed then
