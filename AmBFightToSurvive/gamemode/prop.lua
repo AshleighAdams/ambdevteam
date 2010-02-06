@@ -120,6 +120,7 @@ function MetaProp:Damage(DamageInfo)
 	else
 		damage = damage / 10
 	end
+	self.LastDamageTime = CurTime()
 	self.ResNeeded = self.ResNeeded + damage
 	if self.Constructed then
 		if self.ResNeeded > self.Cost then
@@ -128,7 +129,7 @@ function MetaProp:Damage(DamageInfo)
 			self:Flicker()
 		end
 	else
-		if self.ResNeeded > self.Cost + 4 then
+		if self.ResNeeded > self.Cost + 1 then
 			self:Destroy()
 		else
 			self:Flicker()

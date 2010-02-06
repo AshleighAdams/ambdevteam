@@ -137,6 +137,9 @@ AddItem("Autoturret", 500, {C.AreaDefense}, function(Player)
 		local npc = SpawnNPC(Player, "npc_turret_floor")
 		npc:SetHealth(100)
 	end)
+AddItem("Autorepair Beacon", 120, {C.AreaDefense}, function(Player)
+		Spawn(Player, "autorepair_beacon")
+	end)
 	
 -- Misc
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)

@@ -45,6 +45,7 @@ if SERVER then
 			end
 		end
 		ent:SetPos(eye.HitPos - Vector(0, 0, height) + (Offset or Vector(0.0, 0.0, 0.0)))
+		ent.Team = Player:Team()
 		ent:Spawn()
 		ent:Activate()
 		return ent
