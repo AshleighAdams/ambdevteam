@@ -10,7 +10,7 @@ hook.Add( "PlayerLoadout", "fs.Player.Loadout", fsPlayerLoadout )
 
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not being called, dont know why
 	if !ply:IsPlayer() && !ply:IsNPC() then return end
-	lastdamage[ply:SteamID()] = CurTime() -- for health regen stuff ect...
+	ply.LastShot = CurTime() -- for health regen stuff ect...
 	local attacker = dmginfo:GetAttacker()
 	if attacker:IsNPC() || attacker:IsPlayer() then
 		ply.LastAttacker = attacker
@@ -88,7 +88,7 @@ end
 
 function GM.HealthRegen()
 	for _,ply in pairs( player.GetAll() ) do
-		local lastdmg = lastdamage[ply:SteamID()] or 0
+		local lastdmg = pl.LastShot or 0
 		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
 			if ply:Health() > 20 then
 				local hp = ply:Health()
