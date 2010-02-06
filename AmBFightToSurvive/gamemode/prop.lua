@@ -240,7 +240,12 @@ hook.Add("EntityTakeDamage", "f2s.enttakedmg", EntityTakeDamage)
 function CheckForNewProps()
 	for k,ent in pairs(ents.FindByClass("prop_physics")) do
 		if not ent.Registered then
-			RegisterProp(ent)
+				--- We need to make sure that they are not world props and are owned by a player.
+				--- TODO, make a function to be supported with many prop protections.  This reqires SPP is installed.
+			owner = ent:GetNetworkedEntity("OwnerObj", false) 
+			if IsValid(owner) && owner:IsPlayer() then
+				RegisterProp(ent)
+			end
 		end
 	end
 end
