@@ -8,6 +8,7 @@ include( 'cl_gui.lua' )
 include( 'cl_scoreboard.lua' )
 include( 'cl_damageoverlay.lua' )
 include( 'cl_recource_systems.lua' )
+include( 'cl_prop.lua' )
 include( 'cl_map.lua' )
 
 language.Add( "worldspawn", "Slipt And Fell" )

@@ -9,8 +9,8 @@ SWEP.Instructions	= "Please note that constructed props cannot be moved with the
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= ""
-SWEP.WorldModel			= ""
+SWEP.ViewModel	= ""
+SWEP.WorldModel = ""
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
@@ -47,10 +47,18 @@ end
 	PrimaryAttack
 ---------------------------------------------------------*/
 function SWEP:PrimaryAttack()
-	self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
-	if CLIENT then return end
-	Construct( self.Owner )
-	
+	self.Weapon:SetNextPrimaryFire(CurTime() + 2)
+	if SERVER then
+		local owner = self.Owner
+		local trace = owner:GetEyeTrace()
+		local ent = trace.Entity
+		if ent and ent:IsValid() and ent:GetClass() == "prop_physics" then
+			if not ent.Registered then
+				RegisterProp(ent)
+			end
+			ent:Construct(owner:Team())
+		end
+	end
 end
 
 /*---------------------------------------------------------
@@ -58,6 +66,17 @@ end
 ---------------------------------------------------------*/
 function SWEP:SecondaryAttack()
 	self.Weapon:SetNextSecondaryFire( CurTime() + 2 )
-	if CLIENT then return end
-	Deconstruct( self.Owner )
+	if SERVER then
+		local owner = self.Owner
+		local trace = owner:GetEyeTrace()
+		local ent = trace.Entity
+		if ent and ent:IsValid() and ent:GetClass() == "prop_physics" then
+			if not ent.Registered then
+				RegisterProp(ent)
+			end
+			if ent.Team and ent.Team == owner:Team() then
+				ent:Deconstruct()
+			end
+		end
+	end
 end
