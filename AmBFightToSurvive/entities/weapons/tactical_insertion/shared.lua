@@ -54,7 +54,7 @@ function SWEP:PrimaryAttack()
 	Owner = self.Owner
 	if SERVER then Owner.SWEP = self end
 	self:EmitSound( ShootSound )
-	Owner:ConCommand("setspawnpoint")
+	if SERVER then SetSpawnpoint(self.Owner) end
 	self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
 	
 	self.Weapon:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
@@ -94,7 +94,7 @@ if SERVER then
 	end
 	--hook.Add("PlayerSpawn", "psti", PlayerSpawn)
 
-	function SetSpawnpoint(pl, command, args)
+	function SetSpawnpoint(pl)
 		if pl:IsOnGround() then
 			if pl.SpawnEnt != nil then
 				if pl.SpawnEnt:IsValid() then
