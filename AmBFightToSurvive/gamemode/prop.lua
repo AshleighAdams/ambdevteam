@@ -69,6 +69,7 @@ function MetaProp:Construct(Team)
 					-- Recall this function at delay
 					timer.Simple(ConstructDelay, ContinueConstructing, Ent)
 				end
+				Ent:UpdateNet()
 			end
 		end
 		
@@ -101,6 +102,7 @@ function MetaProp:Deconstruct()
 				else
 					timer.Simple(DeconstructDelay, ContinueDeconstructing, Ent)
 				end
+				Ent:UpdateNet()
 			end
 		end
 		
@@ -135,6 +137,7 @@ function MetaProp:Damage(DamageInfo)
 			self:Flicker()
 		end
 	end
+	self:UpdateNet()
 end
 
 --------------------------------------------
@@ -231,6 +234,18 @@ function MetaProp:Flicker()
 end
 
 --------------------------------------------
+-- Updates network vars on this prop.
+--------------------------------------------
+function MetaProp:UpdateNet()
+	self:SetNWBool("Registered", true)
+	self:SetNWBool("Constructed", self.Constructed or false)
+	self:SetNWInt("State", self:GetState())
+	self:SetNWInt("Team", self.Team or 0)
+	self:SetNWFloat("ResNeeded", self.ResNeeded)
+	self:SetNWFloat("Cost", self.Cost)
+end
+
+--------------------------------------------
 -- Gets if the prop can be registered.
 --------------------------------------------
 function CanRegisterProp(ent)
@@ -249,6 +264,7 @@ function RegisterProp(ent)
 		ent.Cost = ent.ResNeeded
 		ent.Registered = true
 		ent:SetState(STATE_UNCONSTRUCTED)
+		ent:UpdateNet()
 	end
 end
 

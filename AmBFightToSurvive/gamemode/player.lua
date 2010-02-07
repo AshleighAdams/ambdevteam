@@ -88,7 +88,7 @@ end
 
 function GM.HealthRegen()
 	for _,ply in pairs( player.GetAll() ) do
-		local lastdmg = pl.LastShot or 0
+		local lastdmg = ply.LastShot or 0
 		if ply:Alive() and ( lastdmg + healthregentime) < CurTime() then
 			if ply:Health() > 20 then
 				local hp = ply:Health()

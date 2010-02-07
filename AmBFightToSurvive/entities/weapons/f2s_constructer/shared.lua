@@ -9,8 +9,8 @@ SWEP.Instructions	= "Please note that constructed props cannot be moved with the
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel	= ""
-SWEP.WorldModel = ""
+SWEP.ViewModel	= "models/weapons/v_Pistol.mdl"
+SWEP.WorldModel = "models/weapons/w_Pistol.mdl"
 
 SWEP.Primary.ClipSize		= -1
 SWEP.Primary.DefaultClip	= -1
@@ -22,7 +22,7 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 
-local ShootSound = Sound( "" )
+SWEP.Range = 250
 
 function SWEP:Initialize()
 	if( SERVER ) then
@@ -45,20 +45,34 @@ end
 /*---------------------------------------------------------
 	Gets the entity that is being aimed at.
 ---------------------------------------------------------*/
-function SWEP:TraceEntity()
+function SWEP:Trace()
 	local owner = self.Owner
-	local trace = owner:GetEyeTrace()
-	return trace.Entity
+	local trace = owner:GetEyeTraceNoCursor()
+	local diff = trace.HitPos - trace.StartPos
+	local ent = trace.Entity
+	if ent then
+		if CLIENT then
+			UpdateProp(ent)
+		end
+		if not ent.Registered then
+			ent = nil
+		end
+	end
+	if diff:Length() < self.Range then
+		return {Entity = ent, Pos = trace.HitPos}
+	else
+		return {Entity = nil, Pos = (diff / diff:Length()) * self.Range + trace.StartPos}
+	end
 end
 
 /*---------------------------------------------------------
 	PrimaryAttack
 ---------------------------------------------------------*/
 function SWEP:PrimaryAttack()
-	self.Weapon:SetNextPrimaryFire(CurTime() + 2)
+	self.Weapon:SetNextPrimaryFire(CurTime() + 1)
 	if SERVER then
-		local ent = self:TraceEntity()
-		if ent and ent.Registered then
+		local ent = self:Trace().Entity
+		if ent then
 			ent:Construct(self.Owner:Team())
 		end
 	end
@@ -70,8 +84,8 @@ end
 function SWEP:Reload()
 	-- Build Structure
 	if SERVER then
-		local ent = self:TraceEntity()
-		if ent and ent.Registered then
+		local ent = self:Trace().Entity
+		if ent then
 			local struct = ent:GetStructureProps()
 			for _, e in pairs(struct) do
 				e:Construct(self.Owner:Team())
@@ -84,9 +98,9 @@ end
 	SecondaryAttack
 ---------------------------------------------------------*/
 function SWEP:SecondaryAttack()
-	self.Weapon:SetNextSecondaryFire( CurTime() + 2 )
+	self.Weapon:SetNextSecondaryFire(CurTime() + 1)
 	if SERVER then
-		local ent = self:TraceEntity()
+		local ent = self:Trace().Entity
 		if ent and ent.Registered and ent.Team and ent.Team == self.Owner:Team() then
 			ent:Deconstruct()
 		end
