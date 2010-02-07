@@ -1,149 +1,70 @@
-
 include('shared.lua')
 
-surface.CreateFont( "coolvetica", 64, 500, true, false, "SandboxLabel" )
-
-ENT.LabelColor = Color( 255, 255, 255, 255 )
-
-
-// Default Draw Routine..
-function ENT:Draw( bDontDrawModel )
-
-	if ( LocalPlayer():GetEyeTrace().Entity == self.Entity && 
-	     EyePos():Distance( self:GetPos() ) < 256 ) then
+-----------------------------------------
+---- Initialize
+-----------------------------------------
+function ENT:Initialize()
+	local ent = self.Entity
+	self:SetModel("models/weapons/W_missile_launch.mdl")
+	//self.EM = ParticleEmitter(self:GetPos())
 	
-		if ( self.RenderGroup == RENDERGROUP_OPAQUE ) then
-			self.OldRenderGroup = self.RenderGroup
-			self.RenderGroup = RENDERGROUP_TRANSLUCENT
-		end
-
-		if ( self:GetOverlayText() != "" ) then
-			AddWorldTip( self:EntIndex(), self:GetOverlayText(), 0.5, self:GetPos(), self.Entity  )
-		end
-
-	else
+	// Make the render bounds a bigger so the effect doesn't get snipped off
+	local mx, mn = self:GetRenderBounds()
+	self:SetRenderBounds( mn + Vector(0,0,128), mx, 0 )
 	
-		if ( self.OldRenderGroup != nil ) then
-		
-			self.RenderGroup = self.OldRenderGroup
-			self.OldRenderGroup = nil
-		
-		end
+	timer.Simple( 0.25, function(self)
+		if !ValidEntity(self) then return end
+		self:SetModel("models/weapons/W_missile.mdl")
+		self.Ignited = true
+	end,self)
+end
+
+
+function ENT:Think()
+	if !self.Ignited then return end
+	self.SmokeTimer = self.SmokeTimer or 0
+	if ( self.SmokeTimer > CurTime() ) then return end
 	
+	self.SmokeTimer = CurTime() //+ 0.005
+
+	local vOffset = self:LocalToWorld( Vector(0,0,0) ) + Vector( math.Rand( -3, 3 ), math.Rand( -3, 3 ), math.Rand( -3, 3 ) )
+	local vNormal = (vOffset - self:GetPos()):GetNormalized()
+
+	local emitter = self:GetEmitter( vOffset, false )
+	
+		local particle = emitter:Add( "particles/smokey", vOffset )
+			particle:SetVelocity( vNormal * math.Rand( 10, 30 ) )
+			particle:SetDieTime( 10.0 )
+			particle:SetStartAlpha( math.Rand( 50, 150 ) )
+			particle:SetStartSize( math.Rand( 2, 16 ) )
+			particle:SetEndSize( math.Rand( 64, 128 ) )
+			particle:SetRoll( math.Rand( -0.2, 0.2 ) )
+			particle:SetColor( 200, 200, 210 )
+
+
+	/*local emitter = self.EM
+	emitter:SetPos( self:GetPos )
+	local particle = emitter:Add( "particles/smokey", Vector(0,0,0) )
+			particle:SetVelocity( self:GetForward() * -10 )
+			particle:SetDieTime( 2.0 )
+			particle:SetStartAlpha( math.Rand( 50, 150 ) )
+			particle:SetStartSize( math.Rand( 16, 32 ) )
+			particle:SetEndSize( math.Rand( 64, 128 ) )
+			particle:SetRoll( math.Rand( -0.2, 0.2 ) )
+			particle:SetColor( 200, 200, 210 )*/
+end
+
+function ENT:GetEmitter( Pos, b3D )
+
+	if ( self.Emitter ) then	
+		if ( self.EmitterIs3D == b3D && self.EmitterTime > CurTime() ) then
+			return self.Emitter
+		end
 	end
-
-	if ( !bDontDrawModel ) then self:DrawModel() end
 	
-end
-
-function ENT:DrawTranslucent( bDontDrawModel )
-
-	if ( bDontDrawModel ) then return end
-	
-	if (  LocalPlayer():GetEyeTrace().Entity == self.Entity && 
-		  EyePos():Distance( self:GetPos() ) < 256 ) then
-	
-		self:DrawEntityOutline( 1.0 )
-		
-	end
-	
-	self:Draw()
-
-end
-
-function ENT:DrawOverlayText()
-	
-	if ( !self:SetLabelVariables() ) then return end
-	
-	self:DrawLabel()
-
-end
-
-function ENT:DrawFlatLabel( size )
-
-	local TargetAngle 	= self:GetAngles()
-	local TargetPos 	= self:GetPos() - TargetAngle:Forward() * 16
-	
-	TargetAngle:RotateAroundAxis( TargetAngle:Up(), 90 )
-	
-	cam.Start3D2D( TargetPos, TargetAngle, 0.05 * size * self.LabelScale )
-	
-		local Shadow = Color( 0, 0, 0, self.LabelAlpha * 255 )
-		draw.DrawText( self.LabelText, self.LabelFont,  3,  3, Shadow, TEXT_ALIGN_CENTER )
-
-		self.LabelColor.a = self.LabelAlpha * 255
-		draw.DrawText( self.LabelText, self.LabelFont, 0, 0, self.LabelColor, TEXT_ALIGN_CENTER )
-		
-	cam.End3D2D()
-
-end
-
-function ENT:SetLabelVariables()
-
-	// Override this to set the label position, return true to draw and false to not draw.
-	
-	self.LabelText = self:GetOverlayText()
-	if ( self.LabelText == "" ) then return false end
-	
-	// Only draw if so close
-	self.LabelDistance = EyePos():Distance( self:GetPos() )
-	if ( self.LabelDistance > 256 ) then return false end
-		
-	// Which way should our quad face
-	self.LabelAngles = self:GetAngles()
-	self.LabelAngles:RotateAroundAxis( self.LabelAngles:Right(), 90 )
-	
-	// Make sure we're standing in front of it (so we can see it)
-	local ViewNormal = EyePos() - self:GetPos()
-	ViewNormal:Normalize()
-	local ViewDot = ViewNormal:Dot( self.LabelAngles:Forward() )
-	if ( ViewDot < 0 ) then return false end
-	
-	// Set the label position
-	self.LabelPos = self:GetPos() + self.LabelAngles:Forward() + self.LabelAngles:Up() * 4
-	
-	// Alpha
-	self.LabelAlpha = (1 - self.LabelDistance / 256)^0.4
-	
-	self.LabelFont 	= "SandboxLabel"
-	self.LabelScale = 1
-	
-	return true
-
-end
-
-
-local matOutlineWhite 	= Material( "white_outline" )
-local ScaleNormal		= Vector()
-local ScaleOutline1		= Vector() * 1.05
-local ScaleOutline2		= Vector() * 1.1
-local matOutlineBlack 	= Material( "black_outline" )
-
-function ENT:DrawEntityOutline( size )
-	
-	size = size or 1.0
-	render.SuppressEngineLighting( true )
-	render.SetAmbientLight( 1, 1, 1 )
-	render.SetColorModulation( 1, 1, 1 )
-	
-		// First Outline	
-		self:SetModelScale( ScaleOutline2 * size )
-		SetMaterialOverride( matOutlineBlack )
-		self:DrawModel()
-		
-		
-		// Second Outline
-		self:SetModelScale( ScaleOutline1 * size )
-		SetMaterialOverride( matOutlineWhite )
-		self:DrawModel()
-		
-		// Revert everything back to how it should be
-		SetMaterialOverride( nil )
-		self:SetModelScale( ScaleNormal )
-		
-	render.SuppressEngineLighting( false )
-	
-	local r, g, b = self:GetColor()
-	render.SetColorModulation( r/255, g/255, b/255 )
+	self.Emitter = ParticleEmitter( Pos, b3D )
+	self.EmitterIs3D = b3D
+	self.EmitterTime = CurTime() + 2
+	return self.Emitter
 
 end
