@@ -56,6 +56,6 @@ function ENT:Draw()
 	-- Draw laser if needed
 	if self.On and self.Target and self.Target:IsValid() then
 		render.SetMaterial(LaserMat)
-		render.DrawBeam(self:GetPos() + LaserOffset, self.Target:GetPos(), LaserSize, 0, 0, LaserColor)
+		render.DrawBeam(self:LocalToWorld(LaserOffset), self.Target:GetPos(), LaserSize, 0, 0, LaserColor)
 	end
 end
