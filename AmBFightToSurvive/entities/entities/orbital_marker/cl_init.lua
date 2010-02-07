@@ -1,5 +1,7 @@
 include('shared.lua')
 
+ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
+
 local LaserMat = Material("tripmine_laser")
 local LaserHitMat = Material("sprites/gmdm_pickups/light")
 local LaserHitRatio = 1.0

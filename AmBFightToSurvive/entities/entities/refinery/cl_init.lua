@@ -1,4 +1,7 @@
 include('shared.lua')
+
+ENT.RenderGroup = RENDERGROUP_BOTH
+
 local BeamMat = Material("tripmine_laser")
 local BeamHeight = 2000
 local BeamSize = 500

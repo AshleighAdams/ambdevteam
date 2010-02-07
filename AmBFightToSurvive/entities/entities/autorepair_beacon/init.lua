@@ -73,6 +73,9 @@ function ENT:Think()
 			if tar:IsValid() and tar.ResNeeded > 0 and tar.Constructed and Visible(self, tar) and (self:GetPos() - tar:GetPos()):Length() < RepairRadius then
 				tar.ResNeeded = tar.ResNeeded - VoidTakeResP(self.Team, RepairRate * updatetime)
 			else
+				if tar:IsValid() then
+					tar.Repairer = nil
+				end
 				self.Target = nil
 			end
 		end
@@ -81,9 +84,13 @@ function ENT:Think()
 			-- Find a target if needed
 			local props = ents.FindInSphere(self:GetPos(), RepairRadius)
 			for _, e in pairs(props) do
-				if e.Registered and e.Constructed and e.ResNeeded > 0 and e.Team == self.Team and 
-				Visible(self, e) and curtime > (e.LastDamageTime or 0.0) + RepairDelay then
-					self.Target = e
+				if e.Registered and e.Constructed and e.ResNeeded > 0 and e.Team == self.Team then
+					if Visible(self, e) and curtime > (e.LastDamageTime or 0.0) + RepairDelay then
+						if e.Repairer == nil or not e.Repairer:IsValid() or not e.Repairer.Target == e then
+							self.Target = e
+							e.Repairer = self
+						end
+					end
 				end
 			end
 		end
@@ -104,6 +111,7 @@ function ENT:Think()
 	self:SetNWEntity("Target", self.Target)
 	self:SetNWBool("On", self.On)
 end
+
 -----------------------------------------
 ---- OnTakeNormalDamage
 -----------------------------------------

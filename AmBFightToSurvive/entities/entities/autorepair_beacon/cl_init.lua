@@ -1,5 +1,7 @@
 include('shared.lua')
 
+ENT.RenderGroup = RENDERGROUP_BOTH
+
 local LaserMat = Material("tripmine_laser")
 local LaserSize = 50.0
 local LaserColor = Color(255, 0, 0, 255)
@@ -33,6 +35,15 @@ function ENT:Think()
 			self.Drone:Stop()
 			self.Drone = nil
 		end
+	end
+end
+
+-----------------------------------------
+---- OnRemove
+-----------------------------------------
+function ENT:OnRemove()
+	if self.Drone then
+		self.Drone:Stop()
 	end
 end
 

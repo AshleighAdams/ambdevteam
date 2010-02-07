@@ -2,7 +2,7 @@ local NPCRadius = 3000
 local NPCs = { }
 local TimerName = "NPCUpdateTimer"
 local TimerCreated = false
-local TimerDelay = 5
+local TimerDelay = 1
 
 --------------------------------------------
 -- Updates all the npc's targets.
@@ -21,7 +21,11 @@ local function UpdateNPCs()
 					if oteam == team then
 						npc:AddEntityRelationship(e, D_LI, 99)
 					else
-						npc:AddEntityRelationship(e, D_FR, 75)
+						if Visible(npc, e) then
+							npc:AddEntityRelationship(e, D_HT, 75)
+						else
+							npc:AddEntityRelationship(e, D_NU, 75)
+						end
 					end
 				else
 					npc:AddEntityRelationship(e, D_NU, 50)
