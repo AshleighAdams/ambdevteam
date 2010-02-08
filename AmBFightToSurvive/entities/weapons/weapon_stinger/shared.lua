@@ -103,7 +103,9 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 		if pos then
 			missile:SetPos( pos )
 		else
-			missile:SetPos( pl:GetShootPos() + (pl:GetAimVector() * 10 )  )
+			local wep = pl:GetActiveWeapon()
+			local pos = wep:LocalToWorld(Vector(0.04,11.20,23.35))
+			missile:SetPos( pos ) //+ (pl:GetAimVector() * 10 )  
 		end
 		missile:SetOwner(pl)
 		missile:Activate()
