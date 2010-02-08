@@ -317,15 +317,14 @@ hook.Add( "PlayerSpawnedProp","f2s.Res.PlySpawnedProp", PlayerSpawnedProp )
 
 local function EntityTakeDamage( ent, inflictor, attacker, amount, dmginfo )
 	if ent:GetClass() == "prop_physics" then
-		if not ent.Registered then
-			RegisterProp(ent)
+		if ent.Registered then
+			ent:Damage(dmginfo)
+			
+			-- No normal damage if not constructed
+			if not ent.Constructed then
+				dmginfo:ScaleDamage(0.0)
+			end
 		end
-		ent:Damage(dmginfo)
-	end
-	
-	-- Sneak in a hook to allow normal entites to know when they are damaged
-	if ent.OnTakeNormalDamage then
-		ent:OnTakeNormalDamage(dmginfo)
 	end
 end
 hook.Add("EntityTakeDamage", "f2s.enttakedmg", EntityTakeDamage)

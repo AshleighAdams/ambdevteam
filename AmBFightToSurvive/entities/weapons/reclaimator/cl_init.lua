@@ -52,3 +52,12 @@ function SWEP:DrawLaser(Start, End, Entity)
 	end
 	render.DrawBeam(Start, End, lasersize, 0, 12.5, lasercolor)
 end
+
+--------------------------------------------
+-- OnRemove
+--------------------------------------------
+function SWEP:OnRemove()
+	if self.OnSound then
+		self.OnSound:Stop()
+	end
+end

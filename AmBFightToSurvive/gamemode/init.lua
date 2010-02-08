@@ -36,6 +36,7 @@ include( 'shared_disable.lua' )
 include( 'player.lua' )
 include( 'recource_systems.lua' )
 include( 'prop.lua' )
+include( 'damage.lua' )
 include( 'map.lua' )
 include( 'placement.lua' )
 

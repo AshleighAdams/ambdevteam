@@ -135,9 +135,9 @@ AddItem("Pulse Rifle Bullets 100 Pack", 90, {C.Ammo}, function(Player)
 -- Area Defense
 AddItem("Autoturret", 500, {C.AreaDefense}, function(Player)
 		local npc = SpawnNPC(Player, "npc_turret_floor")
-		npc:SetHealth(100)
+		EnableDamage(npc, 300)		
 	end)
-AddItem("Autorepair Beacon", 120, {C.AreaDefense}, function(Player)
+AddItem("Autorepair Beacon", 240, {C.AreaDefense}, function(Player)
 		Spawn(Player, "autorepair_beacon")
 	end)
 	
@@ -145,7 +145,7 @@ AddItem("Autorepair Beacon", 120, {C.AreaDefense}, function(Player)
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)
 		Player:Give("tactical_insertion")
 	end)
-AddItem("Reclaimator", 130, {C.Misc, C.Weapons}, function(Player)
+AddItem("Reclaimator", 60, {C.Misc, C.Weapons}, function(Player)
 		Player:Give("reclaimator")
 	end)
 AddItem("Gravity Gun", 50, {C.Misc, C.Weapons}, function(Player)
@@ -195,29 +195,29 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 -- Transport
 -- Land 
 AddItem("Jeep", 300, {C.Land}, function(Player)
-		SpawnVehicle(Player, "Jeep")
+		local vec = SpawnVehicle(Player, "Jeep")
 	end)
 	
 AddItem("Air Boat", 300, {C.Land}, function(Player)
-		SpawnVehicle(Player, "Airboat")
+		local vec = SpawnVehicle(Player, "Airboat")
 	end)
 --Air
 	
 --Seats
 AddItem("Airboat Seat", 50, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "Seat_Airboat")
+		local vec = SpawnVehicle(Player, "Seat_Airboat")
 	end)
 	
 AddItem("Jeep Seat", 50, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "Seat_Jeep")
+		local vec = SpawnVehicle(Player, "Seat_Jeep")
 	end)
 	
 AddItem("Wooden Chair", 50, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "Chair_Wood")
+		local vec = SpawnVehicle(Player, "Chair_Wood")
 	end)
 	
 AddItem("HL2 Pod", 50, {C.Seat}, function(Player)
-		SpawnVehicle(Player, "Pod")
+		local vec = SpawnVehicle(Player, "Pod")
 	end)
 
 -- Useless

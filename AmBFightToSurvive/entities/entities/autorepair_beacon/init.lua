@@ -2,8 +2,6 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 
-local MaxHealth = 100
-local RestoreTime = 2.5
 local RepairDelay = 5
 local RepairRate = 1
 local RepairRadius = 500
@@ -26,8 +24,9 @@ function ENT:Initialize()
 	self:PhysWake()
 	self:Activate()
 	self:SetUseType(SIMPLE_USE)
-	self.CurrentHealth = MaxHealth
 	self.On = false
+	
+	EnableDamage(self, 200)
 end
 
 -----------------------------------------
@@ -38,14 +37,6 @@ function ENT:Think()
 	local lasttime = self.LastThinkTime or curtime
 	local updatetime = curtime - lasttime
 	self.LastThinkTime = curtime
-
-	-- Restore if not damaged in a while
-	if self.CurrentHealth < MaxHealth then
-		if curtime > self.LastDamageTime + RestoreTime then
-			self.CurrentHealth = MaxHealth
-			self:EmitSound(RestoreSound, 100, 100)
-		end
-	end
 	
 	-- Check if its safe (no enemy players around)
 	if self.Safe == nil or curtime > (self.LastSafeCheckTime or 0.0) + SafeCheckDelay then
@@ -110,15 +101,4 @@ function ENT:Think()
 	
 	self:SetNWEntity("Target", self.Target)
 	self:SetNWBool("On", self.On)
-end
-
------------------------------------------
----- OnTakeNormalDamage
------------------------------------------
-function ENT:OnTakeNormalDamage(Info)
-	self.CurrentHealth = self.CurrentHealth - Info:GetDamage()
-	self.LastDamageTime = CurTime()
-	if self.CurrentHealth < 0 then
-		self:Remove()
-	end
 end
