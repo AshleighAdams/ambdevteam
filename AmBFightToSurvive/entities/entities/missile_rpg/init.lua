@@ -16,7 +16,7 @@ function ENT:Initialize()
 	self:SetHealth(1)
 	self:PhysWake()
 	self:Activate()
-	timer.Simple( 0.25, function(self)
+	timer.Simple( 0, function(self)
 		if !ValidEntity(self) then return end
 		self:SetModel("models/weapons/W_missile.mdl")
 		self.Ignited = true
@@ -35,11 +35,20 @@ function ENT:Think()
 end
 
 function ENT:PhysicsCollide( data, physobj )
-	
+	self:Boom()
 	self:Remove()
-	
 end
 
  function ENT:OnTakeDamage(dmg)
+	self:Boom()
 	self:Remove()
+ end
+ 
+ function ENT:Boom()
+ 	local position = self:GetPos()
+	local damage = 70
+	local radius = 250
+	local attacker = self.Entity
+	local inflictor = self.Entity
+	util.BlastDamage(inflictor, attacker, position, radius, damage)
  end

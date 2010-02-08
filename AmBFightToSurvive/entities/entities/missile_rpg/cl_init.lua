@@ -27,7 +27,7 @@ function ENT:Think()
 	
 	self.SmokeTimer = CurTime() //+ 0.005
 
-	local vOffset = self:LocalToWorld( Vector(0,0,0) ) + Vector( math.Rand( -3, 3 ), math.Rand( -3, 3 ), math.Rand( -3, 3 ) )
+	local vOffset = self:LocalToWorld( Vector(0,0,0) ) //+ Vector( math.Rand( -3, 3 ), math.Rand( -3, 3 ), math.Rand( -3, 3 ) )
 	local vNormal = (vOffset - self:GetPos()):GetNormalized()
 
 	local emitter = self:GetEmitter( vOffset, false )

@@ -38,7 +38,7 @@ end
 function SWEP:PrimaryAttack()
 	if CLIENT then return end
 	local ent = self.Owner:GetEyeTrace().Entity
-	if !ent && !ValidEntity(ent) then return end
+	if !ent || !ValidEntity(ent) || self.Owner:GetEyeTrace().HitWorld then return end
 	self:FireMissile(nil, ent, 0.1, self.Owner )
 end
 
@@ -58,24 +58,24 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 	local tname = "rpgaim+" .. tostring( CurTime() )
 	timer.Create( tname, 0.01, 0, function(as,m,t,tmr) -- aimspeed missile target timername
 		if !m || !ValidEntity(m) then timer.Destroy( tmr ) return end
-		
-		local mpos = m:GetPos()
-		local tpos = t:GetPos()
-		
-		local mang = m:GetAngles()
-		local tang = (tpos - mpos):Angle() -- cur - targ to angle 
-		
-		local ang = tang /*Angle()
-		
-		-- we want to limit the aim speed   --- mod 360 is for math errors, when the dir goes above 360 it does not loop around. now it does
-		ang.p = math.Clamp( tang.p, mang.p-as, mang.p+as ) % 360
-		ang.y = math.Clamp( tang.y, mang.y-as, mang.y+as ) % 360
-		ang.r = 0 //math.Clamp( tang.r, mang.r-as, mang.r+as ) //% 360 */
-		
-		local vel = m:GetVelocity()
-		m:SetAngles( ang )
-		m:GetPhysicsObject():SetVelocity( vel )
-		
+		if ValidEntity(m) then
+			local mpos = m:GetPos()
+			local tpos = t:GetPos()
+			
+			local mang = m:GetAngles()
+			local tang = (tpos - mpos):Angle() -- cur - targ to angle 
+			
+			local ang = tang /*Angle()
+			
+			-- we want to limit the aim speed   --- mod 360 is for math errors, when the dir goes above 360 it does not loop around. now it does
+			ang.p = math.Clamp( tang.p, mang.p-as, mang.p+as ) % 360
+			ang.y = math.Clamp( tang.y, mang.y-as, mang.y+as ) % 360
+			ang.r = 0 //math.Clamp( tang.r, mang.r-as, mang.r+as ) //% 360 */
+			
+			local vel = m:GetVelocity()
+			m:SetAngles( ang )
+			m:GetPhysicsObject():SetVelocity( vel )
+		end
 	end, aimspeed, missile, targent, tname)
 	return missile
 end
