@@ -11,6 +11,16 @@ SWEP.AdminSpawnable		= true
 SWEP.ViewModel			= "models/weapons/v_rpg.mdl"
 SWEP.WorldModel			= "models/weapons/w_rpg.mdl"
 
+SWEP.Primary.ClipSize		= 1
+SWEP.Primary.DefaultClip	= 1
+SWEP.Primary.Automatic		= false
+SWEP.Primary.Ammo			= "rpg"
+
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= false
+SWEP.Secondary.Ammo			= "none"
+
 if SERVER then
 	SWEP.Weight				= 5
 	SWEP.AutoSwitchTo		= false
@@ -26,6 +36,10 @@ end
 function SWEP:Initialize()
 	if SERVER then
 		self:SetWeaponHoldType("rpg")
+				-- play a blip or something
+		--- ambient/levels/labs/teleport_alarm_loop1.wav
+		--ambient/levels/labs/machine_ring_resonance_loop1.wav
+		self.Beep = CreateSound(self, "ambient/levels/labs/teleport_alarm_loop1.wav")
 	end
 end
 
@@ -36,10 +50,51 @@ function SWEP:Think()
 end
 
 function SWEP:PrimaryAttack()
+	self.Weapon:SetNextPrimaryFire(CurTime() + 2)
 	if CLIENT then return end
-	local ent = self.Owner:GetEyeTrace().Entity
-	if !ent || !ValidEntity(ent) || self.Owner:GetEyeTrace().HitWorld then return end
-	self:FireMissile(nil, ent, 0.1, self.Owner )
+	//local ent = self.Owner:GetEyeTrace().Entity
+	//if !ent || !ValidEntity(ent) || self.Owner:GetEyeTrace().HitWorld then return end
+	
+	local ent = self.Targ
+	
+	if !ent || !ValidEntity(ent) then return end
+	self:FireMissile(nil, ent, 1, self.Owner )
+	self:TakePrimaryAmmo( 1 )
+end
+
+function SWEP:SecondaryAttack()
+	if CLIENT then return end
+	timer.Simple( 2, Targ,self)
+end
+
+function Targ(self)
+	if CLIENT then return end
+	if self.Owner:KeyDown(IN_ATTACK2) then
+		timer.Simple( 0.5, Targ,self)
+		
+		targs = ents.GetAll()
+		
+		self.Targ = nil
+		local record_dot = 0.5 ----- the furthest away from the crosshair allowed
+		for _,targ in pairs( targs ) do
+			local dot = self.Owner:GetAimVector():DotProduct( ( targ:GetPos() - self.Owner:GetPos() ):Normalize() )
+			if dot > record_dot && Visible(self,targ) then -- closer than others   -----    1 == smak on!
+				record_dot = dot
+				self.Targ = targ
+			end
+		end
+		
+		if self.Targ then
+			self.Beep:Play()
+		else
+			self.Beep:Stop()
+		end
+		
+	else
+		self.Targ = nil
+		self.Beep:Stop()
+	end
+	
 end
 
 function SWEP:FireMissile( pos, targent, aimspeed, pl )
@@ -52,34 +107,50 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 		end
 		missile:SetOwner(pl)
 		missile:Activate()
+		//missile:GetPhysicsObject():EnableGravity(false)
 		//missile:Input("settimer",self.Owner,self.Owner,"4")
 		//missile:SetVelocity(pl:GetAimVector()*700)
 	missile:Spawn()
+	missile:SetOwner(self.Owner)
+	missile:GetPhysicsObject():EnableGravity(false)
+	
+	self.Weapon:SendWeaponAnim( ACT_VM_RECOIL1 )
+	self.Owner:ViewPunch( Angle( -1, 0, 0 ) )
+	
 	local tname = "rpgaim+" .. tostring( CurTime() )
+	
 	timer.Create( tname, 0.01, 0, function(as,m,t,tmr) -- aimspeed missile target timername
 		if !m || !ValidEntity(m) then timer.Destroy( tmr ) return end
 		if ValidEntity(m) then
+			
+			dot = m:GetForward():DotProduct( ( t:GetPos() - m:GetPos() ):Normalize() )
+			//print(dot) less than 0.5 is off target
+			if dot < 0.5 || !Visible(self,t) then t = NULL end
+			
+			if !t || !ValidEntity(t) then return end
+			
 			local mpos = m:GetPos()
 			local tpos = t:GetPos()
 			
 			local mang = m:GetAngles()
-			local tang = (tpos - mpos):Angle() -- cur - targ to angle 
-			
-			local ang = tang /*Angle()
+			local ang = Angle()
 			
 			-- we want to limit the aim speed   --- mod 360 is for math errors, when the dir goes above 360 it does not loop around. now it does
-			ang.p = math.Clamp( tang.p, mang.p-as, mang.p+as ) % 360
-			ang.y = math.Clamp( tang.y, mang.y-as, mang.y+as ) % 360
-			ang.r = 0 //math.Clamp( tang.r, mang.r-as, mang.r+as ) //% 360 */
+			//ang.p = math.Clamp( tang.p, mang.p-as, mang.p+as ) //% 360
+			//ang.y = math.Clamp( tang.y, mang.y-as, mang.y+as ) % 360
+			
+			ang.p = m:GetElv( tpos )
+			ang.y = m:GetBar( tpos )
+			ang.r = 0 
+			
+			ang.p = math.Clamp( mang.p + ang.p , mang.p+as,mang.p-as ) % 360
+			ang.y = math.Clamp( mang.y + ang.y , mang.y+as,mang.y-as ) % 360
 			
 			local vel = m:GetVelocity()
 			m:SetAngles( ang )
 			m:GetPhysicsObject():SetVelocity( vel )
 		end
 	end, aimspeed, missile, targent, tname)
+	
 	return missile
 end
-
---self:TakePrimarymmo( 1 )
--- self.Weapon:SendWeaponAnim( ACT_VM_RECOIL )
---self.Owner:ViewPunch( Angle( -1, 0, 0 ) 

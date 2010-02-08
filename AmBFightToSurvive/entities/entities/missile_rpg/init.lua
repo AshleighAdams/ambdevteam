@@ -47,11 +47,38 @@ end
 function ENT:Boom()
 	if not self.Boomed then
 		local position = self:GetPos()
-		local damage = 70
+		local damage = 70*4.5
 		local radius = 250
-		local attacker = self.Entity
-		local inflictor = self.Entity
+		local attacker = self.Owner or self
+		local inflictor = self.Entity or self
 		self.Boomed = true
 		util.BlastDamage(inflictor, attacker, position, radius, damage)
+		
+		local effectdata = EffectData()
+		effectdata:SetStart( position )
+		effectdata:SetOrigin( position )
+		effectdata:SetScale( 1 )
+		
+		--HelicopterMegaBomb    Explosion
+		util.Effect( "Explosion", effectdata )
+		
 	end
 end
+
+/// thanks to wiremod
+function ENT:GetBar( vec )
+	local DeltaPos = self.Entity:WorldToLocal(vec)
+	brng = DeltaPos:Angle()
+	local yaw = brng.y
+	if (yaw > 180) then yaw = yaw - 360 end
+	return -yaw
+end
+
+function ENT:GetElv( vec )
+	local DeltaPos = self.Entity:WorldToLocal(vec)
+	brng = DeltaPos:Angle()
+	local pitch = brng.p
+	if (pitch > 180) then pitch = pitch - 360 end
+	return -pitch
+end
+/////
