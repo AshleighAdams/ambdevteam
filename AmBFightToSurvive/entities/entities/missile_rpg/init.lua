@@ -39,16 +39,19 @@ function ENT:PhysicsCollide( data, physobj )
 	self:Remove()
 end
 
- function ENT:OnTakeDamage(dmg)
+function ENT:OnTakeDamage(dmg)
 	self:Boom()
 	self:Remove()
- end
+end
  
- function ENT:Boom()
- 	local position = self:GetPos()
-	local damage = 70
-	local radius = 250
-	local attacker = self.Entity
-	local inflictor = self.Entity
-	util.BlastDamage(inflictor, attacker, position, radius, damage)
- end
+function ENT:Boom()
+	if not self.Boomed then
+		local position = self:GetPos()
+		local damage = 70
+		local radius = 250
+		local attacker = self.Entity
+		local inflictor = self.Entity
+		self.Boomed = true
+		util.BlastDamage(inflictor, attacker, position, radius, damage)
+	end
+end
