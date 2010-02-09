@@ -1,5 +1,16 @@
 if SERVER then AddCSLuaFile( "shared.lua" ) end
 
+local Targets =	{
+					"env_flare",
+					"wire_thruster",
+					"gmod_thruster",
+					"prop_vehicle_jeep_old",
+					"prop_vehicle_jeep",
+					"prop_vehicle_airboat_old",
+					"prop_vehicle_airboat",
+					"sent_sakariashelicopter",
+					"prop_vehicle_prisoner_pod"
+				}
 SWEP.Author			= "C0BRA"
 SWEP.Contact		= ""
 SWEP.Purpose		= "Take down transport"
@@ -79,15 +90,25 @@ function Targ(self)
 		for _,targ in pairs( targs ) do
 			local dot = self.Owner:GetAimVector():DotProduct( ( targ:GetPos() - self.Owner:GetPos() ):Normalize() )
 			if dot > record_dot && Visible(self,targ) then -- closer than others   -----    1 == smak on!
-				record_dot = dot
-				self.Targ = targ
+				
+				if table.HasValue( Targets, targ:GetClass() ) then
+					
+					record_dot = dot
+					self.Targ = targ
+					-- flares have piority and make a higher records that is rare for a prop to break
+					local match_start,match_end = string.find(self.Targ:GetClass(),"flare")
+					if match_start && match_end then
+						record_dot = record_dot + 0.5
+					end
+				end
 			end
 		end
 		
 		if self.Targ then
-			self.Beep:Play()
+			EmitSound( self, "ambient/levels/labs/teleport_alarm_loop1.wav", 0.5 )
+			//self.Beep:Play()
 		else
-			self.Beep:Stop()
+			//self.Beep:Stop()
 		end
 		
 	else
@@ -155,4 +176,13 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 	end, aimspeed, missile, targent, tname)
 	
 	return missile
+end
+
+function EmitSound(  ent, sound, time )
+	if !ent || !ValidEntity(ent) then return end
+	local sound = CreateSound(ent, sound)
+	sound:Play()
+	timer.Simple( time, function(sound)
+		sound:Stop()
+	end,sound)
 end
