@@ -9,6 +9,6 @@ a, a:active { outline: none; }
 .clear { clear:both; }
 
 /* Set color and font scheme for site */
-body { background-color: #707070; padding: 10px; }
+body { background-color: #707070; padding: 15px; padding-right: 25px; }
 h1 { text-align: center; color: #FF9640; }
 p { text-align: left; color: #61B7CF; font-weight: 700; }
