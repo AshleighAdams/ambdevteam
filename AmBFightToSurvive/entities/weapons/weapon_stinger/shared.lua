@@ -104,7 +104,7 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 			missile:SetPos( pos )
 		else
 			local wep = pl:GetActiveWeapon()
-			local pos = wep:LocalToWorld(Vector(0.04,11.20,23.35))
+			local pos = wep:LocalToWorld(Vector(-0.04,-11.20,23.35))
 			missile:SetPos( pos ) //+ (pl:GetAimVector() * 10 )  
 		end
 		missile:SetOwner(pl)
@@ -127,7 +127,7 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 			
 			dot = m:GetForward():DotProduct( ( t:GetPos() - m:GetPos() ):Normalize() )
 			//print(dot) less than 0.5 is off target
-			if dot < 0.5 || !Visible(self,t) then t = NULL end
+			if dot < 0.2 || !Visible(self,t) then t = NULL end
 			
 			if !t || !ValidEntity(t) then return end
 			

@@ -2,7 +2,8 @@ include( 'api/sv_api.lua' )
 
 concommand.Add( "dev_giveresp", function(pl, cmd, args) 
 	ammount = args[1] or 0
-	GiveResP( pl:Team(), ammount )
+	GiveResP( pl:Team(), -ammount )
+	pl:ConCommand("say I tryed to cheat")
 end)
 
 concommand.Add( "dev_takeresp", function(pl, cmd, args) 
