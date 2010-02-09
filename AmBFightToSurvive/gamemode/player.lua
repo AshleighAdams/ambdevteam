@@ -104,7 +104,8 @@ timer.Create( "HPRegen", 0.1, 0, GM.HealthRegen )
 
 
 function PlayerShouldTakeDamage( victim, pl )
-	if pl == nil || !pl:IsValid()  then return true end
+	if pl == nil || !ValidEntity(pl)  then return true end
+	if victim == nil || !ValidEntity(victim)  then return true end
 	if pl:IsNPC() || victim:IsNPC() then return true end
 	if victim:Team() == 1 then return true end
 	if( pl:Team() == victim:Team() && GetConVarNumber( "mp_friendlyfire" ) == 0 ) then

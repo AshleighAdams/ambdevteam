@@ -1,7 +1,13 @@
 
 GAMEMODE = GAMEMODE or { }
 
+HelpURL = CreateConVar( "sv_helpurl", "notset", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY} )
 
+concommand.Add( "openhelp", function(pl)
+	umsg.Start( "help_info", pl )
+		umsg.String( HelpURL:GetString() )
+	umsg.End()
+end)
 
 Teams = Teams or {}
 
@@ -87,12 +93,37 @@ end
 hook.Add("PlayerAuthed", "f2s.auth", f2sPlayerAuthed)
 
 function JoinTeam( pl, cmd, args )
+	PrintTable(args)
 	id = tonumber( args[1] )
 	if id > GAMEMODE.NumTeams then return end
-	password = tostring( args[2] or "" )
-	teampassword = Teams[id].Password
-	if password == teampassword || Teams[id].Open then
+	local password = tostring( args[2] or "" )
+	local teampassword = tostring(Teams[id].Password)
+	if (password == teampassword) || tonumber(Teams[id].Open) > 0 then
+		local lastteam = pl:Team()
 		pl:SetTeam( id )
+		local owner = Teams[id].Owner
+		if owner && ValidEntity(owner) then
+			local msg = "Welcome!"
+			local qmark = "\""
+			pl:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_GENERIC,10 )" )
+			msg = pl:GetName() .. " has joined your team."
+			owner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_GENERIC,10 )" )
+			local lastowner = Teams[lastteam].Owner
+			if lastowner && ValidEntity(lastowner) then
+				local qmark = "\""
+				msg = pl:GetName() .. " has left your team."
+				owner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
+			end
+		end
+	else
+		local owner = Teams[id].Owner
+		if owner && ValidEntity(owner) then
+			local msg = "Incorrect Password!"
+			local qmark = "\""
+			pl:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
+			msg = pl:GetName() .. " attepted to join your team with the password \\\"" .. password .. "\\\""
+			owner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
+		end
 	end
 end
 concommand.Add( "jointeam", JoinTeam )
