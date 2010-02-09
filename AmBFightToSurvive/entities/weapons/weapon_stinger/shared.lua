@@ -20,7 +20,7 @@ SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
 SWEP.ViewModel			= "models/weapons/v_rpg.mdl"
-SWEP.WorldModel			= "models/weapons/w_rpg.mdl"
+SWEP.WorldModel			= "models/weapons/w_rocket_launcher.mdl"
 
 SWEP.Primary.ClipSize		= 1
 SWEP.Primary.DefaultClip	= 1
