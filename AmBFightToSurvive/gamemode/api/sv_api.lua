@@ -1,9 +1,15 @@
 TeamsRes = TeamsRes or {}
 
 function ResInit( t )
-	TeamsRes[t] = {}
-	TeamsRes[t].ResP = 500
-	TeamsRes[t].SciP = 0
+	if t == 1 then
+		TeamsRes[t] = {}
+		TeamsRes[t].ResP = 0
+		TeamsRes[t].SciP = 0
+	else
+		TeamsRes[t] = {}
+		TeamsRes[t].ResP = 750
+		TeamsRes[t].SciP = 0
+	end
 	UpdateClients()
 end
 //hook.Add( "ResInitTeam", "f2s.Res.InitTeam", Init )
@@ -103,8 +109,8 @@ end
 function PayDay()
 	for teamid,Team in pairs( Teams ) do
 		if teamid != 1 then
-			GiveResP( teamid, 100 )
+			GiveResP( teamid, 25 )
 		end
 	end
 end
-//timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay ) -- disabled for now
+timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay ) -- disabled for now

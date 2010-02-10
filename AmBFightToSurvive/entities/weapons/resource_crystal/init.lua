@@ -12,8 +12,10 @@ SWEP.AutoSwitchFrom		= false
 ---- Initialize
 -----------------------------------------
 function SWEP:Initialize()
-	self:SetWeaponHoldType("melee");
-	self.ResourcesPresent = 400
+	self:SetWeaponHoldType("melee")
+	local present = hook.Call( "CalculatePresentResources",GAMEMODE,self ) -- allow the gamemode to tell
+	if !present then present = 400 end
+	self.ResourcesPresent = present
 	local trail = util.SpriteTrail(self.Weapon, 0, Color(255,0,255), false, 15, 1, 4, 1/(15+1)*0.5, "trails/plasma.vmt")
 end
 

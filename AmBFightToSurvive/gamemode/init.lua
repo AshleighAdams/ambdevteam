@@ -284,7 +284,7 @@ function GM:PlayerLoadout( pl )
 		pl:GiveAmmo( 32,	"XBowBolt", 	true )
 		pl:GiveAmmo( 2,		"AR2AltFire", 	true )
 		pl:GiveAmmo( 100,	"AR2", 			true )
-		
+		 /*
 		local w1, w2, w3 = pl.w1, pl.w2, pl.w3
 		if w1 == nil || w2==nil || w3==nil then
 			pl:Give( "weapon_pistol" )
@@ -293,6 +293,11 @@ function GM:PlayerLoadout( pl )
 			pl:Give( w1 )
 			pl:Give( w2 )
 			pl:Give( w3 )
+		end
+		*/
+		local weps = Teams[pl:Team()].Weapons or {}
+		for i,wep in pairs(weps) do
+			pl:Give( wep )
 		end
 		pl:Give( "weapon_crowbar" )
 	end
