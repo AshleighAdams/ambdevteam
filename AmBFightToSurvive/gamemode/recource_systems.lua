@@ -1,14 +1,17 @@
 include( 'api/sv_api.lua' )
 
-concommand.Add( "dev_giveresp", function(pl, cmd, args) 
+concommand.Add( "dev_giveresp", function(pl, cmd, args)
 	ammount = args[1] or 0
-	GiveResP( pl:Team(), -ammount )
-	pl:ConCommand("say I tryed to cheat")
+	if Admin(pl, "gave " .. tostring(ammount) .. " resp") then
+		GiveResP(pl:Team(), ammount)
+	end
 end)
 
 concommand.Add( "dev_takeresp", function(pl, cmd, args) 
 	ammount = args[1] or 0
-	TakeResP( pl:Team(), ammount )
+	if Admin(pl, "took " .. tostring(ammount) .. " resp") then
+		TakeResP( pl:Team(), ammount )
+	end
 end)
 
 local f2s_crystallimit = CreateConVar( "f2s_crystallimitpercent", 200, {FCVAR_ARCHIVE,FCVAR_NOTIFY} )

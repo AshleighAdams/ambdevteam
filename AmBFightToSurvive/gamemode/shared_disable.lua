@@ -1,17 +1,38 @@
+-- Concommand for control admin rights
+-- 0 = disabled
+-- 1 = notified
+-- 2 = enabled
+local AdminRights = CreateConVar( "sv_adminrights", "1", {FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_NOTIFY} )
+
 -- Gets if the specified player is an admin
-local function Admin(Player)
+function Admin(Player, Message)
+	local adminrights = AdminRights:GetInt()
 	if Player:IsAdmin() then
-		Player:ChatPrint("Performed Admin Action")
-		return true
-	else
-		return false
+		if adminrights == 0 then
+			Player:ChatPrint("Can not comply, admin rights is disabled")
+			return false
+		end
+		if adminrights == 1 then
+			for _, p in pairs(player.GetAll()) do
+				if Message then
+					p:ChatPrint(Player:Nick() .. " preformed admin action(" .. Message .. ")")
+				else
+					p:ChatPrint(Player:Nick() .. " preformed admin action")
+				end
+			end
+			return true
+		end
+		if adminrights == 2 then
+			return true
+		end
 	end
+	return false
 end
 
 -- Disable sents from the spawn menu
 if SERVER then
-	local function NonPropSpawn(Player)
-		if Admin(Player) then
+	local function NonPropSpawn(Player, Thing)
+		if Admin(Player, "spawned nonprop " .. Thing or "<unknown>") then
 			return true
 		else
 			Player:ChatPrint("Spawn disallowed, only props may be spawned from the spawn menu" ..
@@ -66,7 +87,7 @@ end
 -- Only props may be picked up with the physgun
 local function PhysgunPickup(Player, Entity)
 	if Entity:GetClass() ~= "prop_physics" then
-		return Admin(Player)
+		return Admin(Player, "picked up " .. Entity:GetClass() .. " with physgun")
 	end
 end
 hook.Add("PhysgunPickup", "DisablePhysgunPickup", PhysgunPickup)
