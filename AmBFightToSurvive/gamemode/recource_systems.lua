@@ -21,7 +21,6 @@ function CreateCrystals()
 	local Crystals = #crystals_wep + #crystals_box
 	local max = 2 //math.Round( NumTeamsWithPlayers() * ( f2s_crystallimit:GetValue() / 100 ) )
 	PlaceResourceDrops( math.max(0,max - Crystals) )
-	UpdateResSWEP()
 end
 timer.Create( "f2s.Resources.CreateCrystals", 60*4, 0, CreateCrystals ) -- 4 mins
 
