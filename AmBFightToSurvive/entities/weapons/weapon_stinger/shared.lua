@@ -22,6 +22,8 @@ SWEP.AdminSpawnable		= true
 SWEP.ViewModel			= "models/weapons/v_rpg.mdl"
 SWEP.WorldModel			= "models/weapons/w_rocket_launcher.mdl"
 
+SWEP.ShootSound = Sound ("weapons/rpg/rocketfire1.wav")
+
 SWEP.Primary.ClipSize		= 1
 SWEP.Primary.DefaultClip	= 1
 SWEP.Primary.Automatic		= false
@@ -39,9 +41,10 @@ if SERVER then
 else
 	SWEP.PrintName			= "Stinger"			
 	SWEP.Slot				= 4
-	SWEP.SlotPos			= 0
+	SWEP.SlotPos			= 1
 	SWEP.DrawAmmo			= true
 	SWEP.DrawCrosshair		= true
+	SWEP.WepSelectIcon = surface.GetTextureID("weapons/weapon_rpg")
 end
 
 function SWEP:Initialize()
@@ -69,8 +72,12 @@ function SWEP:PrimaryAttack()
 	local ent = self.Targ
 	
 	if !ent || !ValidEntity(ent) then return end
-	self:FireMissile(nil, ent, 1, self.Owner )
+	self:FireMissile(nil, ent, 2, self.Owner )
 	self:TakePrimaryAmmo( 1 )
+	
+	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK )	
+	self.Owner:SetAnimation( PLAYER_ATTACK1 )
+	self.Weapon:EmitSound (ShootSound)
 end
 
 function SWEP:SecondaryAttack()
@@ -125,7 +132,7 @@ function SWEP:FireMissile( pos, targent, aimspeed, pl )
 			missile:SetPos( pos )
 		else
 			local wep = pl:GetActiveWeapon()
-			local pos = wep:LocalToWorld(Vector(-0.04,-11.20,23.35))
+			local pos = wep:LocalToWorld(Vector(20,0,0))
 			missile:SetPos( pos ) //+ (pl:GetAimVector() * 10 )  
 		end
 		missile:SetOwner(pl)
