@@ -1,6 +1,8 @@
 
 // Variables that are used on both client and server
 
+ENT = _R["Entity"]
+
 SWEP.Author			= "C0BRA"
 SWEP.Contact		= ""
 SWEP.Purpose		= ""
@@ -87,8 +89,9 @@ function SWEP:Reload()
 		local ent = self:Trace().Entity
 		if ent then
 			local struct = ent:GetStructureProps()
-			for _, e in pairs(struct) do
-				e:Construct(self.Owner:Team())
+			for k, e in pairs(struct) do
+				local delay = k/10
+				e:ConstructDelay(self.Owner:Team(),delay)
 			end
 		end
 	end
@@ -105,4 +108,12 @@ function SWEP:SecondaryAttack()
 			ent:Deconstruct()
 		end
 	end
+end
+
+function ENT:ConstructDelay(team,time)
+	timer.Simple( time,
+	function(team,self)
+		self:Construct(team)
+	end,
+	team,self)
 end
