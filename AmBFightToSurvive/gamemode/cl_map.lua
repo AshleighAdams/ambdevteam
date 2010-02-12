@@ -296,7 +296,7 @@ local function CanSeePlayerOnMap(A, B)
 			if ateam == bteam then
 				return true
 			else
-				return Visible(A, B)
+				return false
 			end
 		else
 			return true
@@ -352,6 +352,7 @@ local function MapThink()
 						if point.Player:IsValid() then
 							point:SetPos(point.Player:GetPos())
 						end
+						point:SetVisible(CanSeePlayerOnMap(LocalPlayer(), point.Player))
 					end
 					point.OnDraw = function(point, x, y)
 						if point.Player:IsValid() then
@@ -365,15 +366,7 @@ local function MapThink()
 						end
 					end
 					point.ShouldRemove = function(point)
-						if point.Player:IsValid() then
-							if CanSeePlayerOnMap(LocalPlayer(), point.Player) then
-								return false
-							else
-								return true
-							end
-						else
-							return true
-						end
+						return not point.Player:IsValid()
 					end
 					tb.MapPoint = point
 				end

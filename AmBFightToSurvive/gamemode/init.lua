@@ -249,6 +249,8 @@ function GM:PlayerSpawn( pl )
     pl:SetWalkSpeed( 250 ) 
 	pl:SetRunSpeed( 400 )
 	
+	pl.Life = { } -- Reset lifetime variables
+	
 	pl.ExpectingSpawnCommand = true
 	umsg.Start( "show_spawn_menu", pl )
 	umsg.End()

@@ -106,10 +106,11 @@ function GetEntCost( ent )
 	end
 end
 
-function PayDay()
+local PayDayAmount = 25
+local function PayDay()
 	for teamid,Team in pairs( Teams ) do
-		if teamid != 1 then
-			GiveResP( teamid, 25 )
+		if teamid > 1 then
+			GiveResP( teamid, PayDayAmount )
 		end
 	end
 end

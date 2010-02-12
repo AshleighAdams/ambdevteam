@@ -149,3 +149,22 @@ function Damage( pl, ammount )
 		pl:TakeDamageInfo( dmg )
 	end
 end
+
+local BaseKillBonus = 30
+local KillStreakBonus = 20
+--------------------------------------------
+-- Calculates kill bonus for players.
+--------------------------------------------
+local function PlayerDeathKillBonus(Victim, Inflictor, Killer)
+	if Victim ~= Killer then
+		local kills = Killer.Life.Kills or 0
+		Killer.Life.Kills = kills + 1
+		
+		local gain = (kills * KillStreakBonus) + BaseKillBonus
+		local t = Killer:Team()
+		if t > 1 then
+			GiveResP(t, gain)
+		end
+	end
+end
+hook.Add("PlayerDeath", "PlayerDeathKillBonus", PlayerDeathKillBonus)
