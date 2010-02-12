@@ -31,8 +31,28 @@ end
 
 -- Disable sents from the spawn menu
 if SERVER then
+	
+	--------------------------------------------
+	-- Gets if the thing is restricted, thing 
+	-- can be a model, class or name of an
+	-- object type. Restricted things cant be
+	-- player spawned.
+	--------------------------------------------
+	local function ThingRestricted(Thing)
+		if string.find(Thing, "wire") then
+			return false
+		end
+		if string.find(Thing, "gmod") then
+			return false
+		end
+		if Thing == "prop_physics" then
+			return false
+		end
+		return true
+	end
+
 	local function NonPropSpawn(Player, Thing)
-		if Admin(Player, "spawned nonprop " .. Thing or "<unknown>") then
+		if not ThingRestricted(Thing) or Admin(Player, "spawned nonprop " .. Thing or "<unknown>") then
 			return true
 		else
 			Player:ChatPrint("Spawn disallowed, only props may be spawned from the spawn menu" ..
@@ -45,6 +65,24 @@ if SERVER then
 	hook.Add("PlayerSpawnVehicle", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnEffect", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnRagdoll", "NonPropSpawn", NonPropSpawn)
+	
+	-- Hook into adv dupe and restrict what can be spawned.
+	local function HookAdvDupe()
+		-- This will be loaded after AdvDupe
+		local ad = AdvDupe
+		local ol = ad.CheckOkEnt
+		
+		-- Override adv dupe check ok ent function
+		function ad.CheckOkEnt(Player, EntTable)
+			local class = EntTable.Class
+			if ThingRestricted(class) then
+				ad.SendClientError(Player, "Tried to paste gamemode restricted prop.")
+				return false
+			end
+			return ol(Player, EntTable)
+		end
+	end
+	hook.Add("Initialize", "HookAdvDupe", HookAdvDupe)
 	
 	-- Safely spawns an entity of the specified class 
 	-- in front of the player. returns the spawned
