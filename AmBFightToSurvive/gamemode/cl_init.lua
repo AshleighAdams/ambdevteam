@@ -49,7 +49,7 @@ function ShowSpawnMenu()
 	if OpenMap(true) then
 		for k,ref in pairs( ents.FindByClass("refinery") ) do
 			if ref.Team == LocalPlayer():Team() then
-				r = k
+				r = ref:EntIndex()
 				ref.MapPoint:AttachClickHook( function(point)
 					RunConsoleCommand("selected_spawn_point", r)
 					CloseMap()
@@ -76,7 +76,7 @@ function ShowSpawnMenu()
 		spawns:SetMultiSelect(false)
 		spawns:AddColumn("Spawn Name")
 		
-		spawns:AddLine("Defualt").OnSelect = function()
+		spawns:AddLine("Default").OnSelect = function()
 			RunConsoleCommand("selected_spawn_point", "def")
 			frame:Close()
 		end
