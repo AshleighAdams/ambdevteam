@@ -1,4 +1,5 @@
 local MetaProp = { }
+local ENT = _R["Entity"]
 --------------------------------------------
 -- Sets the state of the prop in terms of
 -- its construction progress. States are
@@ -6,6 +7,7 @@ local MetaProp = { }
 --------------------------------------------
 STATE_CONSTRUCTED, STATE_UNCONSTRUCTED, STATE_CONSTRUCTING, STATE_UNCONSTRUCTING = 1, 2, 3, 4
 function MetaProp:SetState(state)
+	self:SendClientsState(state)
 	if state == STATE_UNCONSTRUCTED then
 		self.Team = nil
 		self:SetCollisionGroup( COLLISION_GROUP_WORLD)
@@ -33,6 +35,15 @@ function MetaProp:SetState(state)
 		self.Constructed = false
 		return
 	end
+end
+
+function ENT:SendClientsState(state)
+	local rp = RecipientFilter()
+	rp:AddAllPlayers()
+	umsg.Start("state_change", rp)
+		umsg.Short(state)
+		umsg.Entity(self)
+	umsg.End()
 end
 	
 --------------------------------------------
