@@ -46,7 +46,7 @@ end
 function SWEP:DrawHUD()
 	pl = LocalPlayer()
 	ent = self:Trace().Entity
-	if !ValidEntity(ent) or distance >  then return end
+	if !ValidEntity(ent) then return end
 
 	UpdateProp(ent)
 
