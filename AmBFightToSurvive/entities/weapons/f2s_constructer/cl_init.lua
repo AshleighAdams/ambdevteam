@@ -42,3 +42,34 @@ function SWEP:DrawLaser(Start, End, Entity)
 	end
 	render.DrawBeam(Start, End, self.LaserSize, 0, 12.5, lasercolor)
 end
+
+function SWEP:DrawHUD()
+	pl = LocalPlayer()
+	ent = self:Trace().Entity
+	if !ValidEntity(ent) or distance >  then return end
+
+	UpdateProp(ent)
+
+	local Constructed = ent:GetNWBool("Constructed", false)
+	local State = ent:GetNWInt("State", 0) or 0
+	local Team = ent:GetNWInt("Team", 0) or 1
+	local ResNeeded = ent:GetNWFloat("ResNeeded", 0.0) or 0
+	local Cost = ent:GetNWFloat("Cost", 0.0) or 0
+	local Registered = ent:GetNWBool("Registered", false) or 0
+
+	if !Registered then return end
+
+	local y = 0
+	
+	local dy = (ScrH()/4)+y
+	local text = "Prop Status: " .. tostring( (math.Round(((Cost-ResNeeded)/Cost)*1000)/1000)*100  ) .. "%"
+	draw.WordBox( 8,0,dy,text,"Default",Color(50,50,50,100),Color(255,255,255,255) )
+	
+	y = 30
+	local text = "Resources Left: " .. tostring( math.Round(ResNeeded) ) 
+	draw.WordBox( 8,0,ScrH()/4+y,text,"Default",Color(50,50,50,100),Color(255,255,255,255) )
+
+	y = 60
+	local text = "Cost: " .. tostring( math.Round(Cost) )
+	draw.WordBox( 8,0,ScrH()/4+y,text,"Default",Color(50,50,50,100),Color(255,255,255,255) )
+end
