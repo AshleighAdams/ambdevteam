@@ -342,7 +342,8 @@ hook.Add("EntityTakeDamage", "f2s.enttakedmg", EntityTakeDamage)
 
 function CheckForNewProps()
 	for k,ent in pairs(ents.FindByClass("prop_physics")) do
-		if not ent.Registered then
+		local owner = ent:GetPPOwner()
+		if not ent.Registered and owner and ValidEntity(owner) and owner:IsPlayer() then
 			RegisterProp(ent)
 		end
 	end

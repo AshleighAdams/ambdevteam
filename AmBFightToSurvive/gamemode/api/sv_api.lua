@@ -1,5 +1,5 @@
 TeamsRes = TeamsRes or {}
-
+ENT = ENT or _R.Entity
 function ResInit( t )
 	if t == 1 then
 		TeamsRes[t] = {}
@@ -93,9 +93,9 @@ end
 
 function GetEntCost( ent )
 	if ent != nil then
-		sizevec = ent:OBBMaxs() - ent:OBBMins()
-		size = (sizevec.x * sizevec.x + sizevec.y * sizevec.y + sizevec.z * sizevec.z) ^ 0.5
-		phys = ent:GetPhysicsObject()
+		local sizevec = ent:OBBMaxs() - ent:OBBMins()
+		local size = (sizevec.x * sizevec.x + sizevec.y * sizevec.y + sizevec.z * sizevec.z) ^ 0.5
+		local phys = ent:GetPhysicsObject()
 		if phys then
 			mass = phys:GetMass()
 		else
@@ -115,3 +115,9 @@ local function PayDay()
 	end
 end
 timer.Create( "f2s.Res.PayDayTimer", 60, 0, PayDay ) -- disabled for now
+
+function ENT:GetPPOwner()
+	local owner = NullEntity()
+	owner = self:GetNWEntity("OwnerObj")
+	return owner
+end

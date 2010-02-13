@@ -108,23 +108,23 @@ AddItem("Stun Stick", 80, {C.Weapons}, function(Player)
 	end)
 --Weapon Crates
 AddItem("Submachine Gun Crate", 1000, {C.WeaponCrates}, function(Player)
-		local crate = Spawn(Player, "weapon_crate")
+		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_smg1"
 	end)
 AddItem("AssultRifle 2 (Pulse Rifle) Crate", 2500, {C.WeaponCrates}, function(Player)
-		local crate = Spawn(Player, "weapon_crate")
+		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_ar2"
 	end)
 AddItem("Grenades Crate", 4000, {C.WeaponCrates}, function(Player)
-		local crate = Spawn(Player, "weapon_crate")
+		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_frag"
 	end)
 AddItem("Crossbow Crate", 2000, {C.WeaponCrates}, function(Player)
-		local crate = Spawn(Player, "weapon_crate")
+		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_crossbow"
 	end)
 AddItem(".357 Crate", 2000, {C.WeaponCrates}, function(Player)
-		local crate = Spawn(Player, "weapon_crate")
+		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_357"
 	end)
 
@@ -228,7 +228,9 @@ AddItem("Air Boat", 300, {C.Land}, function(Player)
 		local vec = SpawnVehicle(Player, "Airboat")
 	end)
 --Air
-	
+AddItem("Helicopter", 1000, {C.Air}, function(Player)
+		local vec = Spawn(Player, "sent_sakariashelicopter")
+	end)
 --Seats
 AddItem("Airboat Seat", 50, {C.Seat}, function(Player)
 		local vec = SpawnVehicle(Player, "Seat_Airboat")

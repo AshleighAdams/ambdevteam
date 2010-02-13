@@ -103,11 +103,21 @@ if SERVER then
 				ent:SetKeyValue(k, v)
 			end
 		end
-		ent:SetPos(eye.HitPos - Vector(0, 0, height) + (Offset or Vector(0.0, 0.0, 0.0)))
+		
+		local sizevec = ent:OBBMaxs() - ent:OBBMins()
+		local EntHeight = Vector(0,0,sizevec.z+16)
+		
+		Offset = Offset or EntHeight
+		ent:SetPos(eye.HitPos - Vector(0, 0, height) + (Offset))
 		ent.Team = Player:Team()
 		ent.Legal = true
 		ent:Spawn()
 		ent:Activate()
+		for _,const in pairs( constraint.GetAllConstrainedEntities( ent ) ) do
+			RegisterProp(const.Entity)
+			const.Entity:SetState(STATE_CONSTRUCTED)
+			print( const:GetTable() )
+		end
 		return ent
 	end
 	

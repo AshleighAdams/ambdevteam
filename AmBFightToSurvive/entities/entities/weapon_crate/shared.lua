@@ -16,6 +16,7 @@ function ENT:Use(Activator)
 	self.Entity:SetPlaybackRate(1.0)
 	local sequence = self.Entity:LookupSequence("Open")
 	self.Entity:SetSequence(sequence)
+	self.Entity:EmitSound("items/ammocrate_open.wav")
 	
 	timer.Simple( 1.5, function(ply,ent)
 		if !ent and !IsValid(ent) then return end
@@ -23,6 +24,7 @@ function ENT:Use(Activator)
 		ent:SetSequence(sequence)
 		if CLIENT then return end
 		ply:Give( ent.Weapon or "weapon_stunstick" )
+		self.Entity:EmitSound("items/ammocrate_close.wav")
 	end,Activator,self.Entity)
 	
 	timer.Simple( 2.0, function(ply,ent)
