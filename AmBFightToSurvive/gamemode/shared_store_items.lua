@@ -61,7 +61,7 @@ Categories = { }
 local C = Categories
 C.WarStuffs = AddCategory("War Stuffs")
 C.Weapons = AddCategory("Weapons", C.WarStuffs)
-//C.PermWeapons = AddCategory("Perm. Weapons", C.WarStuffs)
+C.WeaponCrates = AddCategory("Weapon Crates", C.WarStuffs)
 C.Ammo = AddCategory("Ammunition", C.WarStuffs)
 C.Supplies = AddCategory("Supplies and Improvements", C.WarStuffs)
 C.AreaDefense = AddCategory("Area Defense", C.WarStuffs)
@@ -106,34 +106,28 @@ AddItem("Pulse Rifle", 400, {C.Weapons}, function(Player)
 AddItem("Stun Stick", 80, {C.Weapons}, function(Player)
 		Player:Give("weapon_stunstick")
 	end)
--- Perm Weapons 
-/*
-AddItem("Submachine Gun", 1000, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 1000, "weapon_smg1")
+--Weapon Crates
+AddItem("Submachine Gun Crate", 1000, {C.WeaponCrates}, function(Player)
+		local crate = Spawn(Player, "weapon_crate")
+		crate.Weapon = "weapon_smg1"
 	end)
-AddItem("Pistol", 100, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 100, "weapon_pistol")
+AddItem("AssultRifle 2 (Pulse Rifle) Crate", 2500, {C.WeaponCrates}, function(Player)
+		local crate = Spawn(Player, "weapon_crate")
+		crate.Weapon = "weapon_ar2"
 	end)
-AddItem("Shotgun", 300, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 300, "weapon_shotgun")
+AddItem("Grenades Crate", 4000, {C.WeaponCrates}, function(Player)
+		local crate = Spawn(Player, "weapon_crate")
+		crate.Weapon = "weapon_frag"
 	end)
-AddItem("Crossbow", 2500, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 2500, "weapon_crossbow")
-		
+AddItem("Crossbow Crate", 2000, {C.WeaponCrates}, function(Player)
+		local crate = Spawn(Player, "weapon_crate")
+		crate.Weapon = "weapon_crossbow"
 	end)
-AddItem("RPG Launcher", 10000, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 10000, "weapon_rpg")
+AddItem(".357 Crate", 2000, {C.WeaponCrates}, function(Player)
+		local crate = Spawn(Player, "weapon_crate")
+		crate.Weapon = "weapon_357"
 	end)
-AddItem("357 Magnum", 1500, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 1500, "weapon_357")
-	end)
-AddItem("Pulse Rifle", 4000, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 4000, "weapon_ar2")
-	end)
-AddItem("Stun Stick", 200, {C.PermWeapons}, function(Player)
-		GiveTeamWeapon( Player:Team(), 200, "weapon_stunstick")
-	end)
-*/
+
 -- Ammo
 AddItem("Submachine Gun Ammo 256 Pack", 40, {C.Ammo}, function(Player)
 		Player:GiveAmmo(256, "SMG1")
