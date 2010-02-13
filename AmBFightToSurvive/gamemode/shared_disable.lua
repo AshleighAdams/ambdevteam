@@ -65,6 +65,8 @@ if SERVER then
 	hook.Add("PlayerSpawnVehicle", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnEffect", "NonPropSpawn", NonPropSpawn)
 	hook.Add("PlayerSpawnRagdoll", "NonPropSpawn", NonPropSpawn)
+	hook.Add("PlayerGiveSWEP","NonPropSpawn",NonPropSpawn)
+	hook.Add("PlayerSpawnSWEP","NonPropSpawn",NonPropSpawn)
 	
 	-- Hook into adv dupe and restrict what can be spawned.
 	local function HookAdvDupe()
@@ -142,3 +144,86 @@ local function PhysgunPickup(Player, Entity)
 	end
 end
 hook.Add("PhysgunPickup", "DisablePhysgunPickup", PhysgunPickup)
+
+/*
+function StopWeapons(Player, Bind, Pressed)
+	print(Bind)
+	if string.find(Bind,"gm_spawnswep") or string.find(Bind,"gm_giveswep") then
+	print("yes")
+		return Admin(Player, "Spawned Weapon")
+	end
+end
+*/
+//hook.Add("PlayerBindPress","f2s.disableweps",StopWeapons)
+
+/*---------------------------------------------------------
+	// Give a swep.. duh.
+---------------------------------------------------------*/
+if CLIENT then return end
+
+timer.Simple( 20, function()
+
+	function CCGiveSWEP( player, command, arguments )
+
+		if ( arguments[1] == nil ) then return end
+
+		// Make sure this is a SWEP
+		local swep = weapons.GetStored( arguments[1] )
+		if (swep == nil) then return end
+		
+		// You're not allowed to spawn this!
+		if ( !swep.Spawnable && !player:IsAdmin() ) then
+			return
+		end
+		
+		//if ( !Admin(player,"Spawned SWEP") ) then return end
+		
+		if ( !gamemode.Call( "PlayerGiveSWEP", player, arguments[1], swep ) ) then return end
+		
+		MsgAll( "Giving "..player:Nick().." a "..swep.Classname.."\n" )
+		player:Give( swep.Classname )
+		
+		// And switch to it
+		player:SelectWeapon( swep.Classname )
+		
+	end
+
+	concommand.Add( "gm_giveswep", CCGiveSWEP )
+
+	/*---------------------------------------------------------
+		// Give a swep.. duh.                                           ---- why are there no hooks for this?!!?!
+	---------------------------------------------------------*/
+	function CCSpawnSWEP( player, command, arguments )
+
+		if ( arguments[1] == nil ) then return end
+
+		// Make sure this is a SWEP
+		local swep = weapons.GetStored( arguments[1] )
+		if (swep == nil) then return end
+		
+		// You're not allowed to spawn this!
+		if ( !swep.Spawnable && !player:IsAdmin() ) then
+			return
+		end
+		
+		if ( !gamemode.Call( "PlayerSpawnSWEP", player, arguments[1], swep ) ) then return end
+		
+		local tr = player:GetEyeTraceNoCursor()
+
+		if ( !tr.Hit ) then return end
+		
+		//if ( !Admin(player,"Spawned SWEP") ) then return end
+		
+		local entity = ents.Create( swep.Classname )
+		
+		if ( ValidEntity( entity ) ) then
+		
+			entity:SetPos( tr.HitPos + tr.HitNormal * 32 )
+			entity:Spawn()
+		
+		end
+		
+	end
+
+	concommand.Add( "gm_spawnswep", CCSpawnSWEP )
+end)
