@@ -1,8 +1,6 @@
 require("datastream")
 
 local MapKey = KEY_F3
-local MapMaterials = { }
-MapMaterials["freespace06_v2-1"] = "amb/freespace06"
 
 MapMetrics = nil
 MapPanel = nil

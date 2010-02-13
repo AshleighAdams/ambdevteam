@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "amb/freespace09"
+	"$translucent" 1
+}

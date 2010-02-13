@@ -1,4 +1,5 @@
 MapMetrics = nil
+local MapMaterials = MapMaterials or { }
 --------------------------------------------
 -- Creates map metrics, which is information
 -- about the map's size

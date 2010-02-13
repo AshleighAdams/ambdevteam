@@ -29,9 +29,6 @@ AddCSLuaFile( "cl_map.lua" )
 
 resource.AddFile( "materials/amb/scoreboard.vmt" )
 resource.AddFile( "materials/amb/damageoverlay.vmt" )
-resource.AddFile( "materials/amb/mapamb.vmt" )
-resource.AddFile( "materials/amb/freespace06.vmt" )
-
 
 include( 'shared.lua' )
 include( 'npc_controller.lua' )
