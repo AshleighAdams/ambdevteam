@@ -157,10 +157,14 @@ AddItem("Pulse Rifle Bullets 100 Pack", 90, {C.Ammo}, function(Player)
 -- Area Defense
 AddItem("Autoturret", 500, {C.AreaDefense}, function(Player)
 		local npc = SpawnNPC(Player, "npc_turret_floor")
+		npc:GetPhysicsObject():SetMass(250)
 		EnableDamage(npc, 300)		
 	end)
 AddItem("Autorepair Beacon", 240, {C.AreaDefense}, function(Player)
 		Spawn(Player, "autorepair_beacon")
+	end)
+AddItem("Neural Disruptor", 650, {C.AreaDefense}, function(Player)
+		Spawn(Player, "neural_disruptor")
 	end)
 	
 -- Misc
