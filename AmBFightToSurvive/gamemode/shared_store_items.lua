@@ -166,6 +166,9 @@ AddItem("Autorepair Beacon", 240, {C.AreaDefense}, function(Player)
 AddItem("Neural Disruptor", 650, {C.AreaDefense}, function(Player)
 		Spawn(Player, "neural_disruptor")
 	end)
+AddItem("Proximity Mine", 90, {C.AreaDefense}, function(Player)
+		Spawn(Player, "proximity_mine")
+	end)
 	
 -- Misc
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)

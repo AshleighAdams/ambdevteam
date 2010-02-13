@@ -110,6 +110,7 @@ if SERVER then
 		Offset = Offset or Vector(0,0,0)
 		ent:SetPos(eye.HitPos + EntHeight + Offset)
 		ent.Team = Player:Team()
+		ent.Owner = Player
 		ent.Legal = true
 		ent:Spawn()
 		ent:Activate()
