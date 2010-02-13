@@ -13,7 +13,8 @@ function ENT:Initialize()
 	self:PhysWake()
 	self:Activate()
 	self:SetUseType(SIMPLE_USE)
-	
+	self:GetPhysicsObject():SetMass(250)
+	EnableDamage(self, 500)
 end
 
 -----------------------------------------
