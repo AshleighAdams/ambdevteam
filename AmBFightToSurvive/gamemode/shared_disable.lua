@@ -107,8 +107,8 @@ if SERVER then
 		local sizevec = ent:OBBMaxs() - ent:OBBMins()
 		local EntHeight = Vector(0,0,sizevec.z+16)
 		
-		Offset = Offset or EntHeight
-		ent:SetPos(eye.HitPos - Vector(0, 0, height) + (Offset))
+		Offset = Offset or Vector(0,0,0)
+		ent:SetPos(eye.HitPos + EntHeight + Offset)
 		ent.Team = Player:Team()
 		ent.Legal = true
 		ent:Spawn()
