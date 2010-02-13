@@ -66,3 +66,12 @@ function UpdateProp(Prop)
 		Prop.Cost = Prop:GetNWFloat("Cost", 0.0)
 	end
 end
+
+function PropKilled(um)
+	local ent = um:ReadEntity()
+	if !ValidEntity(ent) then return end
+	local ed = EffectData()
+		ed:SetEntity( ent )
+	util.Effect( "entity_remove", ed, true, true )
+end
+usermessage.Hook("propdeadeffect",PropKilled)

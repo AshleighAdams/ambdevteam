@@ -23,7 +23,12 @@ function EnableDamage(Entity, MaxHealth, RestorationTime)
 		ent.CurrentHealth = ent.CurrentHealth - info:GetDamage()
 		ent.LastDamageTime = CurTime()
 		if ent.CurrentHealth < 0 then
-			ent:Remove()
+			umsg.Start("propdeadeffect")
+				umsg.Entity(ent)
+			umsg.End()
+			timer.Simple( 0.1, function(ent)
+				ent:Remove()
+			end,ent)
 		end
 	end
 	Entity.RestoreHealth = function(ent)
