@@ -31,7 +31,7 @@ end
 -----------------------------------------
 function ENT:CanTarget(Ent)
 	if Ent:IsValid() and Ent:IsPlayer() and Ent:Alive() then
-		if  and (Ent.NeuralDisruptor == nil or Ent.NeuralDisruptor == self or Ent.NeuralDisruptor.Target ~= Ent) then
+		if (Ent.NeuralDisruptor == nil or Ent.NeuralDisruptor == self or Ent.NeuralDisruptor.Target ~= Ent) then
 			if Ent:Team() ~= self.Team then
 				if (Ent:GetPos() - self:GetPos()):Length() <= FireRadius then
 					if Visible(self, Ent) then
