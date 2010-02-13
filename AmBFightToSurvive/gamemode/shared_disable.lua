@@ -114,9 +114,11 @@ if SERVER then
 		ent:Spawn()
 		ent:Activate()
 		for _,const in pairs( constraint.GetAllConstrainedEntities( ent ) ) do
-			RegisterProp(const.Entity)
-			const.Entity:SetState(STATE_CONSTRUCTED)
-			print( const:GetTable() )
+			if const:GetClass() == "prop_physics" then
+				RegisterProp(const)
+				const.Team = nil
+				const:SetState(STATE_CONSTRUCTED)
+			end
 		end
 		return ent
 	end
