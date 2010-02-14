@@ -39,7 +39,8 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo ) --   Hook for this not b
 						"gmod_camera",
 						"tactical_insertion",
 						"gmod_tool",
-						"weapon_physgun"
+						"weapon_physgun",
+						"weapon_crowbar"
 					}
 	
 	if (hitgroup == HITGROUP_LEFTLEG || hitgroup == HITGROUP_RIGHTLEG) then

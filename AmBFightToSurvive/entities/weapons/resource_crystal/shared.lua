@@ -43,6 +43,7 @@ function SWEP:PrimaryAttack()
 	if SERVER then
 		local owner = self.Owner
 		owner:DropWeapon( self.Weapon )
+		owner:SelectWeapon( "weapon_crowbar" )
 		local phys = self.Weapon:GetPhysicsObject() 
 		phys:SetVelocity( owner:GetVelocity() )
 		self.Weapon:SetNextPrimaryFire( CurTime() + 2 )
@@ -58,7 +59,8 @@ function SWEP:SecondaryAttack()
 	self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 	if SERVER then
 		local owner = self.Owner
-		self.Owner:DropWeapon( self.Weapon )
+		owner:DropWeapon( self.Weapon )
+		owner:SelectWeapon( "weapon_crowbar" )
 		local phys = self.Weapon:GetPhysicsObject()  
 		phys:SetVelocity( owner:GetVelocity() + owner:GetAimVector() * 2000 )
 	end

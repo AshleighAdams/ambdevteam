@@ -1,8 +1,8 @@
 include('shared.lua')
 
 SWEP.PrintName			= "Reclaimator"			
-SWEP.Slot				= 1
-SWEP.SlotPos			= 1
+SWEP.Slot				= 5
+SWEP.SlotPos			= 3
 SWEP.DrawAmmo			= false
 
 

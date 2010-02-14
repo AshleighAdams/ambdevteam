@@ -303,7 +303,6 @@ function GM:PlayerLoadout( pl )
 	end
 	
 	pl:Give( "gmod_tool" )
-	pl:Give( "gmod_camera" )
 	pl:Give( "weapon_physgun" )
 	pl:Give( "sa_flaregun" )	
 	pl:Give( "f2s_constructer" )
