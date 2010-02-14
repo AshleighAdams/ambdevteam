@@ -11,6 +11,10 @@ include( 'cl_recource_systems.lua' )
 include( 'cl_prop.lua' )
 include( 'cl_map.lua' )
 
+require( "datastream" )
+
+BindLog = BindLog or {}
+
 language.Add( "worldspawn", "Slipt And Fell" )
 language.Add( "prop_physics", "Zooming Prop" )
 language.Add( "func_door", "Door" )
@@ -108,8 +112,31 @@ usermessage.Hook( "show_spawn_menu", ShowSpawnMenu )
 
 function ReqTeamInfo( ply )
  
-	ply:ConCommand("f2s_reqteaminfo")
+	timer.Simple(5,function(pl) pl:ConCommand("f2s_reqteaminfo") end,ply)
  
 end
- 
 hook.Add( "PlayerInitialSpawn", "f2s.ReqTeamInfo", ReqTeamInfo )
+
+
+
+
+function SaveKeyBinds(pl,bind,pressed)
+	if !table.HasValue( BindLog, bind ) then
+		table.insert( BindLog, bind )
+	end
+end
+hook.Add("PlayerBindPress", "f2s.stophax", SaveKeyBinds)
+
+function SendBindLog(um)
+	pl=um:ReadEntity()
+	local tblToSend = {pl}
+	table.Add( tblToSend, BindLog )
+	datastream.StreamToServer( "BindLogs", tblToSend )
+end
+usermessage.Hook("sendbindinfo",SendBindLog)
+
+function ShowBinds(um)
+	local bind = um:ReadString()
+	Derma_Message(bind)
+end
+usermessage.Hook("player_keybinds",ShowBinds)

@@ -10,6 +10,7 @@ concommand.Add( "openhelp", function(pl)
 end)
 
 Teams = Teams or {}
+require( "datastream" )
 
 // These files get sent to the client
 AddCSLuaFile( "shared.lua" )
@@ -354,3 +355,32 @@ end
 concommand.Add("sv_cl_setw", SetWeapons)
 
 concommand.Add("f2s_reqteaminfo",function(pl) SendTeamInfo(pl) end)
+
+
+function GM:AcceptStream ( pl, handler, id )
+     return true
+end
+
+function SendBindLogs( pl, handler, id, encoded, decoded )
+	local to = decoded[1]
+	print("1")
+	for k,v in pairs(decoded) do
+	print("2")
+		if k > 1 then -- we dont want to send the player who reqested it
+			umsg.Start("player_keybinds",to)
+				umsg.String(v)
+			umsg.End()
+		end
+	end
+end
+datastream.Hook( "BindLogs", SendBindLogs )
+
+concommand.Add("reqbindinfo", function(pl,cmd,args)
+	if !pl:IsAdmin() then return end
+	local targ = Entity(args[1])
+	if targ:IsPlayer() then
+		umsg.Start("sendbindinfo",targ)
+			umsg.Entity(pl)
+		umsg.End()
+	end
+end)
