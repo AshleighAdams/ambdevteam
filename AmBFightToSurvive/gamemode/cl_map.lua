@@ -280,6 +280,7 @@ usermessage.Hook("map_metrics", ReceiveMapMetrics)
 -- map.
 --------------------------------------------
 local function CanSeePlayerOnMap(A, B)
+	if !ValidEntity(A) or !ValidEntity(B) then return false end
 	if A == B then
 		return true
 	end
