@@ -9,15 +9,17 @@ function Admin(Player, Message)
 	local adminrights = AdminRights:GetInt()
 	if Player:IsAdmin() then
 		if adminrights == 0 then
-			Player:ChatPrint("Can not comply, admin rights is disabled")
+			if SERVER then Player:ChatPrint("Can not comply, admin rights is disabled") end
 			return false
 		end
 		if adminrights == 1 then
 			for _, p in pairs(player.GetAll()) do
-				if Message then
-					p:ChatPrint(Player:Nick() .. " preformed admin action(" .. Message .. ")")
-				else
-					p:ChatPrint(Player:Nick() .. " preformed admin action")
+				if SERVER then
+					if Message then
+						p:ChatPrint(Player:Nick() .. " preformed admin action(" .. Message .. ")")
+					else
+						p:ChatPrint(Player:Nick() .. " preformed admin action")
+					end
 				end
 			end
 			return true
