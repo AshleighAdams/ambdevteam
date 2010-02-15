@@ -102,7 +102,7 @@ function ShowSpawnMenu()
 			if ref.Team == LocalPlayer():Team() && spawnok then
 				spawns:AddLine("Refinery: " .. k).OnSelect = function()
 					frame:Close()
-					RunConsoleCommand("selected_spawn_point", k)
+					RunConsoleCommand("selected_spawn_point", ref:EntIndex())
 				end
 			end
 		end
