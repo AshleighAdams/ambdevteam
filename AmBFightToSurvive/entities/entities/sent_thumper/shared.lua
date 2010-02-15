@@ -12,6 +12,7 @@ ENT.Rad = 3000
 ENT.Force = 500
 ENT.NextUseTime = CurTime()
 ENT.StartupTime = 4
+ENT.AmbSound = "ambient/machines/thumper_amb.wav"
 
 function ENT:Use(Activator)
 	if !Activator:IsPlayer() then return end
@@ -27,6 +28,7 @@ function ENT:Use(Activator)
 			local sequence = ent:LookupSequence("idle")
 			ent:SetSequence(sequence)
 			ent.SeqTime = ent:SequenceDuration()
+			ent:EmitSoundDelay( ent.AmbSound, ent.SeqTime )
 			timer.Simple( ent.SeqTime, BoomAndRise, ent)
 		end,self.Entity)
 	else
@@ -38,13 +40,12 @@ end
 function BoomAndRise(ent)
 	if ValidEntity(ent) and ent.IsOn then
 		
-		ent:Boom()
+		ent:Boom(false)
 		
 		local sequence = ent:LookupSequence("idle")
 		ent:ResetSequence(sequence)
 		ent:SetCycle(1)
 		ent.SeqTime = ent:SequenceDuration()
-		
 		//ent:EmitSound("ambient/machines/thumper_amb.wav")
 		timer.Simple( ent.SeqTime, BoomAndRise, ent ) -- restart
 	else
@@ -53,7 +54,7 @@ function BoomAndRise(ent)
 		ent:SetPlaybackRate(0.0)
 		ent:SetCycle(1)
 		//ent:StopSound("ambient/machines/thumper_amb.wav")
-		ent:Boom()
+		ent:Boom(true)
 	end
 end
 
@@ -70,7 +71,7 @@ function ENT:Think()
 	return true 
 end
 
-function ENT:Boom()
+function ENT:Boom(lasttime)
 	local ent = self
 	local vPoint = ent:GetPos()
 	local effectdata = EffectData()
@@ -83,6 +84,10 @@ function ENT:Boom()
 		
 	//ent:SetCycle(1)   ambient/machines/thumper_amb.wav
 	//ent:SetPlaybackRate(1.0)
+	
+	if not lasttime then
+		ent:EmitSoundDelay( ent.AmbSound, ent.SeqTime )
+	end
 	
 	ent:EmitSound("ambient/machines/thumper_hit.wav")
 	
@@ -108,4 +113,15 @@ function ENT:Boom()
 		end
 	end
 	
+end
+
+
+function ENT:EmitSoundDelay( sound, time )
+	local ent = self
+	if !ent || !ValidEntity(ent) then return end
+	local sound = CreateSound(ent, sound)
+	sound:Play()
+	timer.Simple( time, function(sound)
+		sound:Stop()
+	end,sound)
 end

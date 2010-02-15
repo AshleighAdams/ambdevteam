@@ -5,7 +5,7 @@ include('shared.lua')
 -----------------------------------------
 function ENT:Initialize()
 	local ent = self.Entity
-	ent:SetModel("models/props_combine/CombineThumper002.mdl")
+	ent:SetModel("models/props_combine/CombineThumper001a.mdl")
 end
 
 -----------------------------------------

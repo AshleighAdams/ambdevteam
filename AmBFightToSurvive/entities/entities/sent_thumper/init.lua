@@ -6,7 +6,7 @@ include('shared.lua')
 ---- Initialize
 -----------------------------------------
 function ENT:Initialize()
-	self:SetModel("models/props_combine/CombineThumper002.mdl")
+	self:SetModel("models/props_combine/CombineThumper001a.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
