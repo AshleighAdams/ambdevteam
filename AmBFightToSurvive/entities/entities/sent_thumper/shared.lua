@@ -11,7 +11,7 @@ ENT.IsOn = false
 ENT.Rad = 3000
 ENT.Force = 500
 ENT.NextUseTime = CurTime()
-
+ENT.StartupTime = 4
 
 function ENT:Use(Activator)
 	if !Activator:IsPlayer() then return end
@@ -21,12 +21,14 @@ function ENT:Use(Activator)
 	self.IsOn = not self.IsOn
 	
 	if self.IsOn then
-		self.Entity:SetPlaybackRate(1.0)
-		local sequence = self.Entity:LookupSequence("idle")
-		self.Entity:SetSequence(sequence)
-		self.SeqTime = self.Entity:SequenceDuration()
-		timer.Simple( self.SeqTime, BoomAndRise, self.Entity)
-		self.Entity:EmitSound("ambient/machines/thumper_startup1.wav")
+	self.Entity:EmitSound("ambient/machines/thumper_startup1.wav")
+		timer.Simple( self.StartupTime, function(ent)
+			ent:SetPlaybackRate(1.0)
+			local sequence = ent:LookupSequence("idle")
+			ent:SetSequence(sequence)
+			ent.SeqTime = ent:SequenceDuration()
+			timer.Simple( ent.SeqTime, BoomAndRise, ent)
+		end,self.Entity)
 	else
 		//self.Entity:SetPlaybackRate(0.0)
 		self.Entity:EmitSound("ambient/machines/thumper_shutdown1.wav")
