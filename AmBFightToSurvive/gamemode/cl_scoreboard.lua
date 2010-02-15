@@ -20,7 +20,7 @@ function GM:HUDDrawScoreBoard()
 	local StartY	= ( ScrH() / 2 ) - Offset
 	
 	local hostname = GetHostName()
-	local gamename = GAMEMODE.Name .. " [" .. GAMEMODE.Author .. "]"
+	local gamename = GAMEMODE.Name // .. " [" .. GAMEMODE.Author .. "]"
 	
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	surface.SetTexture( Mat )
@@ -49,7 +49,7 @@ function GM:HUDDrawScoreBoard()
 	surface.SetFont( "bScoreboardText" ) -- ChatFont   DefaultLarge
 	surface.SetTextColor( 100, 100, 100, 255 )
 	for i,pl in pairs( player.GetAll() ) do
-		if pl:IsPlayer() then
+		if pl and ValidEntity(pl) and pl:IsPlayer() then
 			surface.SetTextColor( team.GetColor( pl:Team() ) )
 			local y = (PlayersStartY + (i*Spacing))
 			
