@@ -2,6 +2,10 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 
+list.Set("BuildData", "weapon_crate", {
+	MinNormalZ = 0.99,
+	Health = 500,
+	Model = "models/Items/ammocrate_smg1.mdl" })
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

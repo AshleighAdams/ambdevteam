@@ -5,6 +5,11 @@ include('shared.lua')
 local FireRadius = 1000
 local TargetSelectSound = "buttons/combine_button5.wav"
 
+list.Set("BuildData", "neural_disruptor", {
+	MinNormalZ = 0.99,
+	Health = 150,
+	Model = "models/props_combine/combine_emitter01.mdl" })
+
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

@@ -52,6 +52,10 @@ local Music = {
 	"music/HL2_song8.mp3"
 }
 
+list.Set("BuildData", "radio", {
+	MinNormalZ = 0.90,
+	Model = "models/props_lab/citizenradio.mdl" })
+
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

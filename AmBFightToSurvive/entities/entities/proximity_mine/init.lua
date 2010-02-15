@@ -10,6 +10,10 @@ local BlastDamage = 600
 
 local ArmSound = "items/battery_pickup.wav"
 
+list.Set("BuildData", "proximity_mine", {
+	MinNormalZ = 0.80,
+	Model = "models/props_combine/combine_mine01.mdl" })
+
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

@@ -12,6 +12,11 @@ local RestoreSound = "buttons/button14.wav"
 local OnSound = "buttons/button17.wav"
 local OffSound = OnSound
 
+list.Set("BuildData", "autorepair_beacon", {
+	MinNormalZ = 0.99,
+	Health = 250,
+	Model = "models/props_combine/combine_light001a.mdl" })
+
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

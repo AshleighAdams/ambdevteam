@@ -88,51 +88,80 @@ if SERVER then
 	end
 	hook.Add("Initialize", "HookAdvDupe", HookAdvDupe)
 	
+	-- Spawns an object based on its build data function.
+	function SpawnBuildDataFunction(Player, BuildDataFunction, Offset)
+		local eye = Player:GetEyeTrace()
+		local dif = eye.HitPos - Player:GetPos()
+		local builddata = BuildDataFunction(Player)
+		local offset = Offset or 32
+		local posent = function(ent)
+			ent:SetPos(eye.HitPos + Vector(0, 0, offset))
+		end
+		return builddata.OnCreate(posent)
+	end
+	
 	-- Safely spawns an entity of the specified class 
 	-- in front of the player. returns the spawned
 	-- entity.
 	function Spawn(Player, Class, Model, Keys, Offset)
-		local eye = Player:GetEyeTrace()
-		local dif = eye.HitPos - Player:GetPos()
-		local ent = ents.Create(Class)
-		local height = ent:OBBMins().z
-		if Model then
-			ent:SetModel(Model)
-		end
-		if ent:IsNPC() then
-			ent:SetKeyValue("spawnflags", SF_NPC_FADE_CORPSE | SF_NPC_ALWAYSTHINK)
-		end
-		if Keys then
-			for k, v in pairs(Keys) do
-				ent:SetKeyValue(k, v)
-			end
-		end
-		
-		local sizevec = ent:OBBMaxs() - ent:OBBMins()
-		local EntHeight = Vector(0,0,sizevec.z+16)
-		
-		Offset = Offset or Vector(0,0,0)
-		ent:SetPos(eye.HitPos + EntHeight + Offset)
-		ent.Team = Player:Team()
-		ent.Owner = Player
-		ent.Legal = true
-		ent:Spawn()
-		ent:Activate()
-		for _,const in pairs( constraint.GetAllConstrainedEntities( ent ) ) do
-			if const:GetClass() == "prop_physics" then
-				RegisterProp(const)
-				const.Team = nil
-				const:SetState(STATE_CONSTRUCTED)
-			end
-		end
-		return ent
+		return SpawnBuildDataFunction(Player, GetBuildDataFunction(Class, Model, Keys), Offset)
 	end
 	
 	-- Vehicles spawn differently
 	function SpawnVehicle(Player, Name)
+		return SpawnBuildDataFunction(Player, GetVehicleBuildDataFunction(Name), 64)
+	end
+	
+	-- Gets a function that will create build data for the specified
+	-- params when supplied with a player.
+	function GetBuildDataFunction(Class, Model, Keys)
+		return function(Player)
+			local bd = { }
+			local li = list.Get("BuildData")[Class] or { }
+			bd.Model = Model or li.Model
+			bd.MinNormalZ = li.MinNormalZ or 0.95
+			bd.Class = Class
+			bd.OnCreate = function(posent)
+				local ent = ents.Create(Class)
+				if Model then
+					ent:SetModel(Model)
+				end
+				if ent:IsNPC() then
+					ent:SetKeyValue("spawnflags", SF_NPC_FADE_CORPSE | SF_NPC_ALWAYSTHINK)
+				end
+				if Keys then
+					for k, v in pairs(Keys) do
+						ent:SetKeyValue(k, v)
+					end
+				end
+				posent(ent)
+				if li.Health then
+					EnableDamage(ent, li.Health)
+				end
+				ent.Team = Player:Team()
+				ent.Owner = Player
+				ent:Spawn()
+				ent:Activate()
+				for _,const in pairs(constraint.GetAllConstrainedEntities(ent)) do
+					if const:GetClass() == "prop_physics" then
+						RegisterProp(const)
+						const.Team = nil
+						const:SetState(STATE_CONSTRUCTED)
+					end
+				end
+				return ent
+			end
+			return bd
+		end
+	end
+	
+	
+	
+	-- Similar to GetBuildDataFunction, but for vehicles.
+	function GetVehicleBuildDataFunction(Name)
 		local vehicle = list.Get("Vehicles")[Name]
 		if vehicle then
-			return Spawn(Player, vehicle.Class, vehicle.Model, vehicle.KeyValues)
+			return GetBuildDataFunction(vehicle.Class, vehicle.Model, vehicle.KeyValues)
 		else
 			return nil
 		end

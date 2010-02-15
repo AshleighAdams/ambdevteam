@@ -56,6 +56,34 @@ local function AddItem(Name, Cost, Categories, Action)
 	SetItemAction(item, Action)
 end
 
+--------------------------------------------
+-- Helper function to add an item that will
+-- be purchased by using the constructor
+-- to build it. BuildData is a function
+-- that will create the build data needed
+-- when supplied with the player.
+--------------------------------------------
+local function AddItemBuildData(Name, Cost, Categories, BuildData)
+	AddItem(Name, Cost, Categories, function(Player)
+		local bd = BuildData(Player)
+		local oncancel = bd.OnCancel
+		local giveresp = function()
+			GiveResP(Player:Team(), Cost)
+		end
+		if oncancel then
+			bd.OnCancel = function()
+				giveresp()
+				oncancel()
+			end
+		else
+			bd.OnCancel = giveresp
+		end
+		Player:AddToBuildQueue(bd)
+	end)
+end
+GetBuildDataFunction = GetBuildDataFunction or function() end
+GetVehicleBuildDataFunction = GetVehicleBuildDataFunction or function() end
+
 -- Categories
 Categories = { }
 local C = Categories
@@ -160,15 +188,12 @@ AddItem("Autoturret", 500, {C.AreaDefense}, function(Player)
 		npc:GetPhysicsObject():SetMass(250)
 		EnableDamage(npc, 300)		
 	end)
-AddItem("Autorepair Beacon", 240, {C.AreaDefense}, function(Player)
-		Spawn(Player, "autorepair_beacon")
-	end)
-AddItem("Neural Disruptor", 650, {C.AreaDefense}, function(Player)
-		Spawn(Player, "neural_disruptor")
-	end)
-AddItem("Proximity Mine", 90, {C.AreaDefense}, function(Player)
-		Spawn(Player, "proximity_mine")
-	end)
+AddItemBuildData("Autorepair Beacon", 240, {C.AreaDefense}, 
+	GetBuildDataFunction("autorepair_beacon"))
+AddItemBuildData("Neural Disruptor", 650, {C.AreaDefense}, 
+	GetBuildDataFunction("neural_disruptor"))
+AddItemBuildData("Proximity Mine", 90, {C.AreaDefense}, 
+	GetBuildDataFunction("proximity_mine"))
 	
 -- Misc
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)
@@ -223,13 +248,12 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 	
 -- Transport
 -- Land 
-AddItem("Jeep", 300, {C.Land}, function(Player)
-		local vec = SpawnVehicle(Player, "Jeep")
-	end)
+AddItemBuildData("Jeep", 300, {C.Land}, 
+	GetVehicleBuildDataFunction("Jeep"))
 	
-AddItem("Air Boat", 300, {C.Land}, function(Player)
-		local vec = SpawnVehicle(Player, "Airboat")
-	end)
+AddItemBuildData("Air Boat", 300, {C.Land},
+	GetVehicleBuildDataFunction("Airboat"))
+
 --Air
 AddItem("Helicopter", 1000, {C.Air}, function(Player)
 		local vec = Spawn(Player, "sent_sakariashelicopter")
