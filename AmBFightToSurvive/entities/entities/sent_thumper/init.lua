@@ -2,6 +2,10 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include('shared.lua')
 
+list.Set("BuildData", "sent_thumper", {
+	MinNormalZ = 0.80,
+	Model = "models/props_combine/CombineThumper001a.mdl" })
+
 -----------------------------------------
 ---- Initialize
 -----------------------------------------

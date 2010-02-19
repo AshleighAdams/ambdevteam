@@ -139,6 +139,8 @@ AddItem("Submachine Gun Crate", 1000, {C.WeaponCrates}, function(Player)
 		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_smg1"
 	end)
+	
+	
 AddItem("AssultRifle 2 (Pulse Rifle) Crate", 2500, {C.WeaponCrates}, function(Player)
 		local crate = Spawn(Player, "weapon_crate",nil,nil,Vector(0,0,20))
 		crate.Weapon = "weapon_ar2"
@@ -194,6 +196,8 @@ AddItemBuildData("Neural Disruptor", 650, {C.AreaDefense},
 	GetBuildDataFunction("neural_disruptor"))
 AddItemBuildData("Proximity Mine", 90, {C.AreaDefense}, 
 	GetBuildDataFunction("proximity_mine"))
+AddItemBuildData("Combine Thumper", 1500, {C.AreaDefense}, 
+	GetBuildDataFunction("sent_thumper"))
 	
 -- Misc
 AddItem("Tactical Insertion", 100, {C.Misc}, function(Player)
