@@ -101,27 +101,22 @@ function JoinTeam( pl, cmd, args )
 		pl:SetTeam( id )
 		local owner = Teams[id].Owner
 		if owner && ValidEntity(owner) then
-			local msg = "Welcome!"
-			local qmark = "\""
-			pl:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_GENERIC,10 )" )
+			pl:Message("Welcome!","Welcome")
 			msg = pl:GetName() .. " has joined your team."
-			owner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_GENERIC,10 )" )
+			owner:Message(msg,"",NOTIFY_GENERIC)
 			local lastowner = Teams[lastteam].Owner
 			if lastowner && ValidEntity(lastowner) then
-				local qmark = "\""
 				local lastowner = Teams[lastteam].Owner
 				msg = pl:GetName() .. " has left your team."
-				lastowner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
+				lastowner:Message(msg,"",NOTIFY_GENERIC)
 			end
 		end
 	else
 		local owner = Teams[id].Owner
 		if owner && ValidEntity(owner) then
-			local msg = "Incorrect Password!"
-			local qmark = "\""
-			pl:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
-			msg = pl:GetName() .. " attepted to join your team with the password \\\"" .. password .. "\\\""
-			owner:SendLua( "GAMEMODE:AddNotify( " .. qmark .. msg .. qmark .. ", NOTIFY_ERROR,10 )" )
+			pl:Message("Incorrect password!","Error")
+			msg = pl:GetName() .. " attepted to join your team with the password \"" .. password .. "\""
+			owner:Message(msg,"",NOTIFY_GENERIC)
 		end
 	end
 end

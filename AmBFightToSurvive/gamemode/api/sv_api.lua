@@ -1,5 +1,6 @@
 TeamsRes = TeamsRes or {}
 ENT = ENT or _R.Entity
+PLY = PLY or _R.Player
 function ResInit( t )
 	if t == 1 then
 		TeamsRes[t] = {}
@@ -120,4 +121,28 @@ function ENT:GetPPOwner()
 	local owner = NullEntity()
 	owner = self:GetNWEntity("OwnerObj")
 	return owner
+end
+
+function PLY:Message( msg, title, hint )
+	if self and ValidEntity(self) then -- make sure were valid
+		title = title or "Message"
+		
+		msg = string.gsub( msg, "\"", "\\\"" ) -- Replace " with \" so on the client it is seen as " in a string and not the end of the quotes
+		title = string.gsub( title, "\"", "\\\"" )
+		
+		msg = string.gsub( msg, "\n", "\\\n" )
+		title = string.gsub( title, "\n", "\\\n" )
+		
+		//msg = string.gsub( msg, "\\", "\\\\" )
+		//title = string.gsub( title, "\\", "\\\\" )
+		local lua = ""
+		if hint then
+			lua = [[GAMEMODE:AddNotify("%s",%s,10)]]
+			lua = string.format(lua,msg,hint)
+		else
+			lua = [[Derma_Message("%s","%s")]]
+			lua = string.format(lua,msg,title)
+		end
+		self:SendLua(lua)
+	end
 end
