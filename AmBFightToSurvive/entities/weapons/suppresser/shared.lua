@@ -96,14 +96,16 @@ end
 function SWEP:CreateBoom(pos,ang)
 
 	timer.Simple( 0.01, function(pos) -- wtf, wtf!?!?!?!?!?!? is worng with this fucking shit
+	
 		local effectdata = EffectData()
 		effectdata:SetStart( pos )
 		effectdata:SetOrigin( pos )
-		effectdata:SetScale( 1 )
-		//effectdata:SetAngle( ang )
-		ged = effectdata
-		// lua_run util.Effect( "Explosion", ged )
-		util.Effect( "Explosion", effectdata )	//cball_bounce
+		effectdata:SetMagnitude( 160 )
+		effectdata:SetScale( 20 )
+		effectdata:SetRadius( 60 )
+		effectdata:SetAngle( ang )
+		util.Effect( "AR2Explosion", effectdata )	//cball_bounce
+		
 	end,pos)
 	
 	
