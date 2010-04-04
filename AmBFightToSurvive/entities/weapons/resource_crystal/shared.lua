@@ -1,4 +1,8 @@
 
+if SERVER then
+	resource.AddFile("models/weapons/V_resp.mdl")
+end
+
 // Variables that are used on both client and server
 
 SWEP.Author			= "C0BRA"
@@ -10,8 +14,8 @@ SWEP.DrawAmmo			= true
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= true
 
-SWEP.ViewModel			= "models/weapons/v_grenade.mdl"
-SWEP.WorldModel			= "models/weapons/w_grenade.mdl"
+SWEP.ViewModel			= "models/weapons/V_resp.mdl"
+SWEP.WorldModel			= "models/weapons/w_bugbait.mdl"
 
 SWEP.Primary.ClipSize		= 400
 SWEP.Primary.DefaultClip	= 400
