@@ -180,7 +180,7 @@ function PLY:RockTheVote()
 	
 	//  Tell evryone
 	for i,ply in pairs( player.GetAll() ) do
-		ply:ChatPrint( self:Name() .. " has Rocked The Vote. Votes Needed: " .. tostring(#votes) .. "/" .. tostring(votes_needed) )
+		ply:ChatPrint( self:Name() .. " has Rocked The Vote. Votes Needed: " .. tostring(#votes) .. " out of " .. tostring(votes_needed) )
 		if #votes >= votes_needed then
 			DoMapChange()
 			ply:ChatPrint("Rock The Vote passed! Please vote for the next map")

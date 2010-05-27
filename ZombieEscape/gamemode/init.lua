@@ -3,6 +3,17 @@ include( 'shared.lua' )
 include( 'player.lua' )
 include( 'npc.lua' )
 
+AddCSLuaFile("player_shd.lua")
+AddCSLuaFile("cl_deathnotice.lua")
+AddCSLuaFile("cl_hudpickup.lua")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("cl_pickteam.lua")
+AddCSLuaFile("cl_scoreboard.lua")
+AddCSLuaFile("cl_targetid.lua")
+AddCSLuaFile("cl_voice.lua")
+AddCSLuaFile("player_shd.lua")
+AddCSLuaFile("shared.lua")
+
 GM.PlayerSpawnTime = {}
 
 /*---------------------------------------------------------
