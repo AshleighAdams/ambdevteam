@@ -1,9 +1,6 @@
+votes = {}
+rtv_passed = false
 
-/*---------------------------------------------------------
-   Name: gamemode:PlayerTraceAttack( )
-   Desc: A bullet has been fired and hit this player
-		 Return true to completely override internals
----------------------------------------------------------*/
 function GM:PlayerTraceAttack( ply, dmginfo, dir, trace )
 
 	if ( SERVER ) then
@@ -52,7 +49,8 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerFootstep( ply, vPos, iFoot, strSoundName, fVolume, pFilter )
 	
-	
+	if ply:GetVelocity():Length() > 150 then return true end
+	return false
 	/*
 	// Draw effect on footdown
 	local effectdata = EffectData()
@@ -112,6 +110,12 @@ end
 ---------------------------------------------------------*/
 function GM:OnPlayerChat( player, strText, bTeamOnly, bPlayerIsDead )
 	
+	if SERVER then
+		if strText == "rtv" then
+			player:RockTheVote()
+		end
+	end
+	
 	//
 	// I've made this all look more complicated than it is. Here's the easy version
 	//
@@ -145,18 +149,49 @@ function GM:OnPlayerChat( player, strText, bTeamOnly, bPlayerIsDead )
 	
 end
 
-/*---------------------------------------------------------
-   Name: gamemode:PlayerNoClip( player, bool )
-   Desc: Player pressed the noclip key, return true if
-		  the player is allowed to noclip, false to block
----------------------------------------------------------*/
 function GM:PlayerNoClip( pl, on )
 	
-	// Allow noclip if we're in single player
-	if ( SinglePlayer() ) then return true end
 	
-	// Don't if it's not.
-	return false
+	return pl:IsAdmin()
 	
 end
 
+PLY = _R["Entity"]
+
+function PLY:RockTheVote()
+	if !ValidEntity(self) then return end
+	if !self:IsPlayer() then return end
+	
+	// stop people spamming...
+	if table.HasValue( votes, self ) then
+		self:ChatPrint("You have already Rocked The Vote")
+		return
+	end
+	if rtv_passed then
+		self:ChatPrint("Rock The Vote Passed, Voting in progress")
+		return
+	end
+	
+	local votes_needed = MaxPlayers()
+	// Recalculate stuff to compensate for people who have left
+	local new_votes = {self}
+	for k,v in pairs( votes ) do
+		if ValidEntity(v) and v:IsPlayer() then
+			table.Add( new_votes, v )
+		end
+	end
+	votes=new_votes
+	
+	//  Tell evryone
+	for i,ply in pairs( player.GetAll() ) do
+		ply:ChatPrint( self:Name() .. " has Rocked The Vote. Votes Needed: " .. tostring(#votes) .. "/" .. tostring(votes_needed) )
+		if #votes >= votes_needed then
+			//DoMapChange()
+			ply:ChatPrint("Rock The Vote passed! Please vote for the next map")
+		end
+	end
+end
+
+function DoMapChange()
+	rtv_passed = true
+end
