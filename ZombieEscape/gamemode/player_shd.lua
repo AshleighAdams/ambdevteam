@@ -103,19 +103,15 @@ function GM:PlayerStepSoundTime( ply, iType, bWalking )
 	
 end
 
-
-/*---------------------------------------------------------
-   Name: gamemode:OnPlayerChat()
-		Process the player's chat.. return true for no default
----------------------------------------------------------*/
-function GM:OnPlayerChat( player, strText, bTeamOnly, bPlayerIsDead )
-	
-	if SERVER then
+hook.Add( "PlayerSay", "rtv", function(ply,text) 
+	if SERVER then // you never know :S
 		if strText == "rtv" then
 			player:RockTheVote()
 		end
 	end
-	
+end)
+
+function GM:OnPlayerChat( player, strText, bTeamOnly, bPlayerIsDead )	
 	//
 	// I've made this all look more complicated than it is. Here's the easy version
 	//
@@ -172,7 +168,7 @@ function PLY:RockTheVote()
 		return
 	end
 	
-	local votes_needed = MaxPlayers()
+	local votes_needed = math.ceil( MaxPlayers() / 2 )
 	// Recalculate stuff to compensate for people who have left
 	local new_votes = {self}
 	for k,v in pairs( votes ) do
@@ -186,7 +182,7 @@ function PLY:RockTheVote()
 	for i,ply in pairs( player.GetAll() ) do
 		ply:ChatPrint( self:Name() .. " has Rocked The Vote. Votes Needed: " .. tostring(#votes) .. "/" .. tostring(votes_needed) )
 		if #votes >= votes_needed then
-			//DoMapChange()
+			DoMapChange()
 			ply:ChatPrint("Rock The Vote passed! Please vote for the next map")
 		end
 	end
