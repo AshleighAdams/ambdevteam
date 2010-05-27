@@ -1,0 +1,13 @@
+"Gamemode"
+{
+	"name"		"Zombie Escape"
+	"version"	"0.1"
+
+	"author_name"	"C0BRA"
+	"author_email"	"me@c0bra.co.cc"
+	"author_url"	"http://c0bra.co.cc/"
+	
+	"icon"		""
+	"info"		"Run from zombies through a puzzel of maps to saftey or spread the infection at the loss of the human race!"
+	"hide"		"0"
+}
