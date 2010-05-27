@@ -16,11 +16,11 @@ include( 'gravitygun.lua' )
 include( 'player_shd.lua' )
 include( 'animations.lua' )
 
-GM.Name 		= "Base Gamemode"
-GM.Author 		= "Garry Newman"
-GM.Email 		= "garrynewman@gmail.com"
-GM.Website 		= "www.garry.tv"
-GM.TeamBased 	= false
+GM.Name 		= "Zombie Escape"
+GM.Author 		= "C0BRA"
+GM.Email 		= "me@c0bra.co.cc"
+GM.Website 		= "www.c0bra.co.cc"
+GM.TeamBased 	= true
 
 
 /*---------------------------------------------------------
@@ -204,17 +204,14 @@ function GM:CreateTeams()
 	// gamemode you should override this function in your gamemode
 	if ( !GAMEMODE.TeamBased ) then return end
 	
-	TEAM_BLUE = 1
-	team.SetUp( TEAM_BLUE, "Blue Team", Color( 0, 0, 255 ) )
-	team.SetSpawnPoint( TEAM_BLUE, "ai_hint" ) // <-- This would be info_terrorist or some entity that is in your map
+	TEAM_HUMAN = 1
+	team.SetUp( TEAM_HUMAN, "Humans", Color( 0, 0, 255 ) )
+	team.SetSpawnPoint( TEAM_BLUE, "info_player_counterterrorist" ) // <-- This would be info_terrorist or some entity that is in your map
 	
-	TEAM_ORANGE = 2
-	team.SetUp( TEAM_ORANGE, "Orange Team", Color( 255, 150, 0 ) )
-	team.SetSpawnPoint( TEAM_ORANGE, "sky_camera" ) // <-- This would be info_terrorist or some entity that is in your map
-	
-	TEAM_SEXY = 3
-	team.SetUp( TEAM_SEXY, "Sexy Team", Color( 255, 150, 150 ) )
-	team.SetSpawnPoint( TEAM_SEXY, "info_player_start" ) // <-- This would be info_terrorist or some entity that is in your map
+	TEAM_ZOMBIE = 2
+	team.SetUp( TEAM_ZOMBIE, "Zombie", Color( 255, 0, 0 ) )
+	team.SetSpawnPoint( TEAM_ZOMBIE, "info_player_terrorist" ) // <-- This would be info_terrorist or some entity that is in your map
+
 	
 	team.SetSpawnPoint( TEAM_SPECTATOR, "worldspawn" ) 
 
@@ -227,5 +224,8 @@ end
 		  a good reason for it not to.
 ---------------------------------------------------------*/
 function GM:ShouldCollide( Ent1, Ent2 )
+	if( Ent1:IsPlayer() && Ent2:IsPlayer() ) then
+		return Ent1:Team() != Ent2:Team()
+	end
 	return true
 end
