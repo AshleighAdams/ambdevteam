@@ -49,7 +49,7 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerFootstep( ply, vPos, iFoot, strSoundName, fVolume, pFilter )
 	
-	if ply:GetVelocity():Length() > 150 then return true end
+	if ply:GetVelocity():Length() > 150 then return false end
 	return false
 	/*
 	// Draw effect on footdown
