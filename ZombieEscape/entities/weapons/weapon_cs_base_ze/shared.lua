@@ -96,7 +96,7 @@ function SWEP:Think() // forumular to set the recoil on the gun dynamicly
 		end
 	end
 	if SERVER then
-		self.Owner:ChatPrint(tostring( self:GetRecoilModi() ))
+		//self.Owner:ChatPrint(tostring( self:GetRecoilModi() ))
 	end
 end
 
@@ -112,6 +112,12 @@ function SWEP:GetRecoilModi()
 		local vel_over = self.Owner:GetVelocity():Length() - 150
 		ret = ret + (vel_over/200)
 	end
+	
+	// Returns for shotgun
+	if self.Primary.Ammo == "buckshot" then
+		return 0.2
+	end
+	
 	return math.max( 0, ret )
 end
 
@@ -123,7 +129,7 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextSecondaryFire( CurTime() + self.Primary.Delay )
 	self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 	
-	if ( !self:CanPrimaryAttack() ) then return end
+	if ( !self:CanPrimaryAttack() and self.Primary.Ammo != "knife" ) then return end
 	
 	// Play shoot sound
 	self.Weapon:EmitSound( self.Primary.Sound )
@@ -168,7 +174,15 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	bullet.Force	= 5									// Amount of force to give to phys objects
 	bullet.Damage	= dmg
 	
-	self.Owner:FireBullets( bullet )
+	if self.Primary.Ammo == "knife" then
+		local trace_hitpos = self.Owner:GetEyeTrace().HitPos
+		local distance = ( trace_hitpos - self.Owner:GetShootPos() ):Length()
+		if distance < 100 then
+			self.Owner:FireBullets( bullet )
+		end
+	else
+		self.Owner:FireBullets( bullet )
+	end
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK ) 		// View model animation
 	self.Owner:MuzzleFlash()								// Crappy muzzle light
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )				// 3rd Person Animation
@@ -283,7 +297,8 @@ end
 	Loaded a saved game (or changelevel)
 ---------------------------------------------------------*/
 function SWEP:OnRestore()
-
+	self.RecoilModi = 0
+	self.LastShot = CurTime()
 	self.NextSecondaryAttack = 0
 	self:SetIronsights( false )
 	

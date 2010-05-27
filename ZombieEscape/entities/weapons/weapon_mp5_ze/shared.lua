@@ -19,9 +19,9 @@ if ( CLIENT ) then
 end
 
 SWEP.HoldType			= "smg"
-SWEP.Base				= "weapon_cs_base"
-SWEP.Category			= "Counter-Strike"
-
+SWEP.Base				= "weapon_cs_base_ze"
+SWEP.Category			= "Counter-Strike - Zombie Escape"
+SWEP.CoolOff			= 0.1
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
