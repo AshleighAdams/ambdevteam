@@ -40,9 +40,9 @@ SWEP.Primary.Damage			= 55
 SWEP.Primary.NumShots		= -1
 SWEP.Primary.Cone			= 0
 SWEP.Primary.ClipSize		= -1
-SWEP.Primary.Delay			= 0.2
+SWEP.Primary.Delay			= 0.5
 SWEP.Primary.DefaultClip	= -1
-SWEP.Primary.Automatic		= false
+SWEP.Primary.Automatic		= true
 SWEP.Primary.Ammo			= "knife"
 
 SWEP.Secondary.ClipSize		= -1

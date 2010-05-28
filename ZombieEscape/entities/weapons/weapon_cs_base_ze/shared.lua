@@ -1,3 +1,5 @@
+// All the game logic (most)
+
 
 if (SERVER) then
 
@@ -6,14 +8,19 @@ if (SERVER) then
 	SWEP.AutoSwitchTo		= false
 	SWEP.AutoSwitchFrom		= false
 	
-	self.HitE = { 
-		Sound( "weapons/knife/knife_hitwall1.wav" )};
-	self.FleshHit = {
+	SWEP.HitE = { 
+		Sound( "weapons/knife/knife_hitwall1.wav" )
+	}
+	SWEP.FleshHit = {
 		Sound( "weapons/knife/knife_hit1.wav" ),
 		Sound( "weapons/knife/knife_hit2.wav" ),
 		Sound( "weapons/knife/knife_hit3.wav" ),
-		Sound( "weapons/knife/knife_hit4.wav" ) };
-
+		Sound( "weapons/knife/knife_hit4.wav" )
+	}
+	SWEP.Slash = {
+		Sound("weapons/knife/knife_slash1.wav"),
+		Sound("weapons/knife/knife_slash2.wav")
+	}
 end
 
 if ( CLIENT ) then
@@ -144,10 +151,13 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SetNextSecondaryFire( CurTime() + self.Primary.Delay )
 	self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 	
-	if ( !self:CanPrimaryAttack() and self.Primary.Ammo != "knife" ) then return end
-	
-	// Play shoot sound
-	self.Weapon:EmitSound( self.Primary.Sound )
+	if self.Primary.Ammo == "knife" then
+		
+	else
+		if ( !self:CanPrimaryAttack() ) then return end
+		// Play shoot sound
+		self.Weapon:EmitSound( self.Primary.Sound )
+	end
 	
 	// Shoot the bullet
 	self:CSShootBullet( self.Primary.Damage, self.Primary.Recoil, self.Primary.NumShots, self.Primary.Cone )
@@ -196,13 +206,15 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 		bullet.Spread = Vector(0,0,0)
 		if distance < 75 then
 			self.Owner:FireBullets( bullet )
-			local hit_ent  = self.Owner:GetEyeTrace().Entity
-			if( hit_ent:IsPlayer() or hit_ent:IsNPC() or hit_ent:GetClass()=="prop_ragdoll" ) then // ripped a bit from http://www.garrysmod.org/downloads/?a=view&id=25357 (cba todo myself)
-				self.Owner:EmitSound( self.FleshHit[math.random(1,#self.FleshHit)] )
-			else
-				self.Owner:EmitSound( self.HitE[math.random(1,#self.Hit)] )
+			if SERVER then
+				local hit_ent  = self.Owner:GetEyeTrace().Entity
+				if( hit_ent:IsPlayer() or hit_ent:IsNPC() or hit_ent:GetClass()=="prop_ragdoll" ) then // ripped a bit from http://www.garrysmod.org/downloads/?a=view&id=25357 (cba todo myself)
+					self.Owner:EmitSound( self.FleshHit[math.random(1,#self.FleshHit)] )
+				else
+					self.Owner:EmitSound( self.HitE[math.random(1,#self.HitE)] )
+				end
+					self.Weapon:EmitSound( self.Slash[ math.random(1,#self.Slash)] )
 			end
-			self.Weapon:EmitSound("weapons/iceaxe/iceaxe_swing1.wav")
 			
 		end
 	else

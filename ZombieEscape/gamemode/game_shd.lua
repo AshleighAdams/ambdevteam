@@ -1,8 +1,9 @@
 next_map_in_x_rounds = 10
-
+round_start = 0
 PLY = _R.Entity
 
 function NewRound()
+	round_start = CurTime()
 	if CLIENT then return end
 	next_map_in_x_rounds = next_map_in_x_rounds -1
 	//  We need to clean up and reset the map
@@ -90,3 +91,28 @@ function WaitForMorePeople()
 		RoundEnd()
 	end
 end
+
+local function PlayerDeath(pl, wep, killer)
+	local players = player.GetAll()
+	local z,h = 0,0
+	
+	for k,v in pairs( players ) do
+		if v:Team() == TEAM_HUMAN then
+			h = h + 1
+		elseif v:Team() == TEAM_ZOMBIE then
+			z = z + 1
+		end
+	end
+	
+	if z == 0 then
+		RoundEnd(TEAM_HUMAN)
+	elseif h == 0 then
+		RoundEnd(TEAM_ZOMBIE)
+	end
+end
+hook.Add( "PlayerDeath", "shouldroundend", PlayerDeath )
+
+function CheckZombiePickup(ply, wep)
+   return ply:Team() == TEAM_HUMAN
+end
+hook.Add("PlayerCanPickupWeapon", "stopzombiespickingup", CheckZombiePickup)
