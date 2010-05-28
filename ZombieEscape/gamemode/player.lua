@@ -547,7 +547,7 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	local fatal_fall_speed = 988.5
 	local dmg = flFallSpeed / (fatal_fall_speed - max_safe_fall_speed)
 	
-	dmg = math.floor(dmg)
+	dmg = math.floor(dmg*100)
  /*
   // not exact, but pretty darn close
  #define PLAYER_MAX_SAFE_FALL_SPEED 488.5
