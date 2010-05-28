@@ -109,6 +109,9 @@ function SWEP:Think() // forumular to set the recoil on the gun dynamicly
 			self.RecoilMulti = math.max(0,  self.RecoilMulti - (self.CoolOff/10)  )
 			self.NextReduceTime = CurTime() + self.Primary.Delay
 			self:SetNWFloat( "RecoilMulti", self.RecoilMulti )
+			if(CurTime()>self.LastShot+5) then
+				self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
+			end
 		end
 	end
 	if SERVER then
@@ -174,9 +177,11 @@ function SWEP:PrimaryAttack()
 	// to send the last shoot time. In multiplayer this is predicted clientside so we don't need to 
 	// send the float.
 	self.RecoilMulti = math.min(1,  self.RecoilMulti + (self.CoolOff/10)  )
+	self:SetNWFloat( "RecoilMulti", self.RecoilMulti )
 	self.LastShot = CurTime()
 	if ( (SinglePlayer() && SERVER) || CLIENT ) then
 		self.Weapon:SetNetworkedFloat( "LastShootTime", CurTime() )
+		self.Weapon:SendWeaponAnim(ACT_VM_IDEL)
 	end
 	
 end
@@ -202,9 +207,9 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	if self.Primary.Ammo == "knife" then
 		local trace_hitpos = self.Owner:GetEyeTrace().HitPos
 		local distance = ( trace_hitpos - self.Owner:GetShootPos() ):Length()
-		self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )    	// knife anims
 		bullet.Spread = Vector(0,0,0)
 		if distance < 75 then
+			self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )    	// knife anims
 			self.Owner:FireBullets( bullet )
 			if SERVER then
 				local hit_ent  = self.Owner:GetEyeTrace().Entity
@@ -215,7 +220,8 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 				end
 					self.Weapon:EmitSound( self.Slash[ math.random(1,#self.Slash)] )
 			end
-			
+		else
+			self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )   	// knife anims
 		end
 	else
 		self.Owner:FireBullets( bullet )
