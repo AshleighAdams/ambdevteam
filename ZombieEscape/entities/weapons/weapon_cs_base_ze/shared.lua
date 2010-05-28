@@ -5,6 +5,14 @@ if (SERVER) then
 	SWEP.Weight				= 5
 	SWEP.AutoSwitchTo		= false
 	SWEP.AutoSwitchFrom		= false
+	
+	self.HitE = { 
+		Sound( "weapons/knife/knife_hitwall1.wav" )};
+	self.FleshHit = {
+		Sound( "weapons/knife/knife_hit1.wav" ),
+		Sound( "weapons/knife/knife_hit2.wav" ),
+		Sound( "weapons/knife/knife_hit3.wav" ),
+		Sound( "weapons/knife/knife_hit4.wav" ) };
 
 end
 
@@ -22,7 +30,7 @@ if ( CLIENT ) then
 
 end
 
-SWEP.Author			= "Counter-Strike"
+SWEP.Author			= "Counter-Strike (Edit: C0BRA)"
 SWEP.Contact		= ""
 SWEP.Purpose		= ""
 SWEP.Instructions	= ""
@@ -93,6 +101,7 @@ function SWEP:Think() // forumular to set the recoil on the gun dynamicly
 		if(CurTime()>self.NextReduceTime) then
 			self.RecoilMulti = math.max(0,  self.RecoilMulti - (self.CoolOff/10)  )
 			self.NextReduceTime = CurTime() + self.Primary.Delay
+			self:SetNWFloat( "RecoilMulti", self.RecoilMulti )
 		end
 	end
 	if SERVER then
@@ -101,7 +110,13 @@ function SWEP:Think() // forumular to set the recoil on the gun dynamicly
 end
 
 function SWEP:GetRecoilModi()
-	local ret = self.RecoilMulti
+	local ret = 0
+	if CLIENT then
+		ret = self:GetNWFloat( "RecoilMulti" )
+	else
+		ret = self.RecoilMulti
+	end
+	
 	if (self.Owner:Crouching()) then
 		ret = ret - 0.3
 	end
@@ -177,12 +192,23 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	if self.Primary.Ammo == "knife" then
 		local trace_hitpos = self.Owner:GetEyeTrace().HitPos
 		local distance = ( trace_hitpos - self.Owner:GetShootPos() ):Length()
-		if distance < 100 then
+		self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )    	// knife anims
+		bullet.Spread = Vector(0,0,0)
+		if distance < 75 then
 			self.Owner:FireBullets( bullet )
+			local hit_ent  = self.Owner:GetEyeTrace().Entity
+			if( hit_ent:IsPlayer() or hit_ent:IsNPC() or hit_ent:GetClass()=="prop_ragdoll" ) then // ripped a bit from http://www.garrysmod.org/downloads/?a=view&id=25357 (cba todo myself)
+				self.Owner:EmitSound( self.FleshHit[math.random(1,#self.FleshHit)] )
+			else
+				self.Owner:EmitSound( self.HitE[math.random(1,#self.Hit)] )
+			end
+			self.Weapon:EmitSound("weapons/iceaxe/iceaxe_swing1.wav")
+			
 		end
 	else
 		self.Owner:FireBullets( bullet )
 	end
+	
 	self.Weapon:SendWeaponAnim( ACT_VM_PRIMARYATTACK ) 		// View model animation
 	self.Owner:MuzzleFlash()								// Crappy muzzle light
 	self.Owner:SetAnimation( PLAYER_ATTACK1 )				// 3rd Person Animation
@@ -301,5 +327,4 @@ function SWEP:OnRestore()
 	self.LastShot = CurTime()
 	self.NextSecondaryAttack = 0
 	self:SetIronsights( false )
-	
 end

@@ -51,3 +51,7 @@ SWEP.Secondary.Automatic	= false
 SWEP.Secondary.Ammo			= "none"
 
 SWEP.IronSightsPos 		= Vector( 5.15, -2, 2.6 )
+
+function SWEP:Deploy()
+	self:EmitSound("weapons/knife/knife_deploy1.wav")
+end

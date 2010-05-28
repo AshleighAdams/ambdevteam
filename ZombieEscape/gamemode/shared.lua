@@ -15,6 +15,7 @@ include( 'obj_player_extend.lua' )
 include( 'gravitygun.lua' )
 include( 'player_shd.lua' )
 include( 'animations.lua' )
+include( 'game_shd.lua' )
 
 GM.Name 		= "Zombie Escape"
 GM.Author 		= "C0BRA"

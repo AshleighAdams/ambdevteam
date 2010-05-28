@@ -3,6 +3,7 @@ include( 'shared.lua' )
 include( 'player.lua' )
 include( 'npc.lua' )
 
+
 AddCSLuaFile("player_shd.lua")
 AddCSLuaFile("cl_deathnotice.lua")
 AddCSLuaFile("cl_hudpickup.lua")
