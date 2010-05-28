@@ -530,6 +530,7 @@ end
 		Return true to prevent player spraying
 ---------------------------------------------------------*/
 function GM:PlayerSpray( ply )
+
 	
 	return false
 	
@@ -545,9 +546,12 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	
 	local max_safe_fall_speed = 488.5
 	local fatal_fall_speed = 988.5
-	local dmg = flFallSpeed / (fatal_fall_speed - max_safe_fall_speed)
-	
-	dmg = math.floor(dmg*10)
+	local dmg = ((flFallSpeed - max_safe_fall_speed) / (fatal_fall_speed-flFallSpeed)) * 100
+	//local dmg = flFallSpeed / (fatal_fall_speed - max_safe_fall_speed)
+	if dmg < -100 then
+		dmg = 1000
+	end
+	dmg = math.floor(dmg)
 	
 	if flFallSpeed <= max_safe_fall_speed then return true end
  /*
