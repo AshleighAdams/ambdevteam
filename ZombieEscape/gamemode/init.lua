@@ -13,6 +13,7 @@ AddCSLuaFile("cl_targetid.lua")
 AddCSLuaFile("cl_voice.lua")
 AddCSLuaFile("player_shd.lua")
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("game_shd.lua")
 
 GM.PlayerSpawnTime = {}
 

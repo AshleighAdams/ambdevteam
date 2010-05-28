@@ -7,6 +7,7 @@ include( 'cl_hudpickup.lua' )
 include( 'cl_deathnotice.lua' )
 include( 'cl_pickteam.lua' )
 include( 'cl_voice.lua' )
+include( 'game_shd.lua' )
 
 gmod_vehicle_viewmode = CreateClientConVar( "gmod_vehicle_viewmode", "1", true, true )
 
