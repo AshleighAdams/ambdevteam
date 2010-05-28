@@ -4,7 +4,8 @@ function GM:PlayerDeathThink( pl )
 	if (  pl.NextSpawnTime && pl.NextSpawnTime > CurTime() ) then return end
 
 	if ( pl:KeyPressed( IN_ATTACK ) || pl:KeyPressed( IN_ATTACK2 ) || pl:KeyPressed( IN_JUMP ) ) then
-	
+		
+		pl:SetTeam(TEAM_SPECTATOR)
 		pl:Spawn()
 		
 	end
@@ -93,12 +94,8 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerInitialSpawn( pl )
 
-	pl:SetTeam( TEAM_UNASSIGNED )
+	pl:SetTeam( TEAM_SPECTATOR )
 	
-	if ( GAMEMODE.TeamBased ) then
-		pl:ConCommand( "gm_showteam" )
-	end
-
 end
 
 /*---------------------------------------------------------
@@ -172,19 +169,9 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerLoadout( pl )
 
-	pl:GiveAmmo( 255,	"Pistol", 		true )
-	pl:GiveAmmo( 90,	"SMG1", 		true )
-	pl:GiveAmmo( 1,		"grenade", 		true )
-	pl:GiveAmmo( 32,	"Buckshot", 	true )
-	pl:GiveAmmo( 16,	"357", 			true )
-	
-	pl:Give( "weapon_stunstick" )
-	pl:Give( "weapon_crowbar" )
-	pl:Give( "weapon_pistol" )
-	pl:Give( "weapon_smg1" )
-	pl:Give( "weapon_frag" )
-	pl:Give( "weapon_physcannon" )
-	//pl:Give( "weapon_physgun" )
+	pl:Give("weapon_knife_ze")
+	pl:Give("weapon_deagle_ze")
+	pl:Give("weapon_ak47_ze")
 	
 	// Switch to prefered weapon if they have it
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
@@ -347,6 +334,7 @@ end
    Desc: Player just picked up (or was given) weapon
 ---------------------------------------------------------*/
 function GM:WeaponEquip( weapon )
+
 end
 
 /*---------------------------------------------------------
@@ -355,10 +343,11 @@ end
 		 Return true to not take damage
 ---------------------------------------------------------*/
 function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
-
+	local force = 1
+	local attacker = dmginfo:GetAttacker()
 	// More damage if we're shot in the head
 	 if ( hitgroup == HITGROUP_HEAD ) then
-	 
+		force = 2
 		dmginfo:ScaleDamage( 2 )
 	 
 	 end
@@ -373,7 +362,12 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 		dmginfo:ScaleDamage( 0.25 )
 	 
 	 end
-
+	if attacker:Team() == TEAM_HUMAN then
+		local vec = ( ply:GetShootPos() - attacker:GetShootPos() ):Normalize() * (force*200)
+		ply:SetVelocity(vec)
+	elseif attacker:Team() == TEAM_ZOMBIE then
+		ply:SetZombie()
+	end
 end
 
 /*---------------------------------------------------------
@@ -381,7 +375,7 @@ end
    Desc: Return true to not play the default sounds
 ---------------------------------------------------------*/
 function GM:PlayerDeathSound()
-	return false
+	return true
 end
 
 /*---------------------------------------------------------
@@ -405,7 +399,8 @@ end
    Desc: Player typed KILL in the console. Can they kill themselves?
 ---------------------------------------------------------*/
 function GM:CanPlayerSuicide( ply )
-	return true
+	ply:ChatPrint("Don't be an asshole")
+	return false
 end
 
 /*---------------------------------------------------------
@@ -450,7 +445,7 @@ function GM:PlayerCanJoinTeam( ply, teamid )
 		return false
 	end
 	
-	return true
+	return teamid == TEAM_SPECTATOR
 	
 end
 
@@ -489,12 +484,10 @@ function GM:PlayerJoinTeam( ply, teamid )
 		if (iOldTeam == TEAM_SPECTATOR || iOldTeam == TEAM_UNASSIGNED) then
 			ply:KillSilent()
 		else
-			ply:Kill()
+			return
 		end
 	end
-
-	ply:SetTeam( teamid )
-	ply.LastTeamSwitch = RealTime()
+	
 	
 	GAMEMODE:OnPlayerChangedTeam( ply, iOldTeam, teamid )
 	
@@ -548,10 +541,29 @@ end
 ---------------------------------------------------------*/
 function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	
-	// Apply damage and play collision sound here
-	// then return true to disable the default action
-	//MsgN( ply, bInWater, bOnFloater, flFallSpeed )
-	//return true
+	if bInWater then return true end
+	
+	local max_safe_fall_speed = 488.5
+	local fatal_fall_speed = 988.5
+	local dmg = flFallSpeed / (fatal_fall_speed - max_safe_fall_speed)
+	
+	dmg = math.floor(dmg)
+ /*
+  // not exact, but pretty darn close
+ #define PLAYER_MAX_SAFE_FALL_SPEED 488.5
+ #define PLAYER_FATAL_FALL_SPEED    988.5
+ #define DAMAGE_FOR_FALL_SPEED    100.0 / (PLAYER_FATAL_FALL_SPEED - PLAYER_MAX_SAFE_FALL_SPEED)
+ */
+	
+	
+	local dmginfo = DamageInfo()
+	dmginfo:SetDamage( dmg )
+	dmginfo:SetDamageType( DMG_FALL )
+	dmginfo:SetAttacker( ply )
+	
+	ply:TakeDamageInfo(dmginfo)
+	
+	return true
 	
 end
 
@@ -560,12 +572,6 @@ end
 		return amount of damage to do due to fall
 ---------------------------------------------------------*/
 function GM:GetFallDamage( ply, flFallSpeed )
-
-	if( GetConVarNumber( "mp_falldamage" ) > 0 ) then // realistic fall damage is on
-		return flFallSpeed * 0.225; // near the Source SDK value
-	end
-	
-	return 10
 	
 end
 
