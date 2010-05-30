@@ -1,19 +1,22 @@
 next_map_in_x_rounds = 10
 round_start = 0
+round_end = false
 PLY = _R.Entity
 
 function NewRound()
+	round_end = false
 	round_start = CurTime()
-	if CLIENT then return end
+	
 	next_map_in_x_rounds = next_map_in_x_rounds -1
 	//  We need to clean up and reset the map
 	game.CleanUpMap()
-	
-	for i,pl in pairs( player.GetAll() ) do
-		pl:SetTeam( TEAM_HUMAN )
-		pl:Spawn()
-		pl:Lock()
-		timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+	if SERVER then
+		for i,pl in pairs( player.GetAll() ) do
+			pl:SetTeam( TEAM_HUMAN )
+			pl:Spawn()
+			pl:Lock()
+			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+		end
 	end
 	
 	timer.Simple( 10, GetZombie )
@@ -22,6 +25,7 @@ function NewRound()
 end
 
 function GetZombie()
+	if CLIENT then return end
 	local plys = {}									// the valid players
 	for k,ply in pairs( player.GetAll() ) do	// loop through
 		if ply:Team() == TEAM_HUMAN then		// add only ones who are humans
@@ -69,8 +73,16 @@ function RoundEnd(winner)
 	if CLIENT then return end
 	if winner == TEAM_HUMAN or winner == nil then
 		//humans win
+		umsg.Start("winner")
+			umsg.String("ze/humans_win")
+			umsg.String("")
+		umsg.End()
 	else
 		//zombies win
+		umsg.Start("winner")
+			umsg.String("ze/zombies_win")
+			umsg.String("")
+		umsg.End()
 	end
 	
 	timer.Remove("round_timer")
@@ -116,3 +128,17 @@ function CheckZombiePickup(ply, wep)
    return ply:Team() == TEAM_HUMAN
 end
 hook.Add("PlayerCanPickupWeapon", "stopzombiespickingup", CheckZombiePickup)
+
+usermessage.Hook( "winner", function(um)
+	texture = um:ReadString()
+	local sound = Sound( um:ReadString() )
+	round_end=true
+end)
+// We can't hook so easy in a function so i done this :P (yes, i know its weird)
+hook.Add("HUDPaintBackground", "winner", function()
+	if not round_end then return end
+	local mat = Material( texture )
+	surface.SetTexture( mat )
+	surface.DrawRect( ScrW() - (512/2), ScrH() - (512/2), 512, 512 )
+end)
+
