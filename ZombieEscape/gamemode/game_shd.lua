@@ -1,7 +1,34 @@
 next_map_in_x_rounds = 10
 round_start = 0
 round_end = false
-PLY = _R.Entity
+local PLY = _R.Entity
+
+PRI_SLOT = 1
+SEC_SLOT = 2
+VIP_SLOT = 3
+
+local pri_slots = {
+		"weapon_ak47",
+		"weapon_m4a1",
+		"weapon_mp5",
+		"weapon_tmp",
+		"weapon_para7",
+		"weapon_mac10",
+		"weapon_pumpshotgun"
+	}
+local sec_slots = {
+		"weapon_glock",
+		"weapon_deagle",
+		"weapon_fiveseven",
+		"weapon_flashbang",
+		"weapon_hegrenade"
+	}
+local vip_slot = {
+	"",
+	"",
+	"",
+	""
+	}
 
 function NewRound()
 	round_end = false
@@ -26,15 +53,18 @@ end
 
 function GetZombie()
 	if CLIENT then return end
-	local plys = {}									// the valid players
+	local plys = {}								// the valid players
 	for k,ply in pairs( player.GetAll() ) do	// loop through
 		if ply:Team() == TEAM_HUMAN then		// add only ones who are humans
-			table.Add( plys, ply )				// add them in
+			plys[k] = ply
+			//table.Add( plys, ply )		bug?				// add them in
 		end
 	end
+	PrintTable(plys)
 	
 	// now select one randomly and remove his weapons then give him a knife
 	local rnd = math.Round( math.Rand( 1, #plys ) )
+	print(rnd)
 	local pl = plys[rnd]
 	if #plys < 2 then
 		timer.Create( "wfmp", 5,0, WaitForMorePeople )
@@ -48,14 +78,17 @@ function PLY:SetZombie()
 	if self:Team() == TEAM_HUMAN then							// only humands can be changed
 		
 		weps = self:GetWeapons()
-		for v,wep in pairs( weps ) do							// drop all there weapons
-			self:DropWeapon( wep )
+		for v,wep in pairs( weps ) do							// drop all there weapons excluding knife
+			if wep:GetClass() != "weapon_knife" then
+				self:DropWeapon( wep )
+			end
 		end
-		self:Give("weapon_knife_ze")							// give them a knife
 		
 		self:DoEffects()										// Drap the explodion effect
 		self:SetTeam( TEAM_ZOMBIE )								// yup
+		self:SetHealth(2500)
 		self:SetWalkSpeed(275)									// make them walk faster than humans
+		CheckForWinner()
 	end
 end
 
@@ -65,8 +98,10 @@ function PLY:DoEffects()
 	effectdata:SetStart( pos )
 	effectdata:SetOrigin( pos )
 	effectdata:SetScale( 2 )
-	util.Effect( "HelicopterBomb", effectdata )	
- 
+	util.Effect( "HelicopterMegaBomb", effectdata )	
+	
+	util.ScreenShake(self:GetPos(), 5, 1, 10)
+	self:EmitSound("", 200, 100)
 end
 
 function RoundEnd(winner)
@@ -83,6 +118,7 @@ function RoundEnd(winner)
 			umsg.String("ze/zombies_win")
 			umsg.String("")
 		umsg.End()
+				umsg.Start("winner") umsg.String("ze/zombies_win") umsg.String("") umsg.End()
 	end
 	
 	timer.Remove("round_timer")
@@ -104,7 +140,7 @@ function WaitForMorePeople()
 	end
 end
 
-local function PlayerDeath(pl, wep, killer)
+function CheckForWinner()
 	local players = player.GetAll()
 	local z,h = 0,0
 	
@@ -121,6 +157,10 @@ local function PlayerDeath(pl, wep, killer)
 	elseif h == 0 then
 		RoundEnd(TEAM_ZOMBIE)
 	end
+end
+
+local function PlayerDeath(pl, wep, killer)
+	CheckForWinner()
 end
 hook.Add( "PlayerDeath", "shouldroundend", PlayerDeath )
 
@@ -142,3 +182,27 @@ hook.Add("HUDPaintBackground", "winner", function()
 	surface.DrawRect( ScrW() - (512/2), ScrH() - (512/2), 512, 512 )
 end)
 
+function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in spawn hook
+	if slot == SLOT_PRI then
+		self.PriSlot = pri_slots[id] or ""
+	elseif slot == SLOT_SEC then
+		self.SecSlot = sec_slots[id] or ""
+	elseif slot == SLOT_VIP then
+		self.VIPSlot = vip_slots[id] or ""
+	end
+end
+
+concommand.Add( "ze_setslot", function(ply,cmd,args)	
+		local slot = args[1] 	or 0
+		local id = args[2]		or 0
+		if id==0 or slot==0 then return end
+		PLY:SetSlot(slot, id)
+	end)
+	
+function ReplaceWeapons() // Replace the old css weapons with the new ZE ones
+	for i, ent in pairs( ents.GetAll() ) do
+		if ent:IsWeapon() then
+			
+		end
+	end
+end

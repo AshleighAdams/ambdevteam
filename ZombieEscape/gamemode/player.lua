@@ -85,6 +85,7 @@ function GM:PlayerDeath( Victim, Inflictor, Attacker )
 	umsg.End()
 	
 	MsgAll( Victim:Nick() .. " was killed by " .. Attacker:GetClass() .. "\n" )
+	CheckForWinner() -- should be a bug fix
 	
 end
 
@@ -93,7 +94,9 @@ end
    Desc: Called just before the player's first spawn
 ---------------------------------------------------------*/
 function GM:PlayerInitialSpawn( pl )
-
+	
+	pl:ConCommand("ze_wepmenu")
+	
 	pl:SetTeam( TEAM_SPECTATOR )
 	
 end
@@ -104,7 +107,7 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerSpawnAsSpectator( pl )
 
-	pl:StripWeapons();
+	pl:StripWeapons()
 	
 	if ( pl:Team() == TEAM_UNASSIGNED ) then
 	
@@ -169,9 +172,10 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerLoadout( pl )
 
-	pl:Give("weapon_knife_ze")
-	pl:Give("weapon_deagle_ze")
-	pl:Give("weapon_ak47_ze")
+	pl:Give("weapon_knife")
+	pl:Give(pl.SecWep or "weapon_deagle")
+	pl:Give(pl.PriWep or "weapon_ak47")
+	pl:Give(pl.VIPWep or "")
 	
 	// Switch to prefered weapon if they have it
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
@@ -346,26 +350,17 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	local force = 1
 	local attacker = dmginfo:GetAttacker()
 	// More damage if we're shot in the head
-	 if ( hitgroup == HITGROUP_HEAD ) then
+	if ( hitgroup == HITGROUP_HEAD ) then
 		force = 2
 		dmginfo:ScaleDamage( 2 )
-	 
-	 end
-	 
-	// Less damage if we're shot in the arms or legs
-	if ( hitgroup == HITGROUP_LEFTARM ||
-		 hitgroup == HITGROUP_RIGHTARM || 
-		 hitgroup == HITGROUP_LEFTLEG ||
-		 hitgroup == HITGROUP_LEFTLEG ||
-		 hitgroup == HITGROUP_GEAR ) then
-	 
-		dmginfo:ScaleDamage( 0.25 )
-	 
-	 end
+
+	end
+
 	if attacker:Team() == TEAM_HUMAN then
-		local vec = ( ply:GetShootPos() - attacker:GetShootPos() ):Normalize() * (force*200)
+		local vec = ( ply:GetShootPos() - attacker:GetShootPos() ):Normalize() * (force*100)
 		ply:SetVelocity(vec)
 	elseif attacker:Team() == TEAM_ZOMBIE then
+		dmginfo:SetDamage(0)
 		ply:SetZombie()
 	end
 end
@@ -542,24 +537,26 @@ end
 ---------------------------------------------------------*/
 function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	
+	local PLAYER_FATAL_FALL_SPEED		=980
+	local PLAYER_MAX_SAFE_FALL_SPEED	=500
+	local DAMAGE_FOR_FALL_SPEED			=100 / ( PLAYER_FATAL_FALL_SPEED - PLAYER_MAX_SAFE_FALL_SPEED )
+	
+	flFallSpeed = flFallSpeed - PLAYER_MAX_SAFE_FALL_SPEED
+	local dmg = flFallSpeed * DAMAGE_FOR_FALL_SPEED
+	
 	if bInWater then return true end
 	
-	local max_safe_fall_speed = 488.5
-	local fatal_fall_speed = 988.5
-	local dmg = ((flFallSpeed - max_safe_fall_speed) / (fatal_fall_speed-flFallSpeed)) * 100
+	/*
+	local max_safe_fall_speed = 500
+	local fatal_fall_speed = 980
+	local dmg = ((flFallSpeed - max_safe_fall_speed) / (fatal_fall_speed-max_safe_fall_speed)) * 100
 	//local dmg = flFallSpeed / (fatal_fall_speed - max_safe_fall_speed)
 	if dmg < -100 then
 		dmg = 1000
 	end
 	dmg = math.floor(dmg)
-	
-	if flFallSpeed <= max_safe_fall_speed then return true end
- /*
-  // not exact, but pretty darn close
- #define PLAYER_MAX_SAFE_FALL_SPEED 488.5
- #define PLAYER_FATAL_FALL_SPEED    988.5
- #define DAMAGE_FOR_FALL_SPEED    100.0 / (PLAYER_FATAL_FALL_SPEED - PLAYER_MAX_SAFE_FALL_SPEED)
- */
+	*/
+	if flFallSpeed <= 0 then return true end
 	
 	
 	local dmginfo = DamageInfo()
