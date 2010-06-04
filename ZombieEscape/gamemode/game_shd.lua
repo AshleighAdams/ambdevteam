@@ -3,6 +3,8 @@ round_start = 0
 round_end = false
 local PLY = _R.Entity
 
+local texture = ""
+
 PRI_SLOT = 1
 SEC_SLOT = 2
 VIP_SLOT = 3
@@ -50,7 +52,6 @@ function NewRound()
 	
 	timer.Create( "round_timer", 600, 1, RoundEnd)
 end
-
 function GetZombie()
 	if CLIENT then return end
 	local plys = {}								// the valid players
@@ -72,7 +73,6 @@ function GetZombie()
 	end
 	pl:SetZombie()
 end
-
 function PLY:SetZombie()
 	if !ValidEntity(self) or !self:IsPlayer() then return end	// make sure there players
 	if self:Team() == TEAM_HUMAN then							// only humands can be changed
@@ -91,7 +91,6 @@ function PLY:SetZombie()
 		CheckForWinner()
 	end
 end
-
 function PLY:DoEffects()
 	local pos = self:GetShootPos()
 	local effectdata = EffectData()
@@ -103,7 +102,6 @@ function PLY:DoEffects()
 	util.ScreenShake(self:GetPos(), 5, 1, 10)
 	self:EmitSound("", 200, 100)
 end
-
 function RoundEnd(winner)
 	if CLIENT then return end
 	if winner == TEAM_HUMAN or winner == nil then
@@ -139,8 +137,8 @@ function WaitForMorePeople()
 		RoundEnd()
 	end
 end
-
 function CheckForWinner()
+
 	local players = player.GetAll()
 	local z,h = 0,0
 	
@@ -158,7 +156,6 @@ function CheckForWinner()
 		RoundEnd(TEAM_ZOMBIE)
 	end
 end
-
 local function PlayerDeath(pl, wep, killer)
 	CheckForWinner()
 end
@@ -191,7 +188,6 @@ function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in sp
 		self.VIPSlot = vip_slots[id] or ""
 	end
 end
-
 concommand.Add( "ze_setslot", function(ply,cmd,args)	
 		local slot = args[1] 	or 0
 		local id = args[2]		or 0
@@ -199,10 +195,3 @@ concommand.Add( "ze_setslot", function(ply,cmd,args)
 		PLY:SetSlot(slot, id)
 	end)
 	
-function ReplaceWeapons() // Replace the old css weapons with the new ZE ones
-	for i, ent in pairs( ents.GetAll() ) do
-		if ent:IsWeapon() then
-			
-		end
-	end
-end
