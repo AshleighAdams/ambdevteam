@@ -205,10 +205,15 @@ function SWEP:CSShootBullet( dmg, recoil, numbul, cone )
 	bullet.Damage	= dmg
 	
 	if self.Primary.Ammo == "knife" then
-		local trace_hitpos = self.Owner:GetEyeTrace().HitPos
-		local distance = ( trace_hitpos - self.Owner:GetShootPos() ):Length()
+		local tr = {}
+			tr.start = self.Owner:GetShootPos()
+			tr.endpos = self.Owner:GetShootPos() + ( self.Owner:GetAimVector() * 75 )
+			tr.filter = self.Owner
+			tr.mask = MASK_SHOT
+		local trace = util.TraceLine( tr )
+		
 		bullet.Spread = Vector(0,0,0)
-		if distance < 75 then
+		if trace.Hit then
 			self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )    	// knife anims
 			self.Owner:FireBullets( bullet )
 			if SERVER then
