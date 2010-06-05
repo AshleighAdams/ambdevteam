@@ -143,9 +143,9 @@ function CheckForWinner()
 	local z,h = 0,0
 	
 	for k,v in pairs( players ) do
-		if v:Team() == TEAM_HUMAN then
+		if v:Team() == TEAM_HUMAN && v:Alive() then
 			h = h + 1
-		elseif v:Team() == TEAM_ZOMBIE then
+		elseif v:Team() == TEAM_ZOMBIE && v:Alive() then
 			z = z + 1
 		end
 	end
@@ -194,4 +194,31 @@ concommand.Add( "ze_setslot", function(ply,cmd,args)
 		if id==0 or slot==0 then return end
 		PLY:SetSlot(slot, id)
 	end)
+
+local function MapChanges()
+	if SERVER then
+		for _, ent in ipairs( ents.FindByName( "logic_map_start" ) ) do
+			if ( ent:GetClass() == "logic_relay" ) then
+				ent:Fire( "trigger", 0, 0 )
+			end
+		end
+		for k,v in pairs(ents.FindByClass("point_servercommand")) do
+			local nm = v.targetname  
+			local ent = ents.Create("point_servercommand_new")  
+			ent:SetPos(v:GetPos())  
+			v:Remove()  
+			ent:SetKeyValue("targetname", nm)  
+			ent:Spawn()  
+		end  
+	end
 	
+end
+hook.Add( "InitPostEntity", "MapStartTrigger", MapChanges )
+
+hook.Add("EntityKeyValue", "fix_pc", function(e, k, v)  
+    if e:GetClass() == "point_servercommand" then
+        if k == "targetname" then
+            e.targetname = v
+        end
+    end
+end)
