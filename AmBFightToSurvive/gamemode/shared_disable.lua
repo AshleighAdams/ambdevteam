@@ -74,7 +74,8 @@ if SERVER then
 	local function HookAdvDupe()
 		-- This will be loaded after AdvDupe
 		local ad = AdvDupe
-		local ol = ad.CheckOkEnt
+		local ol = ad.CheckOkEnt or nil
+		if ol == nil then return end // we dont have adv dupe installed
 		
 		-- Override adv dupe check ok ent function
 		function ad.CheckOkEnt(Player, EntTable)

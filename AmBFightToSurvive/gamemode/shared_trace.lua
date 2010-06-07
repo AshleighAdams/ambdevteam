@@ -20,6 +20,11 @@ function Visible(A, B)
 			table.insert(filter, veh)
 		end
 	end
+	if A:GetClass() == "refinery" then // fix spawner spawning in the floor
+		trstart = trstart + Vector(0,0,50)
+	end if B:GetClass() == "refinery" then
+		trend = trend + Vector(0,0,50)
+	end
 	trace.start = trstart
 	trace.endpos = trend
 	trace.filter = filter

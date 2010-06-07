@@ -11,7 +11,9 @@ MapMaterials["freespace09"] = "amb/freespace09"
 
 if SERVER then
 	local map = game.GetMap()
-	resource.AddFile( "materials/" .. MapMaterials[map] .. ".vmt" )
+	if table.HasValue(MapMaterials, map) then
+		resource.AddFile( "materials/" .. (MapMaterials[map]) .. ".vmt" )
+	end
 end
 
 GM.IsSandboxDerived = true

@@ -250,7 +250,7 @@ AddItem("Orbital Downfall", 100, {C.Special}, function(Player)
 		Player:Give("orbital_downfall")
 	end)
 AddItemBuildData("Refinery Point", 1500, {C.Special}, 
-	GetVehicleBuildDataFunction("refinery"))
+	GetBuildDataFunction("refinery"))
 	
 -- Transport
 -- Land 
