@@ -9,6 +9,12 @@ PRI_SLOT = 1
 SEC_SLOT = 2
 VIP_SLOT = 3
 
+ZOMBIE_SCREAM = "npc/fast_zombie/fz_scream1.wav"
+
+WIN_SOUND = {}
+WIN_SOUND[TEAM_HUMAN] = "radio/ctwin"
+WIN_SOUND[TEAM_ZOMBIE] = "radio/twin"
+
 local pri_slots = {
 		"weapon_ak47",
 		"weapon_m4a1",
@@ -83,7 +89,7 @@ function PLY:SetZombie()
 				self:DropWeapon( wep )
 			end
 		end
-		
+		self:EmitSound(ZOMBIE_SCREAM)
 		self:DoEffects()										// Drap the explodion effect
 		self:SetTeam( TEAM_ZOMBIE )								// yup
 		self:SetHealth(2500)
@@ -122,8 +128,6 @@ function RoundEnd(winner)
 	timer.Remove("round_timer")
 	timer.Simple( 3, NewRound )
 end
-
-timer.Simple( 10, NewRound )
 
 function WaitForMorePeople()
 	local plys = {}								// the valid players
@@ -195,6 +199,8 @@ concommand.Add( "ze_setslot", function(ply,cmd,args)
 		PLY:SetSlot(slot, id)
 	end)
 
+timer.Simple( 20, NewRound )
+	
 local function MapChanges()
 	if SERVER then
 		for _, ent in ipairs( ents.FindByName( "logic_map_start" ) ) do
