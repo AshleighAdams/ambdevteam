@@ -159,10 +159,6 @@ end
 ---------------------------------------------------------*/
 function GM:PlayerSetModel( pl )
 
-	local cl_playermodel = pl:GetInfo( "cl_playermodel" )
-	local modelname = player_manager.TranslatePlayerModel( cl_playermodel )
-	util.PrecacheModel( modelname )
-	pl:SetModel( modelname )
 	
 end
 
@@ -171,6 +167,22 @@ end
    Desc: Give the player the default spawning weapons/ammo
 ---------------------------------------------------------*/
 function GM:PlayerLoadout( pl )
+
+
+	local playermodel = 
+	{	
+		"phoenix",
+		"arctic",
+		"riot",
+		"gasmask",
+		"urban",
+		"leet",
+		"guerilla",
+		"swat"
+	}
+	local modelname = player_manager.TranslatePlayerModel( playermodel[ math.Rand(1,#playermodel) ] )
+	util.PrecacheModel( modelname )
+	pl:SetModel( modelname )
 
 	pl:Give("weapon_knife")
 	pl:Give(pl.SecWep or "weapon_deagle")
