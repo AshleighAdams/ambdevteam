@@ -4,6 +4,24 @@ round_end = false
 local PLY = _R.Entity
 
 SpawnPoints = {}
+SpawnPoints = ents.FindByClass( "info_player_start" )
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
+
+// CS Maps
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+
+// DOD Maps
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_axis" ) )
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_allies" ) )
+
+// (Old) GMod Maps
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
+
+// TF Maps
+SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
 
 local texture = ""
 
