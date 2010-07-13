@@ -3,7 +3,7 @@ round_start = 0
 round_end = false
 local PLY = _R.Entity
 
-local SpawnPoints = {}
+SpawnPoints = {}
 
 local texture = ""
 
@@ -252,7 +252,7 @@ function GetSpawn( pl ) // YUP INO
 	// Save information about all of the spawn points
 	// in a team based game you'd split up the spawns
 	if ( !IsTableOfEntitiesValid( SpawnPoints ) ) then
-	
+		print("Adding Spawnpoints")
 		LastSpawnPoint = 0
 		SpawnPoints = ents.FindByClass( "info_player_start" )
 		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
