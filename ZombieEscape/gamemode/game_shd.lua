@@ -47,8 +47,9 @@ function NewRound()
 	next_map_in_x_rounds = next_map_in_x_rounds -1
 	//  We need to clean up and reset the map
 	game.CleanUpMap()
-	MapChanges()
+	
 	if SERVER then
+		hook.Call( "InitPostEntity", GAMEMODE )
 		for i,pl in pairs( player.GetAll() ) do
 			pl:SetTeam( TEAM_HUMAN )
 			pl:Spawn()
@@ -206,7 +207,7 @@ concommand.Add( "ze_setslot", function(ply,cmd,args)
 		PLY:SetSlot(slot, id)
 	end)
 
-timer.Simple( 20, NewRound )
+
 	
 local function MapChanges()
 	if SERVER then
@@ -321,3 +322,5 @@ function GetSpawn( pl ) // YUP INO
 	return ChosenSpawnPoint
 	
 end
+
+timer.Simple( 20, NewRound )
