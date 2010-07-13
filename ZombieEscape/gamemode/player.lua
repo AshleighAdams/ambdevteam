@@ -185,8 +185,8 @@ function GM:PlayerLoadout( pl )
 	pl:SetModel( modelname )
 
 	pl:Give("weapon_knife")
-	pl:Give(pl.SecWep or "weapon_deagle")
-	pl:Give(pl.PriWep or "weapon_ak47")
+	pl:Give(pl.SecWep or "weapon_deagle_ze")
+	pl:Give(pl.PriWep or "weapon_ak47_ze")
 	pl:Give(pl.VIPWep or "")
 	
 	// Switch to prefered weapon if they have it

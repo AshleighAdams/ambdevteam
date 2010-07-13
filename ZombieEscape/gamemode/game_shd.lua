@@ -49,6 +49,10 @@ function NewRound()
 		for i,pl in pairs( player.GetAll() ) do
 			pl:SetTeam( TEAM_HUMAN )
 			pl:Spawn()
+			
+			local Spawn = GetSpawn(pl)
+			pl:SetPos(Spawn:GetPos())
+			
 			pl:Lock()
 			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 		end
@@ -228,3 +232,87 @@ hook.Add("EntityKeyValue", "fix_pc", function(e, k, v)
         end
     end
 end)
+
+
+function GetSpawn( pl ) // YUP INO
+
+	if ( GAMEMODE.TeamBased ) then
+	
+		local ent = GAMEMODE:PlayerSelectTeamSpawn( pl:Team(), pl )
+		if ( IsValid(ent) ) then return ent end
+	
+	end
+
+	// Save information about all of the spawn points
+	// in a team based game you'd split up the spawns
+	if ( !IsTableOfEntitiesValid( self.SpawnPoints ) ) then
+	
+		self.LastSpawnPoint = 0
+		self.SpawnPoints = ents.FindByClass( "info_player_start" )
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_combine" ) )
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
+		
+		// CS Maps
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+		
+		// DOD Maps
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_axis" ) )
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_allies" ) )
+
+		// (Old) GMod Maps
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
+		
+		// TF Maps
+		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
+		
+		// If any of the spawnpoints have a MASTER flag then only use that one.
+		for k, v in pairs( self.SpawnPoints ) do
+		
+			if ( v:HasSpawnFlags( 1 ) ) then
+			
+				self.SpawnPoints = {}
+				self.SpawnPoints[1] = v
+			
+			end
+		
+		end
+
+	end
+	
+	local Count = table.Count( self.SpawnPoints )
+	
+	if ( Count == 0 ) then
+		Msg("[PlayerSelectSpawn] Error! No spawn points!\n")
+		return nil 
+	end
+	
+	local ChosenSpawnPoint = nil
+	
+	// Try to work out the best, random spawnpoint (in 6 goes)
+	for i=0, 6 do
+	
+		ChosenSpawnPoint = table.Random( self.SpawnPoints )
+
+		if ( ChosenSpawnPoint &&
+			ChosenSpawnPoint:IsValid() &&
+			ChosenSpawnPoint:IsInWorld() &&
+			ChosenSpawnPoint != pl:GetVar( "LastSpawnpoint" ) &&
+			ChosenSpawnPoint != self.LastSpawnPoint ) then
+			
+			if ( GAMEMODE:IsSpawnpointSuitable( pl, ChosenSpawnPoint, i==6 ) ) then
+			
+				self.LastSpawnPoint = ChosenSpawnPoint
+				pl:SetVar( "LastSpawnpoint", ChosenSpawnPoint )
+				return ChosenSpawnPoint
+			
+			end
+			
+		end
+			
+	end
+	
+	return ChosenSpawnPoint
+	
+end
