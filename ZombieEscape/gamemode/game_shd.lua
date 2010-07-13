@@ -12,8 +12,8 @@ VIP_SLOT = 3
 ZOMBIE_SCREAM = "npc/fast_zombie/fz_scream1.wav"
 
 WIN_SOUND = {}
-WIN_SOUND[TEAM_HUMAN] = "radio/ctwin"
-WIN_SOUND[TEAM_ZOMBIE] = "radio/twin"
+WIN_SOUND[1] = "radio/ctwin"
+WIN_SOUND[2] = "radio/twin"
 
 local pri_slots = {
 		"weapon_ak47",
