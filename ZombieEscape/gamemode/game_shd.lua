@@ -258,76 +258,20 @@ if SERVER then
 end
 
 function GetSpawn( pl ) // YUP INO
-
-	if ( GAMEMODE.TeamBased ) then
-	
-		local ent = GAMEMODE:PlayerSelectTeamSpawn( pl:Team(), pl )
-		if ( IsValid(ent) ) then return ent end
-	
-	end
-
-	
-	// Save information about all of the spawn points
-	// in a team based game you'd split up the spawns
-	if ( !IsTableOfEntitiesValid( SpawnPoints ) ) then
-		print("Adding Spawnpoints")
-		LastSpawnPoint = 0
-		SpawnPoints = ents.FindByClass( "info_player_start" )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
-		
-		// CS Maps
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
-		
-		// DOD Maps
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_axis" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_allies" ) )
-
-		// (Old) GMod Maps
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
-		
-		// TF Maps
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
-		
-		// If any of the spawnpoints have a MASTER flag then only use that one.
-		for k, v in pairs( SpawnPoints ) do
-		
-			if ( v:HasSpawnFlags( 1 ) ) then
-			
-				SpawnPoints = {}
-				SpawnPoints[1] = v
-			
-			end
-		
-		end
-
-	end
-	
-	local Count = table.Count( SpawnPoints )
-	
-	if ( Count == 0 ) then
-		Msg("[PlayerSelectSpawn] Error! No spawn points!\n")
-		return nil 
-	end
-	
-	local ChosenSpawnPoint = nil
-	
-	// Try to work out the best, random spawnpoint (in 6 goes)
+	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
 	for i=0, 6 do
 	
-		ChosenSpawnPoint = table.Random( SpawnPoints )
+		ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
 
 		if ( ChosenSpawnPoint &&
 			ChosenSpawnPoint:IsValid() &&
 			ChosenSpawnPoint:IsInWorld() &&
 			ChosenSpawnPoint != pl:GetVar( "LastSpawnpoint" ) &&
-			ChosenSpawnPoint != self.LastSpawnPoint ) then
+			ChosenSpawnPoint != GAMEMODE.LastSpawnPoint ) then
 			
 			if ( GAMEMODE:IsSpawnpointSuitable( pl, ChosenSpawnPoint, i==6 ) ) then
 			
-				self.LastSpawnPoint = ChosenSpawnPoint
+				GAMEMODE.LastSpawnPoint = ChosenSpawnPoint
 				pl:SetVar( "LastSpawnpoint", ChosenSpawnPoint )
 				return ChosenSpawnPoint
 			
