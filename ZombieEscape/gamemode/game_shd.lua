@@ -3,6 +3,8 @@ round_start = 0
 round_end = false
 local PLY = _R.Entity
 
+local SpawnPoints = {}
+
 local texture = ""
 
 PRI_SLOT = 1
@@ -45,6 +47,7 @@ function NewRound()
 	next_map_in_x_rounds = next_map_in_x_rounds -1
 	//  We need to clean up and reset the map
 	game.CleanUpMap()
+	MapChanges()
 	if SERVER then
 		for i,pl in pairs( player.GetAll() ) do
 			pl:SetTeam( TEAM_HUMAN )
@@ -225,14 +228,15 @@ local function MapChanges()
 end
 hook.Add( "InitPostEntity", "MapStartTrigger", MapChanges )
 
-hook.Add("EntityKeyValue", "fix_pc", function(e, k, v)  
-    if e:GetClass() == "point_servercommand" then
-        if k == "targetname" then
-            e.targetname = v
-        end
-    end
-end)
-
+if SERVER then
+	hook.Add("EntityKeyValue", "fix_pc", function(e, k, v)  
+		if e:GetClass() == "point_servercommand" then
+			if k == "targetname" then
+				e.targetname = v
+			end
+		end
+	end)
+end
 
 function GetSpawn( pl ) // YUP INO
 
@@ -243,37 +247,38 @@ function GetSpawn( pl ) // YUP INO
 	
 	end
 
+	
 	// Save information about all of the spawn points
 	// in a team based game you'd split up the spawns
-	if ( !IsTableOfEntitiesValid( self.SpawnPoints ) ) then
+	if ( !IsTableOfEntitiesValid( SpawnPoints ) ) then
 	
-		self.LastSpawnPoint = 0
-		self.SpawnPoints = ents.FindByClass( "info_player_start" )
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_combine" ) )
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
+		LastSpawnPoint = 0
+		SpawnPoints = ents.FindByClass( "info_player_start" )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
 		
 		// CS Maps
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
 		
 		// DOD Maps
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_axis" ) )
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_allies" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_axis" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_allies" ) )
 
 		// (Old) GMod Maps
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
 		
 		// TF Maps
-		self.SpawnPoints = table.Add( self.SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
 		
 		// If any of the spawnpoints have a MASTER flag then only use that one.
-		for k, v in pairs( self.SpawnPoints ) do
+		for k, v in pairs( SpawnPoints ) do
 		
 			if ( v:HasSpawnFlags( 1 ) ) then
 			
-				self.SpawnPoints = {}
-				self.SpawnPoints[1] = v
+				SpawnPoints = {}
+				SpawnPoints[1] = v
 			
 			end
 		
@@ -281,7 +286,7 @@ function GetSpawn( pl ) // YUP INO
 
 	end
 	
-	local Count = table.Count( self.SpawnPoints )
+	local Count = table.Count( SpawnPoints )
 	
 	if ( Count == 0 ) then
 		Msg("[PlayerSelectSpawn] Error! No spawn points!\n")
@@ -293,7 +298,7 @@ function GetSpawn( pl ) // YUP INO
 	// Try to work out the best, random spawnpoint (in 6 goes)
 	for i=0, 6 do
 	
-		ChosenSpawnPoint = table.Random( self.SpawnPoints )
+		ChosenSpawnPoint = table.Random( SpawnPoints )
 
 		if ( ChosenSpawnPoint &&
 			ChosenSpawnPoint:IsValid() &&

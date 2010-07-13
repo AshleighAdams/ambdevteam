@@ -370,7 +370,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 
 	if attacker:Team() == TEAM_HUMAN then
 		local vec = ( ply:GetShootPos() - attacker:GetShootPos() ):Normalize() * (force*100)
-		ply:SetVelocity(vec)
+		ply:SetVelocity(vec+ply:GetVelocity())
 	elseif attacker:Team() == TEAM_ZOMBIE then
 		dmginfo:SetDamage(0)
 		ply:SetZombie()
