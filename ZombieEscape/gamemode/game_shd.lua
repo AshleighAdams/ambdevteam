@@ -50,16 +50,18 @@ function NewRound()
 	
 	if SERVER then
 		hook.Call( "InitPostEntity", GAMEMODE )
-		for i,pl in pairs( player.GetAll() ) do
-			pl:SetTeam( TEAM_HUMAN )
-			pl:Spawn()
-			
+	end
+	for i,pl in pairs( player.GetAll() ) do
+		pl:SetTeam( TEAM_HUMAN )
+		pl:Spawn()
+		
+		if SERVER then
 			local Spawn = GetSpawn(pl)
 			pl:SetPos(Spawn:GetPos())
-			
-			pl:Lock()
-			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 		end
+		
+		pl:Lock()
+		timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 	end
 	
 	timer.Simple( 10, GetZombie )
@@ -130,7 +132,6 @@ function RoundEnd(winner)
 			umsg.String("ze/zombies_win")
 			umsg.String("")
 		umsg.End()
-				umsg.Start("winner") umsg.String("ze/zombies_win") umsg.String("") umsg.End()
 	end
 	
 	timer.Remove("round_timer")
