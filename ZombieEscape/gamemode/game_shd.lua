@@ -61,12 +61,17 @@ function NewRound()
 			if SERVER then
 				pl:SetTeam( TEAM_HUMAN )
 			end
-			pl:Spawn()
 			
+			pl:Spawn()
 			pl.MaxWalkSpeed = 250
 			
-			pl:Lock()
-			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+			if SERVER then
+				local rnd = math.random(1, #Spawn_Points)
+				pl:SetPos( Spawn_Points[rnd] )
+				
+				pl:Lock()
+				timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+			end
 		end
 	end
 	
