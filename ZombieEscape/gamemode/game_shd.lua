@@ -60,7 +60,8 @@ function NewRound()
 		if ValidEntity(pl) then
 			pl:SetTeam( TEAM_HUMAN )
 			pl:Spawn()
-
+			
+			pl.MaxWalkSpeed = 250
 			
 			pl:Lock()
 			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
@@ -108,6 +109,7 @@ function PLY:SetZombie()
 		self:SetTeam( TEAM_ZOMBIE )								// yup
 		self:SetHealth(2500)
 		self:SetWalkSpeed(280)									// make them walk faster than humans
+		self.MaxWalkSpeed = 280
 		CheckForWinner()
 	end
 end
