@@ -223,7 +223,7 @@ concommand.Add( "ze_setslot", function(ply,cmd,args)
 		local slot = args[1] 	or 0
 		local id = args[2]		or 0
 		if id==0 or slot==0 then return end
-		PLY:SetSlot(slot, id)
+		ply:SetSlot(slot, id)
 	end)
 
 
