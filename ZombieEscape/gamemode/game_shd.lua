@@ -7,6 +7,9 @@ SpawnPoints = {}
 
 local texture = ""
 
+TEAM_HUMAN = 1
+TEAM_ZOMBIE = 2
+
 PRI_SLOT = 1
 SEC_SLOT = 2
 VIP_SLOT = 3
@@ -61,7 +64,7 @@ function NewRound()
 				pl:SetPos(Spawn:GetPos())
 			else
 				pl:Kill()
-				pl:ChatPrint("Sorry no spawns")
+				ChatPrint("ERROR: SPAWN NOT FOUND")
 			end
 		end
 		
