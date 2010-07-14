@@ -597,7 +597,7 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	
 	ply:SetWalkSpeed(ply.WalkSpeed) 
 	timer.Create("refresh_speed" .. ply:SteamID(), 0.1, 0, function(pl) 
-		pl.WalkSpeed = math.Clamp( pl.WalkSpeed + 30, 0, (pl.MaxWalkSpeed or 250) )
+		pl.WalkSpeed = math.Clamp( (pl.WalkSpeed or pl.MaxWalkSpeed) + 30, 0, (pl.MaxWalkSpeed or 250) )
 		pl:SetWalkSpeed(pl.WalkSpeed) 
 		if pl.WalkSpeed == (pl.MaxWalkSpeed or 250) then timer.Destroy("refresh_speed" .. pl:SteamID()) end
 	end,ply)
