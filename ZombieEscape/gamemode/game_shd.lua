@@ -66,8 +66,8 @@ function NewRound()
 			pl.MaxWalkSpeed = 250
 			
 			if SERVER then
-				local rnd = math.random(1, #Spawn_Points)
-				pl:SetPos( Spawn_Points[rnd] )
+				//local rnd = math.random(1, #Spawn_Points)
+				//pl:SetPos( Spawn_Points[rnd] )
 				
 				pl:Lock()
 				timer.Simple( 3, function(pl) pl:UnLock() end,pl)
@@ -190,7 +190,6 @@ local function PlayerDeath(pl, wep, killer)
 	CheckForWinner()
 end
 hook.Add( "PlayerDeath", "shouldroundend", PlayerDeath )
-
 function CheckZombiePickup(ply, wep)
    return ply:Team() == TEAM_HUMAN
 end
@@ -216,7 +215,7 @@ function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in sp
 		self.SecSlot = sec_slots[id] or ""
 	elseif slot == SLOT_VIP then
 		self.VIPSlot = vip_slots[id] or ""
-	end
+	end 
 end
 concommand.Add( "ze_setslot", function(ply,cmd,args)	
 		local slot = args[1] 	or 0
