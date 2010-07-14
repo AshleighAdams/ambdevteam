@@ -213,10 +213,13 @@ end)
 function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in spawn hook
 	if slot == SLOT_PRI then
 		self.PriSlot = pri_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (pri_slots[id] or ""))
 	elseif slot == SLOT_SEC then
 		self.SecSlot = sec_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (sec_slots[id] or ""))
 	elseif slot == SLOT_VIP then
 		self.VIPSlot = vip_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (vip_slots[id] or ""))
 	end 
 end
 concommand.Add( "ze_setslot", function(ply,cmd,args)	
