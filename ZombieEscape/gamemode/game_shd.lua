@@ -159,21 +159,24 @@ function WaitForMorePeople()
 	end
 end
 function CheckForWinner()
-
+	local tz = 0
 	local players = player.GetAll()
 	local z,h = 0,0
 	
 	for k,v in pairs( players ) do
 		if v:Team() == TEAM_HUMAN && v:Alive() then
 			h = h + 1
-		elseif v:Team() == TEAM_ZOMBIE && v:Alive() then
-			z = z + 1
+		elseif v:Team() == TEAM_ZOMBIE then
+			tz = 1
+			if(v:Alive()) then
+				z = z + 1
+			end
 		end
 	end
 	
-	if z == 0 then
+	if z == 0 && tz > 0 then
 		RoundEnd(TEAM_HUMAN)
-	elseif h == 0 then
+	elseif h == 0 && tz > 0 then
 		RoundEnd(TEAM_ZOMBIE)
 	end
 end
