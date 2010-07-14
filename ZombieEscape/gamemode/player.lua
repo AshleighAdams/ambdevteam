@@ -595,7 +595,7 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	*/
 	
 	
-	ply:SetWalkSpeed(ply.WalkSpeed) 
+	ply:SetWalkSpeed(ply.WalkSpeed or 250) 
 	timer.Create("refresh_speed" .. ply:SteamID(), 0.1, 0, function(pl) 
 		pl.WalkSpeed = math.Clamp( (pl.WalkSpeed or pl.MaxWalkSpeed) + 30, 0, (pl.MaxWalkSpeed or 250) )
 		pl:SetWalkSpeed(pl.WalkSpeed) 
@@ -619,7 +619,7 @@ end
 hook.Add("KeyPress", "sj", function(pl,key)
 	if key == IN_JUMP then
 		timer.Destroy("refresh_speed" .. pl:SteamID())
-		pl.WalkSpeed = 60
+		pl.WalkSpeed = 120
 	end
 end)
 
