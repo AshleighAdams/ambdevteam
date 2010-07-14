@@ -99,14 +99,19 @@ function GM:PlayerInitialSpawn( pl )
 	
 	pl:SetTeam( TEAM_SPECTATOR )
 	
-	
-	SpawnPoints = ents.FindByClass( "info_player_start" )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+	local mp = {}
+	mp = ents.FindByClass( "info_player_start" )
+	mp = table.Add( mp, ents.FindByClass( "info_player_deathmatch" ) )
 
 	// CS Maps
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+	mp = table.Add( mp, ents.FindByClass( "info_player_counterterrorist" ) )
+	mp = table.Add( mp, ents.FindByClass( "info_player_terrorist" ) )
 	
+	SpawnPoints = {}
+
+	for k,v in pairs(mp) do
+		table.insert(SpawnPoints, mp:GetPos())
+	end
 end
 
 /*---------------------------------------------------------
@@ -161,9 +166,8 @@ function GM:PlayerSpawn( pl )
 	
 	math.randomseed(os.time())
 	
-	local ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
-	print(ChosenSpawnPoint)
-	pl:SetPos( ChosenSpawnPoint:GetPos() )
+	local pos =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
+	pl:SetPos( pos )
 end
 
 /*---------------------------------------------------------
