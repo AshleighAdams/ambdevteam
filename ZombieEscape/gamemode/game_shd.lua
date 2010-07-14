@@ -44,6 +44,7 @@ local vip_slot = {
 	}
 
 function NewRound()
+	math.randomseed()
 	round_end = false
 	round_start = CurTime()
 	
@@ -252,6 +253,7 @@ if SERVER then
 end
 
 function GetSpawn( pl ) // YUP INO
+	math.randomseed()
 	SpawnPoints = {}
 	SpawnPoints = ents.FindByClass( "info_player_start" )
 	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
