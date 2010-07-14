@@ -222,12 +222,14 @@ if SERVER then
 			self:ChatPrint("You will spawn with a(n) " .. (vip_slots[id] or ""))
 		end 
 	end
-	concommand.Add( "ze_setslot", function(ply,cmd,args)	
+	
+	function Slot(ply,cmd,args)
 			local slot = args[1] 	or 1
 			local id = args[2]		or 1
 			if id==0 or slot==0 then return end
 			ply:SetSlot(slot, id)
-		end)
+	end
+	concommand.Add( "ze_setslot", Slot)
 
 end
 	
