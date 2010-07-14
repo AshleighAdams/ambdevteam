@@ -594,10 +594,10 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	dmg = math.floor(dmg)
 	*/
 	
-	ply.WalkSpeed = 60
+	
 	ply:SetWalkSpeed(ply.WalkSpeed) 
 	timer.Create("refresh_speed" .. ply:SteamID(), 0.1, 0, function(pl) 
-		pl.WalkSpeed = math.Clamp( 0, (pl.MaxWalkSpeed or 250), pl.WalkSpeed + 5 )
+		pl.WalkSpeed = math.Clamp( pl.WalkSpeed + 5, 0, (pl.MaxWalkSpeed or 250) )
 		pl:SetWalkSpeed(pl.WalkSpeed) 
 		if pl.WalkSpeed == (pl.MaxWalkSpeed or 250) then timer.Destroy("refresh_speed" .. pl:SteamID()) end
 	end,ply)
@@ -615,6 +615,13 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	return true
 	
 end
+
+hook.Add("KeyPress", "sj", function(pl,key)
+	if key == IN_JUMP then
+		timer.Destroy("refresh_speed" .. pl:SteamID())
+		pl.WalkSpeed = 20
+	end
+end)
 
 /*---------------------------------------------------------
    Name: gamemode:GetFallDamage()
