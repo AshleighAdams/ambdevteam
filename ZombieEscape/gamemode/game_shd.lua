@@ -4,24 +4,6 @@ round_end = false
 local PLY = _R.Entity
 
 SpawnPoints = {}
-SpawnPoints = ents.FindByClass( "info_player_start" )
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
-
-// CS Maps
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
-
-// DOD Maps
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_axis" ) )
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_allies" ) )
-
-// (Old) GMod Maps
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "gmod_player_start" ) )
-
-// TF Maps
-SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_teamspawn" ) )		
 
 local texture = ""
 
@@ -131,8 +113,8 @@ function PLY:DoEffects()
 	effectdata:SetScale( 2 )
 	util.Effect( "HelicopterMegaBomb", effectdata )	
 	
-	util.ScreenShake(self:GetPos(), 5, 1, 10)
-	self:EmitSound("", 200, 100)
+	util.ScreenShake(self:GetPos(), 50, 1, 2)
+	self:EmitSound(ZOMBIE_SCREAM, 100, 100)
 end
 function RoundEnd(winner)
 	if CLIENT then return end
@@ -258,6 +240,18 @@ if SERVER then
 end
 
 function GetSpawn( pl ) // YUP INO
+	
+	if #SpawnPoints == 0 then
+		SpawnPoints = ents.FindByClass( "info_player_start" )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
+
+		// CS Maps
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+	end
+
 	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
 	for i=0, 6 do
 	
