@@ -111,7 +111,7 @@ function PLY:SetZombie()
 		self:DoEffects()										// Drap the explodion effect
 		self:SetTeam( TEAM_ZOMBIE )								// yup
 		self:SetHealth(2500)
-		self:SetWalkSpeed(275)									// make them walk faster than humans
+		self:SetWalkSpeed(280)									// make them walk faster than humans
 		CheckForWinner()
 	end
 end
@@ -261,28 +261,6 @@ function GetSpawn( pl ) // YUP INO
 	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
 
 	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
-	for i=0, 6 do
-	
-		ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
-
-		if ( ChosenSpawnPoint &&
-			ChosenSpawnPoint:IsValid() &&
-			ChosenSpawnPoint:IsInWorld() &&
-			ChosenSpawnPoint != pl:GetVar( "LastSpawnpoint" ) &&
-			ChosenSpawnPoint != GAMEMODE.LastSpawnPoint ) then
-			
-			if ( GAMEMODE:IsSpawnpointSuitable( pl, ChosenSpawnPoint, i==6 ) ) then
-			
-				GAMEMODE.LastSpawnPoint = ChosenSpawnPoint
-				pl:SetVar( "LastSpawnpoint", ChosenSpawnPoint )
-				return ChosenSpawnPoint
-			
-			end
-			
-		end
-			
-	end
-	
 	return ChosenSpawnPoint
 	
 end

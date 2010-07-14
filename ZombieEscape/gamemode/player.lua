@@ -364,8 +364,9 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 	// More damage if we're shot in the head
 	if ( hitgroup == HITGROUP_HEAD ) then
 		force = 2
-		dmginfo:ScaleDamage( 2 )
-
+		dmginfo:ScaleDamage( 1.4 )
+	elseif ( hitgroup == HITGROUP_CHEST || hitgroup == HITGROUP_CHEST ) then
+		dmginfo:ScaleDamage( 0.4 )
 	end
 
 	if attacker:Team() == TEAM_HUMAN then
