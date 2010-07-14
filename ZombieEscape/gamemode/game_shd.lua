@@ -56,21 +56,23 @@ function NewRound()
 		hook.Call( "InitPostEntity", GAMEMODE )
 	end
 	for i,pl in pairs( player.GetAll() ) do
-		pl:SetTeam( TEAM_HUMAN )
-		pl:Spawn()
-		
-		if SERVER then
-			local Spawn = GetSpawn(pl)
-			if( ValidEntity(Spawn) ) then
-				pl:SetPos(Spawn:GetPos())
-			else
-				pl:Kill()
-				ChatPrint("ERROR: SPAWN NOT FOUND")
+		if ValidEntity(pl) then
+			pl:SetTeam( TEAM_HUMAN )
+			pl:Spawn()
+			
+			if SERVER then
+				local Spawn = GetSpawn(pl)
+				if( ValidEntity(Spawn) ) then
+					pl:SetPos(Spawn:GetPos())
+				else
+					pl:Kill()
+					ChatPrint("ERROR: SPAWN NOT FOUND")
+				end
 			end
+			
+			pl:Lock()
+			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 		end
-		
-		pl:Lock()
-		timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 	end
 	
 	timer.Simple( 10, GetZombie )
