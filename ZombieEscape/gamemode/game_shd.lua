@@ -21,7 +21,7 @@ WIN_SOUND = {}
 WIN_SOUND[1] = "radio/ctwin"
 WIN_SOUND[2] = "radio/twin"
 
-local pri_slots = {
+pri_slots = {
 		"weapon_ak47",
 		"weapon_m4a1",
 		"weapon_mp5",
@@ -30,14 +30,14 @@ local pri_slots = {
 		"weapon_mac10",
 		"weapon_pumpshotgun"
 	}
-local sec_slots = {
+sec_slots = {
 		"weapon_glock",
 		"weapon_deagle",
 		"weapon_fiveseven",
 		"weapon_flashbang",
 		"weapon_hegrenade"
 	}
-local vip_slot = {
+vip_slot = {
 	"",
 	"",
 	"",
