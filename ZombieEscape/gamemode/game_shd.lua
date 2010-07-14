@@ -285,3 +285,5 @@ function GetSpawn( pl ) // YUP INO
 end
 
 timer.Simple( 20, NewRound )
+
+timer.Create( "CheckForWinner", 5, 0, CheckForWinner)
