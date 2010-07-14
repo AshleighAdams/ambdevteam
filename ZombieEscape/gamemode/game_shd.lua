@@ -66,11 +66,8 @@ function NewRound()
 			pl.MaxWalkSpeed = 250
 			
 			if SERVER then
-				//local rnd = math.random(1, #Spawn_Points)
-				//pl:SetPos( Spawn_Points[rnd] )
-				
-				//pl:Lock()
-				//timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+				pl:Freeze(true)
+				timer.Simple( 3, function(pl) pl:Freeze(true) end,pl)
 			end
 		end
 	end
@@ -134,20 +131,25 @@ end
 function RoundEnd(winner)
 	RoundStarted = false
 	if CLIENT then return end
+	local message = ""
 	if winner == TEAM_HUMAN or winner == nil then
 		//humans win
+		message = "Humans Win!"
 		umsg.Start("winner")
 			umsg.String("ze/humans_win")
 			umsg.String("")
 		umsg.End()
 	else
 		//zombies win
+		message = "Zombies Win!"
 		umsg.Start("winner")
 			umsg.String("ze/zombies_win")
 			umsg.String("")
 		umsg.End()
 	end
-	
+	for key,value in pairs(player.GetAll()) do
+		value:PrintMessage( HUD_PRINTCENTER, message )
+	end
 	timer.Remove("round_timer")
 	timer.Simple( 3, NewRound )
 end
