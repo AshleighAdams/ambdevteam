@@ -67,7 +67,7 @@ function NewRound()
 			
 			if SERVER then
 				pl:Freeze(true)
-				timer.Simple( 3, function(pl) pl:Freeze(true) end,pl)
+				timer.Simple( 3, function(pl) pl:Freeze(false) end,pl)
 			end
 		end
 	end
