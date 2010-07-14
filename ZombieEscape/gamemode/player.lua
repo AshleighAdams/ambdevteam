@@ -1,4 +1,4 @@
-SpawnPoints = {}
+Spawn_Points = {}
 function GM:PlayerDeathThink( pl )
 
 	if (  pl.NextSpawnTime && pl.NextSpawnTime > CurTime() ) then return end
@@ -107,12 +107,12 @@ function GM:PlayerInitialSpawn( pl )
 	mp = table.Add( mp, ents.FindByClass( "info_player_counterterrorist" ) )
 	mp = table.Add( mp, ents.FindByClass( "info_player_terrorist" ) )
 	
-	SpawnPoints = {}
+	Spawn_Points = {}
 
 	for k,v in pairs(mp) do
 		if(ValidEntity(mp)) then
 			print(mp)
-			table.insert(SpawnPoints, mp:GetPos())
+			table.insert(Spawn_Points, mp:GetPos())
 		end
 	end
 end
@@ -169,7 +169,7 @@ function GM:PlayerSpawn( pl )
 	
 	math.randomseed(os.time())
 	
-	local pos =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
+	local pos =  Spawn_Points[math.Round(math.random(1, #Spawn_Points))]
 	pl:SetPos( pos )
 end
 
