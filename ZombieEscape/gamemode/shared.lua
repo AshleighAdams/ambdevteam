@@ -77,10 +77,6 @@ end
    Desc: Return true if player can pickup entity
 ---------------------------------------------------------*/
 function GM:PhysgunPickup( ply, ent )
-
-	// Don't pick up players
-	if ( ent:GetClass() == "player" ) then return false end
-
 	return true
 end
 
@@ -207,11 +203,11 @@ function GM:CreateTeams()
 	
 	TEAM_HUMAN = 1
 	team.SetUp( TEAM_HUMAN, "Humans", Color( 0, 0, 255 ) )
-	team.SetSpawnPoint( TEAM_BLUE, "info_player_counterterrorist" ) // <-- This would be info_terrorist or some entity that is in your map
+	team.SetSpawnPoint( TEAM_HUMAN, {"info_player_counterterrorist","info_player_terrorist"} )
 	
 	TEAM_ZOMBIE = 2
 	team.SetUp( TEAM_ZOMBIE, "Zombie", Color( 255, 0, 0 ) )
-	team.SetSpawnPoint( TEAM_ZOMBIE, "info_player_terrorist" ) // <-- This would be info_terrorist or some entity that is in your map
+	team.SetSpawnPoint( TEAM_ZOMBIE, {"info_player_counterterrorist","info_player_terrorist"} )
 
 	
 	team.SetSpawnPoint( TEAM_SPECTATOR, "worldspawn" ) 
