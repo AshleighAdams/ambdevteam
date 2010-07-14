@@ -59,17 +59,7 @@ function NewRound()
 		if ValidEntity(pl) then
 			pl:SetTeam( TEAM_HUMAN )
 			pl:Spawn()
-			
-			if SERVER then
-				local Spawn = GetSpawn(pl)
-				if( ValidEntity(Spawn) ) then
-					Msg("Setting pos")
-					pl:SetPos(Spawn:GetPos())
-				else
-					pl:Kill()
-					ChatPrint("ERROR: SPAWN NOT FOUND")
-				end
-			end
+
 			
 			pl:Lock()
 			timer.Simple( 3, function(pl) pl:UnLock() end,pl)
@@ -255,20 +245,6 @@ if SERVER then
 	end)
 end
 
-function GetSpawn( pl ) // YUP INO
-	math.randomseed(os.time())
-	SpawnPoints = {}
-	SpawnPoints = ents.FindByClass( "info_player_start" )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-
-	// CS Maps
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
-
-	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
-	return ChosenSpawnPoint
-	
-end
 
 timer.Simple( 20, NewRound )
 

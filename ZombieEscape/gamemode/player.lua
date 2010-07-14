@@ -151,6 +151,17 @@ function GM:PlayerSpawn( pl )
 	pl:SetRunSpeed(100)
 	pl:SetWalkSpeed(250)
 	
+	math.randomseed(os.time())
+	SpawnPoints = {}
+	SpawnPoints = ents.FindByClass( "info_player_start" )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+
+	// CS Maps
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+
+	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
+	pl:SetPos( ChosenSpawnPoint:GetPos() )
 end
 
 /*---------------------------------------------------------
