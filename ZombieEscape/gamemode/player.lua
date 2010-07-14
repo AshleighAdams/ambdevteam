@@ -110,9 +110,9 @@ function GM:PlayerInitialSpawn( pl )
 	Spawn_Points = {}
 
 	for k,v in pairs(mp) do
-		if(ValidEntity(mp)) then
-			print(mp)
-			table.insert(Spawn_Points, mp:GetPos())
+		if(ValidEntity(v)) then
+			print(v)
+			table.insert(Spawn_Points, v:GetPos())
 		end
 	end
 end
