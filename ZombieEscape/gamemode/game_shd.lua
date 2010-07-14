@@ -26,7 +26,6 @@ pri_slots = {
 		"weapon_m4a1",
 		"weapon_mp5",
 		"weapon_tmp",
-		"weapon_para7",
 		"weapon_mac10",
 		"weapon_pumpshotgun"
 	}
@@ -38,7 +37,7 @@ sec_slots = {
 		"weapon_hegrenade"
 	}
 vip_slot = {
-	"",
+	"weapon_para7",
 	"",
 	"",
 	""
@@ -223,8 +222,8 @@ function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in sp
 	end 
 end
 concommand.Add( "ze_setslot", function(ply,cmd,args)	
-		local slot = args[1] 	or 0
-		local id = args[2]		or 0
+		local slot = args[1] 	or 1
+		local id = args[2]		or 1
 		if id==0 or slot==0 then return end
 		ply:SetSlot(slot, id)
 	end)
