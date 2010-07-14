@@ -208,30 +208,6 @@ hook.Add("HUDPaintBackground", "winner", function()
 	surface.SetTexture( mat )
 	surface.DrawRect( ScrW() - (512/2), ScrH() - (512/2), 512, 512 )
 end)
-
-if SERVER then
-	function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in spawn hook
-		if slot == SLOT_PRI then
-			self.PriSlot = pri_slots[id] or ""
-			self:ChatPrint("You will spawn with a(n) " .. (pri_slots[id] or ""))
-		elseif slot == SLOT_SEC then
-			self.SecSlot = sec_slots[id] or ""
-			self:ChatPrint("You will spawn with a(n) " .. (sec_slots[id] or ""))
-		elseif slot == SLOT_VIP then
-			self.VIPSlot = vip_slots[id] or ""
-			self:ChatPrint("You will spawn with a(n) " .. (vip_slots[id] or ""))
-		end 
-	end
-	
-	function Slot(ply,cmd,args)
-			local slot = args[1] 	or 1
-			local id = args[2]		or 1
-			if id==0 or slot==0 then return end
-			ply:SetSlot(slot, id)
-	end
-	concommand.Add( "ze_setslot", Slot)
-
-end
 	
 local function MapChanges()
 	if SERVER then

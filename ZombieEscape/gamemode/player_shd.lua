@@ -171,7 +171,7 @@ function PLY:RockTheVote()
 		return
 	end
 	
-	local votes_needed = math.ceil( MaxPlayers() / 2 )
+	local votes_needed = math.ceil( #player.GetAll() / 2 )
 	// Recalculate stuff to compensate for people who have left
 	local new_votes = {self}
 	for k,v in pairs( votes ) do
@@ -192,5 +192,7 @@ function PLY:RockTheVote()
 end
 
 function DoMapChange()
+	// TODO Vote for map
+	// Change map
 	rtv_passed = true
 end

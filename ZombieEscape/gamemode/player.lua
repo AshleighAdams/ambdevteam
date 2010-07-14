@@ -1,4 +1,26 @@
-Spawn_Points = {}
+
+function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in spawn hook
+	if slot == SLOT_PRI then
+		self.PriSlot = pri_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (pri_slots[id] or ""))
+	elseif slot == SLOT_SEC then
+		self.SecSlot = sec_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (sec_slots[id] or ""))
+	elseif slot == SLOT_VIP then
+		self.VIPSlot = vip_slots[id] or ""
+		self:ChatPrint("You will spawn with a(n) " .. (vip_slots[id] or ""))
+	end 
+end
+
+function Slot(ply,cmd,args)
+		local slot = args[1] 	or 1
+		local id = args[2]		or 1
+		if id==0 or slot==0 then return end
+		ply:SetSlot(slot, id)
+end
+concommand.Add( "ze_setslot", Slot)
+
+
 function GM:PlayerDeathThink( pl )
 
 	if (  pl.NextSpawnTime && pl.NextSpawnTime > CurTime() ) then return end
@@ -99,21 +121,7 @@ function GM:PlayerInitialSpawn( pl )
 	
 	pl:SetTeam( TEAM_SPECTATOR )
 	
-	local mp = {}
-	mp = ents.FindByClass( "info_player_start" )
-	mp = table.Add( mp, ents.FindByClass( "info_player_deathmatch" ) )
-
-	// CS Maps
-	mp = table.Add( mp, ents.FindByClass( "info_player_counterterrorist" ) )
-	mp = table.Add( mp, ents.FindByClass( "info_player_terrorist" ) )
 	
-	Spawn_Points = {}
-
-	for k,v in pairs(mp) do
-		if(ValidEntity(v)) then
-			table.insert(Spawn_Points, v:GetPos())
-		end
-	end
 end
 
 /*---------------------------------------------------------
