@@ -249,17 +249,13 @@ if SERVER then
 end
 
 function GetSpawn( pl ) // YUP INO
-	
-	if #SpawnPoints == 0 then
-		SpawnPoints = ents.FindByClass( "info_player_start" )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_combine" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_rebel" ) )
+	SpawnPoints = {}
+	SpawnPoints = ents.FindByClass( "info_player_start" )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
 
-		// CS Maps
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-		SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
-	end
+	// CS Maps
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
 
 	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
 	for i=0, 6 do
