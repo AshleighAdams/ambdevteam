@@ -63,7 +63,7 @@ function NewRound()
 			if SERVER then
 				local Spawn = GetSpawn(pl)
 				if( ValidEntity(Spawn) ) then
-					timer.Simple(0.5, function(pl,spawn) pl:SetPos(Spawn:GetPos()) end,pl,spawn) // idk why it bugs without
+					timer.Simple(1, function(pl,spawn) pl:SetPos(Spawn:GetPos()) end,pl,spawn) // idk why it bugs without
 				else
 					pl:Kill()
 					ChatPrint("ERROR: SPAWN NOT FOUND")
