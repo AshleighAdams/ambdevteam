@@ -105,8 +105,8 @@ end
 
 hook.Add( "PlayerSay", "rtv", function(ply,text) 
 	if SERVER then // you never know :S
-		if strText == "rtv" then
-			player:RockTheVote()
+		if text == "rtv" || text == "!rtv" || text == "/rtv" then
+			ply:RockTheVote()
 		end
 	end
 end)
@@ -129,16 +129,19 @@ function GM:OnPlayerChat( player, strText, bTeamOnly, bPlayerIsDead )
 		table.insert( tab, Color( 30, 160, 40 ) )
 		table.insert( tab, "(TEAM) " )
 	end
-	
+	local con = false
 	if ( IsValid( player ) ) then
 		table.insert( tab, player )
 	else
-		table.insert( tab, "Console" )
+		con = true // this is for the yellow instructions as it apears in CSS without "Console:"
 	end
-	
-	table.insert( tab, Color( 255, 255, 255 ) )
-	table.insert( tab, ": "..strText )
-	
+	if con then
+		table.insert( tab, Color( 255, 200, 0 ) )
+		table.insert( tab, strText )
+	else
+		table.insert( tab, Color( 255, 255, 255 ) )
+		table.insert( tab, ": "..strText )
+	end
 	chat.AddText( unpack(tab) )
 
 	return true
