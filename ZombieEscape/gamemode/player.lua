@@ -619,7 +619,7 @@ end
 hook.Add("KeyPress", "sj", function(pl,key)
 	if key == IN_JUMP then
 		timer.Destroy("refresh_speed" .. pl:SteamID())
-		pl.WalkSpeed = 20
+		pl.WalkSpeed = 60
 	end
 end)
 
