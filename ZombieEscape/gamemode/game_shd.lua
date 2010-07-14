@@ -57,7 +57,7 @@ function NewRound()
 		
 		if SERVER then
 			local Spawn = GetSpawn(pl)
-			if( ValidEntity(Spawn) )
+			if( ValidEntity(Spawn) ) then
 				pl:SetPos(Spawn:GetPos())
 			else
 				pl:Kill()
