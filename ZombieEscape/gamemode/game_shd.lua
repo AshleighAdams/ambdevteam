@@ -69,8 +69,8 @@ function NewRound()
 				//local rnd = math.random(1, #Spawn_Points)
 				//pl:SetPos( Spawn_Points[rnd] )
 				
-				pl:Lock()
-				timer.Simple( 3, function(pl) pl:UnLock() end,pl)
+				//pl:Lock()
+				//timer.Simple( 3, function(pl) pl:UnLock() end,pl)
 			end
 		end
 	end
