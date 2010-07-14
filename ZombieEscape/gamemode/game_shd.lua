@@ -58,7 +58,9 @@ function NewRound()
 	end
 	for i,pl in pairs( player.GetAll() ) do
 		if ValidEntity(pl) then
-			pl:SetTeam( TEAM_HUMAN )
+			if SERVER then
+				pl:SetTeam( TEAM_HUMAN )
+			end
 			pl:Spawn()
 			
 			pl.MaxWalkSpeed = 250
