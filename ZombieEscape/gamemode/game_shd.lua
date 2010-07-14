@@ -1,5 +1,6 @@
 next_map_in_x_rounds = 10
 round_start = 0
+RoundStarted = false
 round_end = false
 local PLY = _R.Entity
 
@@ -90,6 +91,7 @@ function GetZombie()
 		return false
 	end
 	pl:SetZombie()
+	RoundStarted = true
 end
 function PLY:SetZombie()
 	if !ValidEntity(self) or !self:IsPlayer() then return end	// make sure there players
@@ -121,6 +123,7 @@ function PLY:DoEffects()
 	self:EmitSound(ZOMBIE_SCREAM, 100, 100)
 end
 function RoundEnd(winner)
+	RoundStarted = false
 	if CLIENT then return end
 	if winner == TEAM_HUMAN or winner == nil then
 		//humans win
@@ -153,7 +156,6 @@ function WaitForMorePeople()
 	end
 end
 function CheckForWinner()
-	local tz = 0
 	local players = player.GetAll()
 	local z,h = 0,0
 	
@@ -168,11 +170,12 @@ function CheckForWinner()
 		end
 	end
 	
-	if z == 0 && tz > 0 then
+	if z == 0 && RoundStarted then
 		RoundEnd(TEAM_HUMAN)
-	elseif h == 0 && tz > 0 then
+	elseif h == 0 then
 		RoundEnd(TEAM_ZOMBIE)
 	end
+	
 end
 local function PlayerDeath(pl, wep, killer)
 	CheckForWinner()

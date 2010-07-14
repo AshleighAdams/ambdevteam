@@ -1,4 +1,4 @@
-
+SpawnPoints = {}
 function GM:PlayerDeathThink( pl )
 
 	if (  pl.NextSpawnTime && pl.NextSpawnTime > CurTime() ) then return end
@@ -99,6 +99,14 @@ function GM:PlayerInitialSpawn( pl )
 	
 	pl:SetTeam( TEAM_SPECTATOR )
 	
+	
+	SpawnPoints = ents.FindByClass( "info_player_start" )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
+
+	// CS Maps
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
+	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
+	
 end
 
 /*---------------------------------------------------------
@@ -152,15 +160,9 @@ function GM:PlayerSpawn( pl )
 	pl:SetWalkSpeed(250)
 	
 	math.randomseed(os.time())
-	SpawnPoints = {}
-	SpawnPoints = ents.FindByClass( "info_player_start" )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_deathmatch" ) )
-
-	// CS Maps
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_counterterrorist" ) )
-	SpawnPoints = table.Add( SpawnPoints, ents.FindByClass( "info_player_terrorist" ) )
-
-	ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
+	
+	local ChosenSpawnPoint =  SpawnPoints[math.Round(math.random(1, #SpawnPoints))]
+	print(ChosenSpawnPoint)
 	pl:SetPos( ChosenSpawnPoint:GetPos() )
 end
 
@@ -411,7 +413,11 @@ end
    Desc: Player has been hurt by an explosion
 ---------------------------------------------------------*/
 function GM:OnDamagedByExplosion( ply, dmginfo )
-	ply:SetDSP( 35, false )
+	//ply:SetDSP( 35, false )
+	//if( ply:Team() == TEAM_ZOMBIE ) then
+	//	local vec = dmginfo:GetDamagePosition()
+	//	ply:SetVelocity()
+	//end
 end
 
 /*---------------------------------------------------------
@@ -442,7 +448,7 @@ end
 		Return true to allow action
 ---------------------------------------------------------*/
 function GM:PlayerSwitchFlashlight( ply, SwitchOn )
-	return true
+	return ply:Team() != 1001
 end
 
 /*---------------------------------------------------------
@@ -581,6 +587,14 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	end
 	dmg = math.floor(dmg)
 	*/
+	
+	ply.WalkSpeed = 60
+	timer.Create("refresh_speed" + ply:SteamID(), 0.05, 0, function(pl) 
+		pl.WalkSpeed = math.Clamp( 0, pl.MaxWalkSpeed, pl.WalkSpeed + 10 )
+		pl:SetWalkSpeed(ply.WalkSpeed) 
+		if pl.WalkSpeed == pl.MaxWalkSpeed then timer.Destroy("refresh_speed" + pl:SteamID()) end
+	end,ply)
+	
 	if flFallSpeed <= 0 then return true end
 	
 	
