@@ -103,7 +103,7 @@ function PLY:SetZombie()
 		
 		weps = self:GetWeapons()
 		for v,wep in pairs( weps ) do							// drop all there weapons excluding knife
-			if wep:GetClass() != "weapon_knife" then
+			if wep:GetClass() != "weapon_crowbar" then
 				self:DropWeapon( wep )
 			end
 		end

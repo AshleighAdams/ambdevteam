@@ -211,7 +211,7 @@ function GM:PlayerLoadout( pl )
 	util.PrecacheModel( modelname )
 	pl:SetModel( modelname )
 
-	pl:Give("weapon_knife")
+	pl:Give("weapon_crowbar")
 	pl:Give(pl.SecWep or "weapon_deagle_ze")
 	pl:Give(pl.PriWep or "weapon_ak47_ze")
 	pl:Give(pl.VIPWep or "")
