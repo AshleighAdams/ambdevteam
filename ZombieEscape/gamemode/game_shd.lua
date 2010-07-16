@@ -100,7 +100,7 @@ end
 function PLY:SetZombie()
 	if !ValidEntity(self) or !self:IsPlayer() then return end	// make sure there players
 	if self:Team() == TEAM_HUMAN then							// only humands can be changed
-		
+		self:SelectWeapon("weapon_crowbar")
 		weps = self:GetWeapons()
 		for v,wep in pairs( weps ) do							// drop all there weapons excluding knife
 			if wep:GetClass() != "weapon_crowbar" then
