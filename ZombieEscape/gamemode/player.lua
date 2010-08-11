@@ -1,3 +1,28 @@
+SLOT_PRI = 1
+SLOT_SEC = 2
+SLOT_VIP = 3
+
+pri_slots = {
+		"weapon_ak47_ze",
+		"weapon_m4_ze",
+		"weapon_mp5_ze",
+		"weapon_tmp_ze",
+		"weapon_mac10_ze",
+		"weapon_pumpshotgun_ze"
+	}
+sec_slots = {
+		"weapon_glock_ze",
+		"weapon_deagle_ze",
+		"weapon_fiveseven_ze",
+		"weapon_flashbang_ze",
+		"weapon_hegrenade_ze"
+	}
+vip_slot = {
+	"weapon_para_ze",
+	"",
+	"",
+	""
+	}
 
 function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in spawn hook
 	if slot == SLOT_PRI then
@@ -13,8 +38,8 @@ function PLY:SetSlot(slot,id) // Sets spawn weapons in varibles to be used in sp
 end
 
 function Slot(ply,cmd,args)
-		local slot = args[1] 	or 1
-		local id = args[2]		or 1
+		local slot = tonumber(args[1]) 	or 1
+		local id = tonumber(args[2])	or 1
 		if id==0 or slot==0 then return end
 		ply:SetSlot(slot, id)
 end
@@ -203,14 +228,14 @@ function GM:PlayerLoadout( pl )
 		"guerilla",
 		"swat"
 	}
-	local modelname = player_manager.TranslatePlayerModel( playermodel[ math.Rand(1,#playermodel) ] )
+	local modelname = player_manager.TranslatePlayerModel( playermodel[ math.random(1,#playermodel) ] )
 	util.PrecacheModel( modelname )
 	pl:SetModel( modelname )
 
 	pl:Give("weapon_crowbar")
-	pl:Give(pl.SecWep or "weapon_deagle_ze")
-	pl:Give(pl.PriWep or "weapon_ak47_ze")
-	pl:Give(pl.VIPWep or "")
+	pl:Give(pl.SecSlot or "weapon_deagle_ze")
+	pl:Give(pl.PriSlot or "weapon_ak47_ze")
+	pl:Give(pl.VIPSlot or "")
 	
 	// Switch to prefered weapon if they have it
 	local cl_defaultweapon = pl:GetInfo( "cl_defaultweapon" )
@@ -395,7 +420,7 @@ function GM:ScalePlayerDamage( ply, hitgroup, dmginfo )
 
 	if attacker:Team() == TEAM_HUMAN then
 		local vec = ( ply:GetShootPos() - attacker:GetShootPos() ):Normalize() * (force*100)
-		ply:SetVelocity(vec+ply:GetVelocity())
+		ply:SetVelocity(vec)
 	elseif attacker:Team() == TEAM_ZOMBIE then
 		dmginfo:SetDamage(0)
 		ply:SetZombie()
