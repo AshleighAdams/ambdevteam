@@ -174,10 +174,6 @@ function GM:PlayerSpawn( pl )
 	pl:SetRunSpeed(100)
 	pl:SetWalkSpeed(250)
 	
-	math.randomseed(os.time())
-	
-	local pos =  Spawn_Points[math.Round(math.random(1, #Spawn_Points))]
-	pl:SetPos( pos )
 end
 
 /*---------------------------------------------------------
@@ -603,11 +599,12 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 	*/
 	
 	
-	ply:SetWalkSpeed(ply.WalkSpeed or 250) 
+	
 	timer.Create("refresh_speed" .. ply:SteamID(), 0.1, 0, function(pl) 
-		pl.WalkSpeed = math.Clamp( (pl.WalkSpeed or pl.MaxWalkSpeed) + 30, 0, (pl.MaxWalkSpeed or 250) )
-		pl:SetWalkSpeed(pl.WalkSpeed) 
-		if pl.WalkSpeed == (pl.MaxWalkSpeed or 250) then timer.Destroy("refresh_speed" .. pl:SteamID()) end
+		WalkSpeed = pl:GetWalkSpeed()
+		WalkSpeed = math.Clamp( (WalkSpeed or pl.MaxWalkSpeed) + 30, 0, (pl.MaxWalkSpeed or 250) )
+		pl:SetWalkSpeed(WalkSpeed) 
+		if WalkSpeed == (pl.MaxWalkSpeed or 250) then timer.Destroy("refresh_speed" .. pl:SteamID()) end
 	end,ply)
 	
 	if flFallSpeed <= 0 then return true end
@@ -625,9 +622,9 @@ function GM:OnPlayerHitGround( ply, bInWater, bOnFloater, flFallSpeed )
 end
 
 hook.Add("KeyPress", "sj", function(pl,key)
-	if key == IN_JUMP then
+	if key == IN_JUMP and pl:IsOnGround() then
 		timer.Destroy("refresh_speed" .. pl:SteamID())
-		pl.WalkSpeed = 120
+		pl:SetWalkSpeed(100)
 	end
 end)
 
@@ -644,16 +641,7 @@ end
 		Can this player see the other player's chat?
 ---------------------------------------------------------*/
 function GM:PlayerCanSeePlayersChat( strText, bTeamOnly, pListener, pSpeaker )
-	
-	if ( bTeamOnly ) then
-		if ( !IsValid( pSpeaker ) || !IsValid( pListener ) ) then return false end
-		if ( pListener:Team() != pSpeaker:Team() ) then return false end
-	end
-	
+
 	return true
 	
 end
-
-hook.Add( "OnPlayerHitGround", "slow them down", function(ply)
-	
-end)

@@ -206,7 +206,7 @@ function GM:CreateTeams()
 	//team.SetSpawnPoint( TEAM_HUMAN, {"info_player_counterterrorist","info_player_terrorist"} )
 	
 	TEAM_ZOMBIE = 2
-	team.SetUp( TEAM_ZOMBIE, "Zombie", Color( 255, 0, 0 ) )
+	team.SetUp( TEAM_ZOMBIE, "Zombies", Color( 255, 0, 0 ) )
 	//team.SetSpawnPoint( TEAM_ZOMBIE, {"info_player_counterterrorist","info_player_terrorist"} )
 
 	
